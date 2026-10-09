@@ -1,4 +1,4 @@
-SKY EXPLORER VR — GUÍA DE JUEGO
+SKY EXPLORER VR 1.0.1 — GUÍA DE JUEGO
 
 ENTRAR
 Abre la página HTTPS en Meta Quest Browser con tus mandos activos.
@@ -14,9 +14,26 @@ Joystick izquierdo hacia arriba/izquierda/derecha: elegir sector.
 Gatillo izquierdo o A: entrar/aceptar.
 En una lista: arriba/abajo selecciona; izquierda/derecha ajusta valores.
 También puedes apuntar con el rayo del mando derecho y pulsar su gatillo.
+Los valores numéricos tienen barras. Apunta a una barra y mantén el gatillo
+DERECHO para arrastrar; al soltar se detiene. El valor respeta sus límites y
+pasos. A o gatillo izquierdo conserva la entrada de valor exacto con teclado.
+La barra también permite llegar a los extremos sacando el rayo del panel.
+El rayo y el punto se dibujan por delante de los menús para ver dónde señalas.
 Anteriores/Siguientes recorren páginas; Volver regresa al menú principal.
 Mientras está abierto, el joystick no mueve al personaje. Tu cabeza conserva
 seguimiento físico. Para cerrar sin cambiar nada, pulsa Y.
+
+AYUDAS ALREDEDOR DE LAS MANOS
+Ya no aparece el cartel inferior que seguía la cabeza. Las ayudas se anclan
+a la posición rastreada de cada mano, se orientan para poder leerlas y cambian
+según estés caminando, construyendo, conduciendo o usando el menú.
+No necesitas pulsar el botón para que aparezca su función.
+GAT = gatillo frontal. LAT = agarre/botón lateral. JOY = joystick.
+A/B corresponden al mando derecho; X/Y al izquierdo.
+Las ayudas desaparecen si se pierde el seguimiento del mando. Al conducir
+con manos sin mandos no aparecen etiquetas de botones que no estás usando.
+Avisos, datos de herramientas y FPS opcionales se muestran junto a la izquierda.
+El texto frontal Preparando solo se utiliza durante el cambio de destino.
 
 CAMINAR
 Joystick izquierdo: adelante, atrás y lateral.

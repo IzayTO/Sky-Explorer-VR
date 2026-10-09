@@ -4,7 +4,7 @@ import {orientedBox,rayBox} from './spatial.js?v=4.1.2';
 // One persistent, spatially indexed occluder set for the whole base. Camera
 // distance never removes a wall. A ray skips complete BVH branches on a miss.
 export const worldLightGLSL=`
-uniform vec4 baseLights[4],baseColors[4];uniform int baseLightCount,baseNodeCount;
+uniform vec4 baseLights[4],baseColors[4];uniform int baseLightSlots[4];uniform int baseLightCount,baseNodeCount;
 uniform sampler2D baseTree;uniform vec2 baseTreeSize;
 uniform sampler2D baseLightGrid,baseLightData;uniform vec2 baseLightDataSize;
 vec4 baseNode(float index,float component){float pixel=index*6.+component;return texture2D(baseTree,(vec2(mod(pixel,baseTreeSize.x),floor(pixel/baseTreeSize.x))+.5)/baseTreeSize);}
@@ -45,6 +45,14 @@ uniform sampler2D baseShadowAtlas;uniform float baseShadowReady;
 uniform mat4 baseShadowMatrices[32];uniform vec4 baseShadowRects[32],baseShadowOrigins[32];
 uniform vec3 baseShadowDirections[4];uniform float baseShadowValid[32];
 float unpackBaseDepth(vec2 uv){return dot(texture2D(baseShadowAtlas,uv).rgb,vec3(1.,1./255.,1./65025.));}
+float compareBaseShadow(vec3 p,vec3 dir,float limit,int slot,vec2 uv,float depth,float range){
+ vec4 rect=baseShadowRects[slot];vec2 pixel=(rect.xy+uv*rect.zw)*2048.-.5,corner=(floor(pixel)+.5)/2048.;
+ float compare=depth-.002/range;
+ float a=step(compare,unpackBaseDepth(corner)),b=step(compare,unpackBaseDepth(corner+vec2(1./2048.,0.)));
+ float c=step(compare,unpackBaseDepth(corner+vec2(0.,1./2048.))),d=step(compare,unpackBaseDepth(corner+vec2(1./2048.)));
+ if(min(min(a,b),min(c,d))!=max(max(a,b),max(c,d)))return baseVisibility(p,dir,limit);
+ return a;
+}
 float shadowAtSlot(vec3 p,vec3 dir,float limit,int slot){
  if(baseShadowReady<.5||baseShadowValid[slot]<.5)return float(-1.);
  vec4 q=baseShadowMatrices[slot]*vec4(p,1.);vec2 uv=q.xy/max(q.w,.00001)*.5+.5;
@@ -52,13 +60,9 @@ float shadowAtSlot(vec3 p,vec3 dir,float limit,int slot){
  vec4 origin=baseShadowOrigins[slot];vec3 delta=p-origin.xyz;
  float depth=length(delta)/origin.w;if(slot<4)depth=dot(delta,baseShadowDirections[slot])/origin.w;
  if(depth<0.||depth>=1.)return float(-1.);
- vec4 rect=baseShadowRects[slot];vec2 pixel=(rect.xy+uv*rect.zw)*2048.-.5,corner=(floor(pixel)+.5)/2048.;
- float compare=depth-.002/origin.w;
- float a=step(compare,unpackBaseDepth(corner)),b=step(compare,unpackBaseDepth(corner+vec2(1./2048.,0.)));
- float c=step(compare,unpackBaseDepth(corner+vec2(0.,1./2048.))),d=step(compare,unpackBaseDepth(corner+vec2(1./2048.)));
- if(min(min(a,b),min(c,d))!=max(max(a,b),max(c,d)))return baseVisibility(p,dir,limit);
- return a;
+ return compareBaseShadow(p,dir,limit,slot,uv,depth,origin.w);
 }
+
 float baseDirectionalVisibility(vec3 p,vec3 dir,float channel){
  int slot=int(channel)*2;float visibility=shadowAtSlot(p,dir,2000.,slot);
  if(visibility<0.)visibility=shadowAtSlot(p,dir,2000.,slot+1);
@@ -70,18 +74,32 @@ float basePointVisibility(vec3 p,vec3 normal,vec3 emitter,int slot){
  vec3 delta=emitter-p;float len=length(delta);
  return baseLocalVisibility(p+normal*.012,delta/max(len,.001),len-.055,slot);
 }
+// Point lights have fixed cube orientations: project analytically instead of
+// fetching and multiplying a dynamically indexed mat4 for every lit fragment.
+float baseLampVisibility(vec3 p,vec3 dir,float limit,vec3 emitter,int cacheSlot){
+ if(cacheSlot<0)return baseVisibility(p,dir,limit);
+ vec3 v=p-emitter,a=abs(v);int face=baseCubeFace(v),slot=4+cacheSlot*6+face;
+ if(baseShadowReady<.5||baseShadowValid[slot]<.5)return baseVisibility(p,dir,limit);
+ vec2 xy;float axis;
+ if(face<2){xy=vec2(face==0?-v.z:v.z,-v.y);axis=a.x;}
+ else if(face<4){xy=vec2(v.x,face==2?v.z:-v.z);axis=a.y;}
+ else{xy=vec2(face==4?v.x:-v.x,-v.y);axis=a.z;}
+ vec2 uv=xy*(.4828443874/max(axis,.00001))+.5; // .5 / tan(46°)
+ float range=baseShadowOrigins[slot].w,depth=length(v)/range;
+ if(axis<=.00001||min(min(uv.x,uv.y),min(1.-uv.x,1.-uv.y))<.012||depth>=1.)return baseVisibility(p,dir,limit);
+ return compareBaseShadow(p,dir,limit,slot,uv,depth,range);
+}
 vec4 readBaseLight(float index){return texture2D(baseLightData,(vec2(mod(index,baseLightDataSize.x),floor(index/baseLightDataSize.x))+.5)/baseLightDataSize);}
 vec3 oneBaseLight(vec3 p,vec3 n,vec3 emitter,vec4 color,int cacheSlot){
  vec3 d=emitter-p;float squared=dot(d,d);if(squared>=144.)return vec3(0.);
  float len=sqrt(squared),fall=1.-len/12.;vec3 direction=d/max(len,.001);
- int slot=cacheSlot<0?-1:4+cacheSlot*6+baseCubeFace(-d);
- return color.rgb*color.a*fall*fall*(.18+.82*max(dot(n,direction),0.))*baseLocalVisibility(p+n*.012,direction,len-.10,slot);
+ return color.rgb*color.a*fall*fall*(.18+.82*max(dot(n,direction),0.))*baseLampVisibility(p+n*.012,direction,len-.10,emitter,cacheSlot);
 }
 vec3 baseLighting(vec3 p,vec3 n){
  vec3 light=vec3(0.);if(baseLightCount==0)return light;
  // Small bases keep the original uniform fast path. Larger bases gather only
  // lights intersecting this 8 m cell, independently of the player's position.
- if(baseLightCount<=4){for(int i=0;i<4;i++){if(i>=baseLightCount)break;light+=oneBaseLight(p,n,baseLights[i].xyz,baseColors[i],i);}return light;}
+ if(baseLightCount<=4){for(int i=0;i<4;i++){if(i>=baseLightCount)break;light+=oneBaseLight(p,n,baseLights[i].xyz,baseColors[i],baseLightSlots[i]);}return light;}
  vec2 cell=floor((p.xz+640.)/8.);if(min(cell.x,cell.y)<0.||max(cell.x,cell.y)>=160.)return light;
  vec2 list=texture2D(baseLightGrid,(cell+.5)/160.).rg;
  int count=int(list.y);for(int j=0;j<count;j++){
@@ -96,7 +114,7 @@ vec3 baseLighting(vec3 p,vec3 n){
 let emptyTree;
 export function worldUniforms(){
  if(!emptyTree){emptyTree=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyTree.needsUpdate=true;}
- return {...shadowUniforms(),baseLightGrid:{value:emptyTree},baseLightData:{value:emptyTree},baseLightDataSize:{value:new THREE.Vector2(1,1)},baseLights:{value:Array.from({length:4},()=>new THREE.Vector4())},baseColors:{value:Array.from({length:4},()=>new THREE.Vector4())},baseLightCount:{value:0},baseNodeCount:{value:0},baseTree:{value:emptyTree},baseTreeSize:{value:new THREE.Vector2(1,1)},shadowDetail:{value:1}};
+ return {...shadowUniforms(),baseLightGrid:{value:emptyTree},baseLightData:{value:emptyTree},baseLightDataSize:{value:new THREE.Vector2(1,1)},baseLights:{value:Array.from({length:4},()=>new THREE.Vector4())},baseColors:{value:Array.from({length:4},()=>new THREE.Vector4())},baseLightSlots:{value:[0,1,2,3]},baseLightCount:{value:0},baseNodeCount:{value:0},baseTree:{value:emptyTree},baseTreeSize:{value:new THREE.Vector2(1,1)},shadowDetail:{value:1}};
 }
 export const LAMP_TEMPERATURES=[{label:'Cálida · 2700 K',color:0xffc38c},{label:'Neutra · 4000 K',color:0xffe6cc},{label:'Fría · 6500 K',color:0xd4e6ff}];
 function boundsHit(origin,dir,b,limit){let near=0,far=limit;for(let i=0;i<3;i++){
@@ -116,7 +134,7 @@ function dishBlocked(origin,direction,box,limit){
  }return false;
 }
 export class WorldLighting{
- constructor(){this.u=worldUniforms();this.last=-99;this.revision=-1;this.nodes=[];this.c=new THREE.Color();this.dir=new THREE.Vector3();this.delta=new THREE.Vector3();this.matrix=new THREE.Matrix4();this.selected=[];this.distances=[];this.detailed=true;this.rebuilds=0;this.allLamps=[];this.frustum=new THREE.Frustum();this.projection=new THREE.Matrix4();this.sphere=new THREE.Sphere(new THREE.Vector3(),12);this.shadows=new ConstructionShadows(this.u);}
+ constructor(){this.u=worldUniforms();this.last=-99;this.revision=-1;this.nodes=[];this.c=new THREE.Color();this.dir=new THREE.Vector3();this.delta=new THREE.Vector3();this.matrix=new THREE.Matrix4();this.selected=[];this.cacheSlots=Array(4).fill(null);this.distances=[];this.exposureEye=new THREE.Vector3(Infinity,Infinity,Infinity);this.exposureDirection=new THREE.Vector3();this.exposureAt=-Infinity;this.exposureValue=0;this.detailed=true;this.rebuilds=0;this.allLamps=[];this.frustum=new THREE.Frustum();this.projection=new THREE.Matrix4();this.sphere=new THREE.Sphere(new THREE.Vector3(),12);this.shadows=new ConstructionShadows(this.u);}
  prepare(renderer,world,camera){this.shadows.prepare(renderer,world,camera);}
  attach(uniforms){Object.assign(uniforms,this.u);}
  configureGraphics(options){if(this.detailed!==options.shadows){this.detailed=options.shadows;this.revision=-1;}this.u.shadowDetail.value=options.shadows?1:0;}
@@ -184,17 +202,36 @@ export class WorldLighting{
   // Stable atlas slots prevent stationary lamps being re-rendered merely
   // because the player crossed between them. Cache misses still illuminate.
   this.selected.sort((a,b)=>{const ai=previous.indexOf(a),bi=previous.indexOf(b);return (ai<0?4:ai)-(bi<0?4:bi);});
+  // Retain each lamp's physical atlas slot even when another lamp is switched
+  // off or leaves the four-light priority set. Never shift all surviving cubes.
+  for(const e of this.selected)if(!this.cacheSlots.includes(e)){
+   const slot=this.cacheSlots.findIndex(old=>!this.selected.includes(old));
+   this.cacheSlots[slot]=e;
+  }
+  for(let i=0;i<this.selected.length;i++)this.u.baseLightSlots.value[i]=this.cacheSlots.indexOf(this.selected[i]);
+  if(dirty)this.exposureAt=-Infinity;
   this.u.baseLightCount.value=this.allLamps.length;
   for(let i=0;i<this.selected.length;i++){const e=this.selected[i];this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);this.u.baseLights.value[i].set(e.anchor.x,e.anchor.y,e.anchor.z,12);this.u.baseColors.value[i].set(this.c.r,this.c.g,this.c.b,2.8);}
   if(this.allLamps.length>4){
    if(dirty||this.gridLampCount!==this.allLamps.length||!this.lightTexture){this.rebuildLightGrid();this.gridLampCount=this.allLamps.length;}
    if(dirty||previous.length!==this.selected.length||this.selected.some((e,i)=>e!==previous[i])||!this.gridRecordsReady){
     const data=this.lightTexture.image.data;
-    for(let i=0;i<this.allLamps.length;i++){const e=this.allLamps[i],p=e.anchor;this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);data.set([p.x,p.y,p.z,this.selected.indexOf(e),this.c.r,this.c.g,this.c.b,2.8],i*8);}
+    for(let i=0;i<this.allLamps.length;i++){const e=this.allLamps[i],p=e.anchor;this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);data.set([p.x,p.y,p.z,(this.selected.includes(e)?this.cacheSlots.indexOf(e):-1),this.c.r,this.c.g,this.c.b,2.8],i*8);}
     this.lightTexture.needsUpdate=true;this.gridRecordsReady=true;
    }
   }else this.gridRecordsReady=false;
  }
 
- exposure(camera){if(!this.allLamps.length)return 0;camera.getWorldDirection(this.dir);let result=0;for(const e of this.allLamps){this.delta.copy(e.anchor).sub(camera.position);const d=this.delta.length();if(d>=14)continue;this.delta.normalize();if(!this.blocked(camera.position,this.delta,d-.10))result=Math.max(result,Math.max(0,1-d/14)*Math.max(.1,this.dir.dot(this.delta))*.45);}return result;}
+ exposure(camera){
+  if(!this.allLamps.length)return this.exposureValue=0;
+  const now=performance.now();camera.getWorldDirection(this.dir);
+  // Exposure is an adaptation hint, not shadow visibility. Sampling it at
+  // 15 Hz avoids repeating CPU BVH walks for both stationary and moving heads.
+  if(now-this.exposureAt<1000/15)return this.exposureValue;
+  if(this.exposureAt!==-Infinity&&camera.position.distanceToSquared(this.exposureEye)<1e-8&&this.dir.distanceToSquared(this.exposureDirection)<1e-8)return this.exposureValue;
+  this.exposureAt=now;this.exposureEye.copy(camera.position);this.exposureDirection.copy(this.dir);
+  let result=0;for(const e of this.allLamps){this.delta.copy(e.anchor).sub(camera.position);const d=this.delta.length();if(d>=14)continue;this.delta.normalize();const contribution=Math.max(0,1-d/14)*Math.max(.1,this.dir.dot(this.delta))*.45;if(contribution<=result)continue;if(!this.blocked(camera.position,this.delta,d-.10))result=contribution;}
+  return this.exposureValue=result;
+ }
+
 }

@@ -1,3 +1,63 @@
+SKY EXPLORER VR 1.0.1 — ILUMINACIÓN Y MENÚS
+
+Base real consultada el 9 de octubre de 2026:
+IzayTO/Sky-Explorer-VR main c9bbfaead07e44de3ff26d2859d0d341f4f642c8.
+Los 66 archivos se contrastaron por su hash Git con la copia de trabajo;
+coincidían. No se escribió en GitHub ni en los repositorios original/App.
+
+ILUMINACIÓN
+1. El atlas solo activa un framebuffer auxiliar si una vista necesita dibujarse.
+   Un acierto completo de caché no cambia render target ni estado XR.
+2. Cada lámpara retiene su casilla de sombra: apagar otra o cambiar la prioridad
+   no desplaza todos los cubos restantes. Reencenderla reutiliza sus seis caras
+   si no hubo modificaciones ni otra luz ocupó su casilla.
+3. Proyección analítica de sombras de lámparas: usa las seis orientaciones
+   conocidas del cubo, evitando leer/multiplicar una matriz indexada por píxel.
+4. Margen de 1° en cada borde de las caras del cubo (92° de FOV). Las uniones
+   entre caras dejan de forzar innecesariamente el recorrido del BVH.
+   Las transiciones reales de sombra siguen usando la prueba exacta existente.
+5. La consulta CPU de exposición se reutiliza con cámara inmóvil y se limita
+   a 15 Hz en movimiento. Las sombras visibles no tienen ese límite; la luz
+   cambia normalmente y el cálculo se invalida al editar/encender/apagar.
+
+No se reduce el número de lámparas que iluminan, su radio de 12 m, intensidad,
+color ni resolución del atlas de 2048². Siguen cabiendo cuatro cubos en caché;
+las otras lámparas usan la ruta exacta y conservan su iluminación. Los cambios
+geométricos siguen invalidando las sombras. No se cambia terreno/pasto/cielo.
+
+INTERFAZ
+- Se retira el cartel permanente inferior. Era un objeto cuya posición se
+  actualizaba cada 150 ms junto con el texto, causando los saltos descritos.
+- Dos texturas transparentes dibujan botones y avisos alrededor de las manos.
+  Sus transformaciones se actualizan cada frame XR, y su contenido solo cuando
+  cambia. No se añaden una pasada de escena ni luces para dibujar las ayudas.
+- Tono de piel mate con sombreado difuso grabado en colores de vértice.
+- Escala 0,90 para el semicírculo y 0,80 para el panel rectangular, respecto
+  de la versión previa. Se mantiene la transición de apertura/cierre.
+- Barras funcionales en cantidad, ángulos, tamaños y ajustes numéricos del
+  menú, incluidos formularios existentes. Ray + gatillo derecho mantiene
+  captura mientras arrastras; soltar/perder seguimiento/cerrar cancela captura.
+  El joystick y la entrada exacta con A permanecen disponibles.
+- Línea y punto transparentes, ordenados después del panel y sin prueba de
+  profundidad mientras se usa UI. Fuera del menú recuperan oclusión normal.
+  El punto es más pequeño al señalar controles precisos.
+
+COMPATIBILIDAD / ACTUALIZACIÓN
+Motor local, Three.js r186 + WebGL2/WebXR, sin cambios de motor ni dependencias.
+Se conserva el teclado PC, ambos mundos, física, guardados y claves existentes.
+Nuevo módulo: vr-hand-guides.js. La lista de reemplazos está en LEEME.txt.
+Se regeneró service-worker.js sobre la copia COMPLETA final, no solo sobre los
+reemplazos. Mantiene SHA-256, publicación atómica y aceptación de actualización.
+La versión de diagnóstico es VR-1.0.1; el hash offline se calcula automáticamente.
+No se borra localStorage, IndexedDB ni ninguna partida.
+
+Fuentes oficiales consultadas para orden de materiales, profundidad y render:
+https://threejs.org/docs/pages/WebGLRenderer.html
+https://threejs.org/docs/pages/Material.html
+https://archive.threejs.org/docs/api/en/core/Object3D.html
+
+A continuación se conserva la documentación de la versión inicial.
+
 SKY EXPLORER VR 1.0.0 — CAMBIOS Y PROCEDENCIA
 
 COPIA INDEPENDIENTE, GITHUB SOLO LECTURA

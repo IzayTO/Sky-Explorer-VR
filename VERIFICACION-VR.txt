@@ -1,3 +1,59 @@
+SKY EXPLORER VR 1.0.1 — VERIFICACIÓN DE ESTA ACTUALIZACIÓN
+
+PRUEBAS LOCALES REALIZADAS
+- Inicialización PC y sesiones XR sintéticas: Tierra/Luna, controles, menú,
+  construcción real, edición, deshacer/rehacer, silla, vehículos, conducción
+  por manos, pérdida de seguimiento, telescopio y cambio/recuperación de mundo.
+- Ayudas siguen cada frame la posición rastreada, sin cartel inferior; no se
+  sube de nuevo su textura cuando el contenido no cambia. Piel con color de
+  vértice, sin emisión. Escalas exactas 0,90 y 0,80 comprobadas.
+- Arrastre real con rayo y gatillo: Cantidad llega a 1 y 30, posición intermedia,
+  límites fuera del panel, soltar y pérdida de seguimiento. Puntero y punto
+  se ordenan después del panel; fuera vuelven a probar profundidad.
+- Renderizado e inspección de las texturas de ayudas, paneles y deslizadores.
+- Compilación/enlace de 22 parejas GLSL reales de la distribución con Mesa.
+- 2676 consultas de sombras renderizadas contra el BVH CPU: 2676 coinciden,
+  incluidos interiores, paredes, ventanas, seis caras y uniones del cubo.
+- Una imagen de 512×512 (262144 píxeles) con proyección de sombra analítica
+  coincidió píxel a píxel con la misma imagen usando la matriz del atlas.
+- Cero cambios de framebuffer en un acierto completo de caché. Cuatro lámparas:
+  apagar y reencender la primera no recalcula las otras ni su cubo conservado.
+  Entrar una quinta en la prioridad calcula solo sus seis caras; todas iluminan.
+- Consultas CPU de exposición reutilizadas para una cámara inmóvil.
+- Sintaxis/imports/rutas locales, hashes SHA-256 y publicación offline completa.
+- Worker simulado: offline, rechazo de publicación corrupta/incompleta,
+  actualización pendiente, convivencia de pestañas viejas/nuevas y limpieza
+  de cachés limitada al scope sin borrar partidas.
+- Aplicar los archivos del ZIP sobre la base verificada reproduce la copia
+  completa de esta versión, incluidos todos los hashes del Service Worker.
+
+MEDICIÓN LOCAL ACOTADA
+Prueba de shader sobre una pared interior de 512×512, con el MISMO atlas:
+proyección con matriz, mediana 4,57 ms; proyección analítica, 1,37 ms, 15 muestras
+por variante después de calentamiento. Renderer de software Mesa llvmpipe en
+este entorno; hubo variabilidad en las muestras. No es el juego completo, no
+es una medida de GPU móvil y no permite prometer ese factor en Quest 3S.
+El resultado útil adicional es la igualdad de los píxeles y la reducción de
+operaciones/invalidaciones verificada. No se entrega una promesa de FPS.
+
+FALTA VERIFICACIÓN FÍSICA DE ESTA ACTUALIZACIÓN
+FPS sostenidos, temperatura y latencia reales en Meta Quest 3S; tamaño/lectura
+binocular de las nuevas ayudas; soltura del arrastre con mandos reales; luces
+con la base guardada del usuario, y actualización/offline en Meta Quest Browser.
+La prueba positiva del usuario corresponde a la versión anterior, no a esta.
+Las pruebas XR locales usan poses y mandos simulados y un renderer registrador;
+las pruebas de píxeles usan Mesa, no el controlador Qualcomm del visor.
+
+LÍMITES CONSERVADOS
+La primera generación de sombras y las ediciones de geometría aún cuestan.
+Con más de cuatro lámparas priorizadas, las no cacheadas conservan el BVH exacto.
+Un escenario muy complejo o varias luces superpuestas puede seguir costando.
+No se ha reducido el alcance ni se ha hecho desaparecer ninguna luz para ocultarlo.
+No se cambiaron resolución, foveación, densidad ni preferencias del jugador.
+El resto de límites de la edición VR se documenta en la verificación inicial.
+
+A continuación se conserva el registro de verificación de la versión inicial.
+
 SKY EXPLORER VR 1.0.0 — VERIFICACIÓN Y LÍMITES
 
 ALCANCE REAL DE LAS PRUEBAS

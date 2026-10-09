@@ -35,7 +35,7 @@ export class ConstructionShadows{
   const clearGeometry=new THREE.BufferGeometry();clearGeometry.setAttribute('position',new THREE.Float32BufferAttribute([-1,-1,0,3,-1,0,-1,3,0],3));
   this.clearMesh=new THREE.Mesh(clearGeometry,new THREE.ShaderMaterial({depthTest:true,depthWrite:true,depthFunc:THREE.AlwaysDepth,toneMapped:false,vertexShader:'void main(){gl_Position=vec4(position.xy,1.,1.);}',fragmentShader:'void main(){gl_FragColor=vec4(1.);}'}));
   this.clearMesh.frustumCulled=false;this.clearMesh.renderOrder=-100;this.scene.add(this.clearMesh);
-  this.renders=0;this.rebuilds=0;
+  this.renders=0;this.rebuilds=0;this.passState=null;
  }
  rebuild(world){
   for(const mesh of [...this.scene.children])if(mesh!==this.clearMesh){this.scene.remove(mesh);mesh.geometry.dispose();}
@@ -56,6 +56,13 @@ export class ConstructionShadows{
   this.u.baseShadowAtlas.value=this.target.texture;
  }
  tile(index){if(index<4)return [(index%4)*2,0,2];if(index<28){const n=index-4;return[n%8,2+Math.floor(n/8),1];}return[(index-28)*2,5,2];}
+ beginPass(renderer){
+  if(this.passState)return;
+  this.passState={target:renderer.getRenderTarget(),scissorTest:renderer.getScissorTest(),auto:renderer.autoClear,alpha:renderer.getClearAlpha(),xr:renderer.xr?.enabled};
+  renderer.getViewport(this.viewport);renderer.getScissor(this.scissor);renderer.getClearColor(this.clearColor);
+  if(renderer.xr)renderer.xr.enabled=false;
+  renderer.autoClear=false;
+ }
  renderView(renderer,index,position,direction,span,far,emitter=null,radial=false,up=null){
   const view=this.views[index],camera=view.camera;
   this.u.baseShadowValid.value[index]=1;
@@ -79,6 +86,7 @@ export class ConstructionShadows{
   const [x,y,cells]=this.tile(index),px=x*CELL,py=y*CELL,size=cells*CELL;
   this.u.baseShadowRects.value[index].set((px+1)/SIZE,(py+1)/SIZE,(size-2)/SIZE,(size-2)/SIZE);
   this.casterU.shadowOrigin.value.copy(position);this.casterU.shadowForward.value.copy(direction);this.casterU.shadowRange.value=far;this.casterU.shadowRadial.value=radial?1:0;
+  this.beginPass(renderer);
   for(const mesh of this.scene.children)mesh.visible=mesh===this.clearMesh||mesh.userData.emitter!==emitter||!emitter;
   // Offscreen viewports are physical pixels. WebGPU reads the render target's
   // viewport; WebGL setViewport() would otherwise multiply by canvas DPR.
@@ -90,12 +98,9 @@ export class ConstructionShadows{
  prepare(renderer,world,camera){
   if(!world.entities.length){if(this.target)this.release();this.u.baseShadowReady.value=0;return;}
   if(this.revision!==world.spatialRevision)this.rebuild(world);
-  this.ensureTarget();const target=renderer.getRenderTarget(),scissorTest=renderer.getScissorTest(),auto=renderer.autoClear,alpha=renderer.getClearAlpha();
-  renderer.getViewport(this.viewport);renderer.getScissor(this.scissor);renderer.getClearColor(this.clearColor);
+  this.ensureTarget();
   const u=world.material.uniforms,active=this.u.baseShadowValid.value;active.fill(0);
-  const xrEnabled=renderer.xr?.enabled;if(renderer.xr)renderer.xr.enabled=false;
   try{
-   renderer.setRenderTarget(this.target);renderer.setScissorTest(true);renderer.autoClear=false;renderer.setClearColor(0xffffff,1);
    for(let light=0;light<2;light++){
     const dir=light?u.earth.value:u.sun.value;if(light?u.earthPower.value<.0001:dir.y<=0)continue;
     this.direction.copy(dir).negate();
@@ -106,8 +111,10 @@ export class ConstructionShadows{
     }
    }
    for(let i=0;i<world.lights.selected.length;i++){
-    const entity=world.lights.selected[i];
-    for(let face=0;face<6;face++){this.direction.set(...DIRECTIONS[face]);this.renderView(renderer,4+i*6+face,entity.anchor,this.direction,90,12,entity,true,UPS[face]);}
+    const entity=world.lights.selected[i],slot=this.u.baseLightSlots.value[i];
+    // A 1° guard band on each edge keeps cube seams in the cached path.
+    // Exact BVH tests still resolve real shadow silhouettes and cache misses.
+    for(let face=0;face<6;face++){this.direction.set(...DIRECTIONS[face]);this.renderView(renderer,4+slot*6+face,entity.anchor,this.direction,92,12,entity,true,UPS[face]);}
    }
    // The flashlight is exactly at the camera: the depth buffer has already
    // rejected surfaces behind walls. Re-tracing that same ray is redundant.
@@ -115,7 +122,9 @@ export class ConstructionShadows{
    if(u.reverseLight.value>.001)this.renderView(renderer,31,u.rearLamp.value,u.rearDirection.value,146,14,null,true);
    this.u.baseShadowReady.value=1;
   }finally{
-   renderer.setRenderTarget(target);renderer.setViewport(this.viewport);renderer.setScissor(this.scissor);renderer.setScissorTest(scissorTest);renderer.setClearColor(this.clearColor,alpha);renderer.autoClear=auto;if(renderer.xr)renderer.xr.enabled=xrEnabled;
+   // A cache hit must not bind an offscreen framebuffer at all. On tile GPUs
+   // that transition can flush the stereo render target despite drawing nothing.
+   const s=this.passState;if(s){this.passState=null;renderer.setRenderTarget(s.target);renderer.setViewport(this.viewport);renderer.setScissor(this.scissor);renderer.setScissorTest(s.scissorTest);renderer.setClearColor(this.clearColor,s.alpha);renderer.autoClear=s.auto;if(renderer.xr)renderer.xr.enabled=s.xr;}
   }
  }
  release(){this.target?.dispose();this.target=null;this.u.baseShadowAtlas.value=this.empty;this.u.baseShadowReady.value=0;for(const view of this.views)view.revision=-1;}

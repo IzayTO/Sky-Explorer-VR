@@ -4,7 +4,7 @@ const $=id=>document.getElementById(id);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const CONTROL_ROWS=[
  ['Y · Menú de la mano','Abre/cierra con una pulsación. Tres bloques sobre la mano izquierda.'],
- ['Menú · Seleccionar','Joystick izquierdo: navegar. A o gatillo izquierdo: aceptar. Rayo derecho + gatillo derecho también sirve.'],
+ ['Menú · Seleccionar','Joystick izquierdo: navegar. A o gatillo izquierdo: aceptar. Rayo derecho + gatillo derecho también sirve. Arrastra las barras manteniendo ese gatillo; A permite escribir el valor exacto.'],
  ['Caminar y mirar','Joystick izquierdo: desplazarse. Derecho: giro suave. Mira también con la cabeza. Sistema permite intercambiar joysticks.'],
  ['Correr y saltar','A: salto. Mantén gatillo derecho: correr. No hay balanceo artificial de cabeza en VR.'],
  ['Linterna / faros','Pulsa agarre derecho lejos del volante. Al conducir alterna faros.'],
@@ -34,7 +34,7 @@ export class VRMenus{
  back(){if(this.vr.keyboard.mesh.visible){this.vr.keyboard.close(false);return;}if(this.api.state.expeditionPanel){this.x.closeDialog();this.exploration();}else this.home();}
  category(i){if(i===0)this.sky();else if(i===1)this.exploration();else this.system();}
  button(label,action,hint){return {label,action,hint};}
- setting(label,get,set,min,max,step=1){return {label,value:()=>String(get()),adjust:d=>set(clamp(Number(get())+d*step,min,max)),action:()=>{const input=document.createElement('input');input.type='number';input.min=min;input.max=max;input.step=step;input.value=get();this.vr.keyboard.open(input,()=>{set(clamp(Number(input.value)||0,min,max));this.vr.menu.panel.dirty=true;});},hint:'← → ajustar · aceptar: valor exacto'};}
+ setting(label,get,set,min,max,step=1){return {label,value:()=>String(get()),slider:{min,max,step,get,set},adjust:d=>set(clamp(Number(get())+d*step,min,max)),action:()=>{const input=document.createElement('input');input.type='number';input.min=min;input.max=max;input.step=step;input.value=get();this.vr.keyboard.open(input,()=>{set(clamp(Number(input.value)||0,min,max));this.vr.menu.panel.dirty=true;});},hint:'Barra: gatillo derecho · A: valor exacto'};}
  sky(){const s=this.api.state;this.show('Cielo y destinos',[
  this.button('Explorar Tierra',()=>this.vr.changeDestination('earth')),this.button('Explorar Luna',()=>this.vr.changeDestination('moon')),
  this.setting('Hora / ciclo',()=>s.hour.toFixed(2),v=>this.api.setHour(v),0,23.99,.25),
@@ -60,7 +60,7 @@ export class VRMenus{
  this.setting('Velocidad al caminar',()=>this.api.walker.speed,v=>{$('speed').value=v;$('speed').dispatchEvent(new Event('input'));},.4,4,.1),
  this.setting('Volumen · %',()=>Math.round(this.api.state.volume*100),v=>{$('volume').value=v;$('volume').dispatchEvent(new Event('input'));},0,100,5),
  {label:'Manos solo al conducir',value:()=>p.hands?'Permitidas':'Desactivadas',action:()=>{p.hands=!p.hands;this.vr.savePreferences();this.api.toast('La solicitud de manos se aplica al volver a entrar en VR.');}},
- {label:'Resolución por ojo',value:()=>p.scale.toFixed(2)+'×',adjust:d=>{p.scale=clamp(Math.round((p.scale+d*.05)*100)/100,.65,1);this.vr.savePreferences();this.api.toast('Resolución aplicada en la próxima entrada a VR.');},hint:'Se aplica al volver a entrar en VR'},
+ this.setting('Resolución por ojo · próxima entrada',()=>p.scale.toFixed(2)+'',v=>{p.scale=v;this.vr.savePreferences();},.65,1,.05),
  this.setting('Foveación periférica',()=>p.foveation.toFixed(2),v=>{p.foveation=v;this.vr.foveation=v;this.api.renderer.xr.setFoveation(v);this.vr.savePreferences();},0,.8,.1),
  {label:'Adaptación sostenida de foveación',value:()=>p.auto?'Activada':'Desactivada',action:()=>{p.auto=!p.auto;this.vr.savePreferences();}},
  this.button('Recentrar postura',()=>this.vr.recenter()),this.button('Controles y guía VR',()=>this.controls()),
@@ -120,7 +120,7 @@ export class VRMenus{
  for(const row of rows)if(row.source?.id==='export-field')row.action=()=>this.vr.desktopAction(()=>this.x.export());
  this.vr.menu.show(title,rows,reset);this.dirty=false;}
  update(time){if(this.path==='science'&&this.source&&!this.api.state.expeditionPanel){this.source=null;this.path='root';this.vr.menu.toggle(false);}if(this.api.state.expeditionPanel&&this.source!==$('science-content')){this.source=$('science-content');this.vr.menu.toggle(true);this.path='science';this.refreshForm($('science-title').textContent,true);this.dirty=true;}
- if(this.source&&time-this.lastScan>.2){this.lastScan=time;if(this.dirty||this.api.expedition.science.tick){this.refreshForm(this.path==='science'?$('science-title').textContent:this.vr.menu.panel.title);}}
+ if(this.source&&!this.vr.menu.panel.dragging&&time-this.lastScan>.2){this.lastScan=time;if(this.dirty||this.api.expedition.science.tick){this.refreshForm(this.path==='science'?$('science-title').textContent:this.vr.menu.panel.title);}}
  }
 }
 export {CONTROL_ROWS};

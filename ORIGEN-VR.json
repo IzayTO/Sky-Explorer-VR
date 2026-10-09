@@ -1,0 +1,13 @@
+{
+  "project": "Sky Explorer VR",
+  "original": {
+    "repository": "IzayTO/Sky-Explorer",
+    "commit": "bae6a25951db574892fa63075a35cd7eec95e2b4"
+  },
+  "maintenance": {
+    "repository": "IzayTO/Sky-Explorer-App",
+    "commit": "ededa802c1ed72c1218c9c53f177246623183542"
+  },
+  "remoteAccess": "read-only",
+  "date": "2026-10-09"
+}

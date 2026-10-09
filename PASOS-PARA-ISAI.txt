@@ -1,0 +1,97 @@
+PASOS PARA ISAI — QUÉ HAGO AHORA
+
+1. GUARDAR Y DESCOMPRIMIR DESDE IPHONE
+Toca el enlace Sky-Explorer-VR.zip → Compartir → Guardar en Archivos.
+Abre Archivos → Descargas (o la carpeta elegida) → toca el ZIP una vez.
+Abre la carpeta que crea Archivos. Dentro están todos los archivos completos.
+El ZIP no contiene una carpeta contenedora: esa carpeta la crea Archivos.
+
+2. CREAR EL TERCER REPOSITORIO
+En Safari abre GitHub.com → inicia sesión → + → New repository.
+Nombre: Sky-Explorer-VR. Elige Public → Create repository.
+No reemplaces archivos en Sky-Explorer ni en Sky-Explorer-App.
+Si Github no muestra un control, menú de Safari → Solicitar sitio web de escritorio.
+
+3. SUBIR EL PROYECTO COMPLETO
+En el repositorio nuevo toca uploading an existing file, o Add file → Upload files.
+Choose your files → Archivos → carpeta descomprimida → Seleccionar.
+Selecciona TODOS los archivos sueltos, incluidos imágenes, motor, licencias,
+manifest y service-worker.js. No selecciones el ZIP ni subas la carpeta entera.
+Los nombres deben aparecer directamente junto a index.html en la raíz.
+Este paquete NO es solo de reemplazos: sirve para un repositorio vacío.
+
+4. CONFIRMAR
+Espera a que termine la carga → escribe "Sky Explorer VR 1.0.0" → Commit changes.
+Si tienes que subir por tandas, completa todas antes de probar el juego.
+Si ya habías creado el repositorio VR con estos mismos nombres, súbelos al
+mismo nivel para reemplazarlos. No elimines previamente los proyectos originales.
+
+5. ACTIVAR GITHUB PAGES
+Repositorio Sky-Explorer-VR → Settings → Pages.
+Source: Deploy from a branch. Branch: main. Carpeta: / (root) → Save.
+GitHub publica automáticamente. Espera al despliegue terminado en Actions o
+al mensaje de página publicada en Pages; puede tardar unos minutos.
+No necesitas compilar, instalar Unity ni ejecutar código desde tu teléfono.
+
+6. ABRIR EN TUS QUEST 3S
+Ponte el visor → abre Meta Quest Browser.
+Escribe https://izayto.github.io/Sky-Explorer-VR/
+Con los mandos activos, pulsa Entrar en VR · Quest → acepta el permiso.
+Si la primera carga muestra Preparando, espera a que termine.
+Y abre/cierra el menú. Izquierdo mueve, derecho gira, A salta.
+B abre el telescopio. Sistema → Controles y guía VR explica el resto.
+En PC puedes abrir exactamente esa URL y elegir Tierra o Luna.
+
+7. COMPROBAR LA VERSIÓN
+En VR: Y → Sistema → Diagnóstico.
+Debe decir VR-1.0.0, WebGL2 / WebXR y sesión inmersiva: sí.
+Ese es el renderer correcto de ESTA edición VR; no debe decir WebGPU.
+También puedes abrir la URL terminada en ?diagnostico=1 fuera de VR.
+La guía VERIFICACION-VR.txt distingue lo probado localmente de lo que falta
+comprobar físicamente en tu visor. No existe una garantía de FPS concretos.
+
+8. PROBAR EL JUEGO
+Camina, gira, salta y usa la linterna. Abre el catálogo y coloca unas piezas.
+Comprueba edición, recuperar pieza, deshacer/rehacer, lámparas e instrumentos.
+Sube a la cuatrimoto; prueba acelerar, frenar, dirigir, luces e impulso.
+Cielo → Luna: espera Preparando. Prueba rover y construcción sobre cimientos.
+Vuelve a Tierra y comprueba que tu construcción siga ahí.
+Las manos sin mandos son opcionales; prueba primero con los mandos.
+
+9. PROBAR SIN INTERNET
+Antes de entrar en VR, espera a "Disponible sin conexión · Tierra y Luna".
+También puedes consultarlo dentro de VR en Sistema → Versión offline.
+Guarda la página en Favoritos del navegador del visor.
+Cierra el juego, desactiva Wi-Fi, vuelve a abrir esa misma URL desde Favoritos
+y prueba ambos destinos. VR sigue requiriendo aceptar/iniciar la sesión.
+Si el navegador no retiene la caché, vuelve a conectar y espera la descarga.
+El modo offline depende del almacenamiento conservado por el navegador;
+limpiar datos del sitio o presión de almacenamiento puede retirarlo.
+
+10. FUTURAS ACTUALIZACIONES
+Sube los archivos completos de la nueva entrega al repositorio VR y confirma.
+Espera a que GitHub Pages termine de publicar. Abre el juego con conexión.
+Cuando aparezca Actualización lista → Guardar y recargar, tócala.
+En VR está en Sistema → Versión offline y saldrá de la inmersión para recargar.
+No necesitas reinstalar nada ni borrar las partidas.
+No cambies manualmente código de esta entrega sin regenerar el worker: el
+sistema detectaría que los hashes ya no coinciden. Pide una entrega preparada.
+
+11. SI SIGUE SALIENDO UNA VERSIÓN ANTERIOR
+Cierra todas las pestañas del juego y cualquier ventana instalada. Reabre online.
+Abre https://izayto.github.io/Sky-Explorer-VR/?diagnostico=1
+Pulsa Buscar actualización y aplica Actualización lista cuando esté preparada.
+Si la publicación está incompleta, comprueba en GitHub que subiste todos los
+archivos al mismo nivel y que Pages terminó; vuelve a abrir con conexión.
+Como último recurso usa Restablecer solo la caché offline en ese diagnóstico,
+cierra TODAS las ventanas del juego y reabre online. Ese botón no borra tus bases.
+No uses borrar todos los datos del sitio: eso sí puede borrar guardados.
+
+12. TUS OTRAS VERSIONES Y RESPALDOS
+Esta edición se queda en Sky-Explorer-VR. Tus otros dos repositorios conservan
+sus archivos, sus URLs y sus guardados. Puedes seguir abriéndolos normalmente.
+Para llevar una base a VR: exporta la expedición desde el original/App e
+impórtala en VR. El archivo permanece compatible; la importación pide confirmar.
+Conserva este ZIP y exporta tu expedición antes de futuras actualizaciones.
+Si una actualización VR falla, vuelve a subir TODOS los archivos del ZIP VR
+anterior y su worker correspondiente. No hace falta tocar los otros repositorios.

@@ -1,0 +1,30 @@
+SKY EXPLORER VR — 1.0.0
+Proyecto completo para Meta Quest 3S y PC · 9 de octubre de 2026
+
+Este ZIP contiene TODO el proyecto, con los archivos sueltos en la raíz.
+Se publica en un repositorio NUEVO, por ejemplo IzayTO/Sky-Explorer-VR.
+No es un paquete de reemplazo para Sky-Explorer ni Sky-Explorer-App.
+No se hicieron cambios, commits, ramas ni publicaciones en GitHub.
+
+1. Descomprime Sky-Explorer-VR.zip.
+2. Sube TODOS sus archivos sueltos al nuevo repositorio.
+3. Activa Settings → Pages → Deploy from a branch → main → / (root).
+4. Abre https://izayto.github.io/Sky-Explorer-VR/ en Meta Quest Browser.
+5. Pulsa Entrar en VR · Quest y acepta el permiso de inmersión.
+
+Y abre el menú de la mano izquierda; B abre/guarda el telescopio.
+El joystick izquierdo mueve y el derecho gira suavemente. A salta.
+Dentro de VR, Sistema → Controles y guía VR explica todas las acciones.
+En PC permanecen ratón/teclado y los menús del juego. No hay controles móviles.
+
+No necesitas Python, Node, npm, Unity, una terminal ni compilar archivos.
+El motor, los shaders y todos los recursos del juego están incluidos localmente.
+WebGL2 + WebXR es la ruta de esta edición; no se anuncia como WebGPU.
+
+PASOS-PARA-ISAI.txt — publicación, Quest, offline y actualizaciones.
+GUIA-VR.txt — controles, conducción, construcción e instrumentos.
+CAMBIOS-VR.txt — arquitectura, procedencia y rendimiento.
+VERIFICACION-VR.txt — pruebas realizadas y límites de verificación.
+
+Las pruebas locales no sustituyen una sesión física en Quest 3S.
+No se han medido FPS, temperatura, comodidad ni autonomía en ese dispositivo.

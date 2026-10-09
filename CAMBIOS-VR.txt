@@ -1,0 +1,101 @@
+SKY EXPLORER VR 1.0.0 — CAMBIOS Y PROCEDENCIA
+
+COPIA INDEPENDIENTE, GITHUB SOLO LECTURA
+Se consultaron ambas ramas main y sus árboles completos:
+IzayTO/Sky-Explorer: bae6a25951db574892fa63075a35cd7eec95e2b4
+IzayTO/Sky-Explorer-App: ededa802c1ed72c1218c9c53f177246623183542
+Fecha de consulta: 9 de octubre de 2026.
+ORIGEN-VR.json conserva estas referencias.
+La rama App conserva los sistemas del original y añade correcciones comunes.
+Se aprovecharon esas correcciones de construcción, iluminación, controles,
+preferencias, recursos y ciclo de vida para no reintroducir errores antiguos.
+Ninguna operación escribió en GitHub ni modificó las copias originales.
+
+RENDER
+Three.js r186 local, WebGL2 + WebXR. Este paquete no carga WebGPU/TSL.
+Se eligió la ruta WebXR integrada en WebGLRenderer de la versión incluida,
+compatible con los shaders GLSL existentes, render estéreo y mandos del visor.
+No es un fallback disimulado: el diagnóstico declara WebGL2 / WebXR.
+No hacen falta CDN, herramientas de compilación ni recursos externos del juego.
+
+El bucle usa setAnimationLoop y XRFrame reales. La cámara física del personaje
+está separada de las cámaras rastreadas por el visor. Se mantiene la física
+existente; el movimiento físico horizontal también pasa por las colisiones.
+Las capas 1 y 2 quedan reservadas a los ojos de WebXR. El cielo usa la capa 3;
+menús, mandos y óptica usan 4. Ambos ojos reciben el cielo completo.
+El fondo astronómico usa las matrices de proyección/vista de cada ojo, también
+con frustums asimétricos y con las cámaras de fotografía y telescopio.
+Las pasadas de sombras, caché lunar y ocular desactivan temporalmente la
+sustitución de cámara XR y restauran el estado al terminar.
+
+UI Y JUEGO
+Menú semicircular de muñeca, paneles paginados, rayo y teclado virtual.
+Y: menú; B: telescopio. Esta separación resuelve el solapamiento de B en la
+petición. Impulso y freno también tienen entradas distintas.
+Mochila 30+10, catálogo, construcción, edición, deshacer/rehacer, sillas,
+vehículos y herramientas conectados a la lógica real existente.
+Los formularios científicos usan sus propios manejadores originales mediante
+controles dibujados en texturas Canvas. Sus gráficas y datos se conservan.
+Se admite conducción por posición de mandos cerca del volante/manillar;
+seguimiento opcional de manos únicamente para conducir.
+No se usa DOM overlay como sustituto del menú inmersivo.
+PC mantiene los menús y control de ratón/teclado. Se ocultan y no se enlazan
+joysticks táctiles. En navegadores táctiles sin XR se muestra el aviso de PC/Quest.
+
+RENDIMIENTO
+- Solo un mundo residente. Al cambiar se guardan los datos lógicos, se libera
+  el entorno anterior y se presenta Preparando durante la carga del elegido.
+- La Luna conserva la malla cercana, relieve, cráteres, faldones, alturas y
+  colisiones. Se agrupan las teselas lejanas en sectores: 256 meshes pasan a
+  96. La cantidad de triángulos y el mapa de altura no se reducen. Esto limita
+  envíos de dibujo, con culling algo menos fino en esos sectores lejanos.
+- Se conservan agrupación espacial de construcciones y mapas de sombra
+  reutilizados de App, incluidas luces independientes y selección de piezas.
+- Pasto instanciado y culling permanecen; sus niveles siguen configurables.
+- No se reduce arbitrariamente el catálogo ni el campo de 96.000 estrellas
+  decorativas. Se conserva la selección de estrellas según visibilidad/aumento.
+- Las texturas del menú se suben al cambiar contenido/selección. Formularios
+  dinámicos como sismómetro se reflejan hasta 5 veces/s, no una vez por ojo.
+- Objetos temporales de seguimiento/control se reutilizan. El movimiento
+  físico se subdivide solo cuando lo necesita para no atravesar paredes.
+- Se solicita 72 Hz solo si el visor lo ofrece. Es un objetivo de sesión,
+  NO una medición de rendimiento ni una promesa de 72 FPS constantes.
+- Escala inicial XR 0,85 y foveación 0,45, configurables. La adaptación modifica
+  gradualmente foveación tras varias ventanas de presión sostenida; recupera
+  margen de forma más lenta. No cambia la proyección de los ojos.
+- Se evita ejecutar el adaptador de resolución de PC sobre el framebuffer XR.
+- El telescopio usa una imagen circular de 768×768 hasta 36 Hz, separada de la
+  vista estereoscópica normal. Se excluyen los mandos/rayos de esa imagen.
+
+GUARDADOS
+Esta tercera edición usa claves sky-vr-* para no sobrescribir Sky-Explorer ni
+Sky-Explorer-App, aunque los tres estén bajo el mismo dominio GitHub Pages.
+No se borran ni se migran automáticamente los datos de los otros proyectos.
+El formato JSON sky-expedition, versión 1, se mantiene compatible: puedes
+exportar en el original/App e importar en VR si quieres trasladar una base.
+Las preferencias propias de VR se guardan en sky-vr-controls-v1.
+La actualización offline solo administra cachés de archivos de su propio scope.
+
+OFFLINE
+El generador preparar-offline.py se ejecutó sobre todos los archivos finales.
+service-worker.js incluye tamaño y SHA-256 de cada recurso de ejecución.
+Prefijo: sky-explorer-vr-<ruta_del_repositorio_normalizada>-v1-<hash>.
+El hash incorpora manifiesto de recursos Y lógica de la plantilla del worker.
+Una publicación incompleta/corrupta se rechaza sin destruir la versión anterior.
+La versión nueva espera a que aceptes Guardar y recargar o cierres las sesiones
+anteriores. Las ventanas aún abiertas quedan ligadas a su versión completa.
+No se combinan módulos de versiones diferentes. No se limpia localStorage.
+En VR, Sistema → Versión offline permite consultar/aplicar una versión lista.
+Para futuras modificaciones del código debe regenerarse el worker; esta
+entrega ya está generada y no exige que ejecutes ningún programa.
+
+DOCUMENTACIÓN TÉCNICA OFICIAL CONSULTADA
+https://threejs.org/docs/pages/WebXRManager.html
+https://threejs.org/docs/pages/WebGLRenderer.html
+https://developers.meta.com/vr/documentation/web/webxr-perf/
+https://developers.meta.com/vr/documentation/web/webxr-frames/
+https://immersive-web.github.io/webxr-gamepads-module/
+https://immersive-web.github.io/webxr-hand-input/
+
+CREDITOS.txt, THREE-LICENSE.txt y STARS-LICENSE.txt conservan créditos y licencias.
+HISTORIAL-3.2.txt es documentación histórica del proyecto original.

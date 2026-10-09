@@ -1,0 +1,125 @@
+SKY EXPLORER VR — GUÍA DE JUEGO
+
+ENTRAR
+Abre la página HTTPS en Meta Quest Browser con tus mandos activos.
+Pulsa Entrar en VR · Quest. Se abre Tierra si no habías elegido un destino.
+Al iniciar aparece la guía de controles. Y la cierra y vuelve a abrir el menú.
+En PC sin visor elige Explorar Tierra o Explorar Luna y usa ratón/teclado.
+Un teléfono no ofrece joystick ni botones táctiles de juego en esta edición.
+
+MENÚ SOBRE LA MANO IZQUIERDA
+Y: abrir o cerrar con transición suave.
+Tres sectores del semicírculo: Cielo, Expedición y Sistema.
+Joystick izquierdo hacia arriba/izquierda/derecha: elegir sector.
+Gatillo izquierdo o A: entrar/aceptar.
+En una lista: arriba/abajo selecciona; izquierda/derecha ajusta valores.
+También puedes apuntar con el rayo del mando derecho y pulsar su gatillo.
+Anteriores/Siguientes recorren páginas; Volver regresa al menú principal.
+Mientras está abierto, el joystick no mueve al personaje. Tu cabeza conserva
+seguimiento físico. Para cerrar sin cambiar nada, pulsa Y.
+
+CAMINAR
+Joystick izquierdo: adelante, atrás y lateral.
+Joystick derecho: giro suave horizontal, sin saltos de 45 grados.
+La cabeza mira libremente; el avance sigue tu orientación horizontal.
+Gatillo derecho mantenido: correr. A: saltar.
+Agarre derecho (botón lateral): alternar linterna.
+X: interactuar con lo señalado por el rayo derecho; también levantarse/bajar.
+Sistema → Joysticks intercambia movimiento y giro. Y/B/A/X y gatillos
+mantienen su función; no se intercambian los nombres de los mandos.
+Sistema permite ajustar velocidad de giro y de caminata.
+El giro no inclina artificialmente el horizonte. No hay balanceo de pasos.
+
+VEHÍCULOS: CUATRIMOTO Y ROVER
+Acércate y pulsa X para subir. Pulsa X para bajar cuando estés detenido.
+Gatillo derecho: acelerar. Gatillo izquierdo: frenar.
+Para reversa: joystick de movimiento hacia atrás + gatillo derecho.
+Joystick de movimiento horizontal: dirección alternativa al volante/manillar.
+A: salto. Agarre derecho, lejos del volante: alternar faros.
+Impulso: agarre izquierdo lejos del volante, o clic del joystick izquierdo.
+Se separó el impulso del gatillo de freno para evitar órdenes contradictorias.
+
+Para sujetar: acerca un mando al volante o manillar y mantén su agarre lateral.
+Mueve la mano alrededor del volante, o desplaza el manillar, para dirigir.
+Una o dos manos con mando pueden sujetar; soltar devuelve el control al joystick.
+Clic del joystick izquierdo permite impulsar mientras sujetas con la izquierda.
+
+Manos sin mandos, solo al conducir:
+Activa Sistema → Manos solo al conducir, sal de VR y vuelve a entrar para
+solicitar seguimiento de manos. Necesitas los mandos para el resto del juego.
+Ya sentado, junta pulgar e índice cerca del volante/manillar para sujetarlo.
+Con ambas manos sujetando, inclina las palmas hacia delante para acelerar
+moderadamente; hacia atrás para frenar. Soltar o perder seguimiento frena.
+Recoge los mandos para abrir menús, salir del vehículo o usar otros controles.
+La disponibilidad depende del seguimiento y permisos de Meta Quest Browser.
+
+MOCHILA Y CONSTRUCCIÓN
+Y → Expedición → Catálogo de objetos. Elige categoría, cantidad y pieza.
+Equipar coloca la pieza en el acceso seleccionado y cierra el menú.
+Apunta con el rayo derecho: el fantasma muestra posición/validación reales.
+Gatillo izquierdo: colocar. Se conserva cuadrícula, rampas, cimientos y colisiones.
+El menú Mochila conserva 30 casillas y 10 accesos. Permite equipar, mover,
+intercambiar, dividir cantidades, lanzar, rellenar y vaciar casillas.
+
+Rotar durante la colocación:
+Mantén agarre izquierdo y mueve horizontalmente el joystick de giro.
+Clic en joystick derecho cambia X/Y/Z. Los anillos rodean la pieza en 3D.
+Construcción, dentro del menú, ofrece ángulos exactos y giro de 90 grados.
+Los cimientos solo rotan en Y; las rampas adaptables mantienen sus restricciones.
+Puedes ajustar ancho/fondo del cimiento, deshacer y rehacer desde ese menú.
+
+Eliminar:
+En Construcción elige Editar sin fantasma. Apunta a una pieza; pulsa Y y
+vuelve a Construcción → Recuperar pieza marcada. Se usa la dirección que
+señalabas ANTES de abrir el menú, aunque ahora apuntes a sus botones.
+Se conservan las reglas de inventario, soporte y cajas que aún contienen objetos.
+Terminar edición sale del modo de construcción.
+
+INSTRUMENTOS Y MUEBLES
+Equipa herramientas desde la mochila o catálogo. Gatillo izquierdo: usar.
+Identificador: mantén el gatillo sobre el astro unos 0,65 segundos.
+Telémetro: rayo visible desde el mando y distancia a la superficie apuntada.
+Visor celeste: alterna etiquetas de astros usando el gatillo izquierdo.
+Espectrómetro, cámara, muestreador y cuaderno conservan sus funciones.
+X sobre silla, mesa, lámpara, antena, sismómetro, caja, baliza o instrumento
+abre la interacción original en un panel VR. X permite levantarte de una silla.
+Los valores, gráficas, temperaturas, filtros, registros y desbloqueos se
+conectan a los sistemas originales; no son pantallas de muestra.
+Las balizas mantienen nombre, dirección y distancia en la banda de información.
+
+TELESCOPIO
+B abre/cierra el ocular portátil. Apunta con el mando derecho.
+Joystick de giro arriba/abajo: cambiar aumento. Gatillo izquierdo: registrar.
+X sobre un telescopio colocado: usarlo; B o X permiten abandonarlo.
+El ocular magnifica una imagen aparte: no altera la proyección ni separación
+de los ojos del visor. Al mover la cabeza sigues viendo el mundo alrededor.
+Y → Cielo → Bandas del telescopio abre los filtros desbloqueados.
+Fuera del visible siguen siendo ilustraciones didácticas en falso color.
+El ocular se actualiza como máximo a 36 imágenes/s; el mundo usa la frecuencia XR.
+
+TEXTO Y ARCHIVOS
+Al aceptar un campo editable aparece un teclado virtual: apunta letras con
+el rayo o navega con el joystick izquierdo. Guardar confirma; Y cancela.
+Para fechas usa AAAA-MM-DD. Para decimales usa punto.
+Importar/exportar sale de la inmersión para utilizar el selector o descarga
+del navegador. Luego pulsa Entrar en VR para volver. La confirmación de
+importación sigue existiendo; importar reemplaza los datos de ESTA edición.
+
+CIELO, DESTINOS Y RENDIMIENTO
+Cielo permite cambiar hora, ciclo, sentido temporal, fase y duración.
+Elegir Tierra o Luna guarda el mundo anterior y muestra Preparando…
+Solo hay un entorno 3D residente. Los recursos de ambos pueden estar en caché
+offline sin mantener ambas escenas en la GPU.
+Sistema → Rendimiento del paisaje conserva perfiles, pasto, densidad, sombras,
+cielo, distancia de detalle y FPS. No reaparecen montañas terrestres.
+Resolución por ojo se aplica al volver a entrar en VR (límite de la API).
+Foveación ajusta la periferia y se puede cambiar durante la sesión.
+Su adaptación automática responde a presión sostenida, no a un único frame.
+FPS/ms reflejan el intervalo de frames, no un cronómetro de GPU.
+Recentrar postura reajusta la referencia del jugador.
+
+PC
+WASD: moverse. Ratón arrastrando: mirar; doble clic: capturar ratón.
+Espacio: saltar. Shift: correr/impulso. F: linterna/faros. E: interactuar.
+T: telescopio. B: mochila. C: catálogo. Esc: cerrar/liberar ratón.
+Los accesos de inventario y construcción del proyecto siguen disponibles.

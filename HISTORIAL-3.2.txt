@@ -1,0 +1,285 @@
+SKY EXPLORER 3.2 — CONSTRUCCIÓN Y SOMBRAS
+Actualización incremental sobre la versión 3.1 entregada anteriormente.
+
+INSTALACIÓN
+Copia TODOS los archivos de este ZIP a la carpeta donde está index.html.
+Añade los nuevos y reemplaza los que tengan el mismo nombre. El ZIP no tiene
+subcarpetas. Conserva las imágenes, texturas y demás archivos de la 3.1.
+No es un proyecto completo para una carpeta vacía. No requiere dependencias
+nuevas. Las referencias de caché cambian a v=3.2. Recarga la página después
+de subir los archivos. No se ha publicado nada en GitHub.
+
+ARCHIVOS NUEVOS
+  build-placement.js — cuadrícula y anclajes de construcción.
+  spatial.js — cajas orientadas para colisión y oclusión.
+
+ARCHIVOS A REEMPLAZAR
+  LEEME.txt
+  app.js
+  build-gizmo.js
+  build-world.js
+  controls.js
+  expedition.js
+  field-effects.js
+  field-guide.js
+  index.html
+  inventory.js
+  items.js
+  lunar-terrain.js
+  props.js
+  science.js
+  styles.css
+  terrain.js
+  vehicle-models.js
+  vehicles.js
+  world-lighting.js
+
+CONSTRUCCIÓN
+• Los pisos y techos usan su huella modular, sin medias piezas desplazadas.
+  Se alinean respecto al piso/cimiento de la base, también si está girada.
+• Las paredes se adhieren a los bordes lógicos del piso. Para cerrar una
+  habitación, mira el borde alto de cualquier pared desde dentro o el hueco
+  sobre la habitación: el techo cubre la celda correspondiente. Apuntar al
+  borde de un techo existente extiende otra cubierta a su misma altura.
+• Los anillos se dibujan en una capa ortográfica orientada con el objeto:
+  no se estiran con el FOV ni se cortan al acercarse a la cámara.
+• Arrastra un anillo para girar libremente. X/Y/Z seleccionan un eje;
+  ya no giran la pieza al pulsarlos. La flecha despliega tres barras
+  de 0 a 360°. R o el botón de giro ajustan al siguiente cuadrante de 90°.
+• +, Enter o clic derecho confirman la pieza que muestra el fantasma.
+  Arrastrar el paisaje permite mirar; un toque/clic breve cancela el modo.
+  Una intersección se muestra como contorno rojo, sin dos texturas peleando.
+• El lápiz abre edición sin fantasma. Al apuntar a un objeto colocado,
+  la papelera se activa. Papelera/Supr lo devuelve a la mochila. ✓,
+  el lápiz, Esc o un toque breve en el paisaje terminan la edición.
+• Se conservan deshacer/rehacer y los guardados de la 3.1. Los nuevos giros
+  libres ya no se redondean a 90° al volver a cargar una base.
+• Los cimientos siempre conservan su nivel horizontal. En la Luna siguen
+  siendo necesarios debajo de pisos y paredes.
+
+RAMPAS
+Añadidos: escalón ancho de 0,4 m; rampa de 0,25 m en 2 m de recorrido;
+rampa de 0,6 m en 3 m; y rampa adaptable al cimiento.
+La adaptable se orienta automáticamente hacia afuera desde el borde al que
+apuntas. Ajusta su recorrido (hasta 48 m), con pendiente máxima del 40 %,
+y rellena hacia abajo. Si no puede alcanzar una ladera adecuada, lo indica.
+Las piezas fijas siguen admitiendo giro libre. La adaptable obtiene su
+orientación del borde de apoyo; el cimiento mantiene su cara superior plana.
+
+SOMBRAS E INSTRUMENTOS
+Se sustituyó la selección de solo 16 partes próximas a la cámara por un
+índice espacial persistente de las partes opacas de la base. Alejarte ya
+no retira paredes de la oclusión. Las ventanas y puertas conservan sus huecos.
+La linterna, los faros, las luces de reversa y las lámparas comprueban las
+paredes. Las sombras solares pueden prolongarse sin el antiguo límite corto.
+El índice se reconstruye al editar la base, no en cada fotograma. Sigue
+habiendo cuatro lámparas con iluminación real a la vez, como en la 3.1.
+
+El trípode del telescopio conserva su transformación al entrar, mirar y
+salir. El tubo gira de forma independiente y recuerda la dirección elegida.
+Filtro y nombre de banda forman un solo control, dentro de la columna del
+ocular, separado de aumentos, Guardar y Salir. La antena de radio tiene un
+plato continuo con borde, soporte y receptor unidos. El rover se conserva.
+El láser nace fuera del borde inferior derecho para cualquier FOV y formato.
+
+ATAJOS DE INVENTARIO
+E             Abrir/cerrar mochila. Cerca de un objeto o vehículo,
+              tiene prioridad interactuar; sentado sirve para salir.
+B             Abrir/cerrar mochila siempre.
+Esc           Cerrar la ventana o terminar edición.
+1–9 / 0       Seleccionar las diez casillas de acceso rápido.
+Rueda         Cambiar de casilla durante la exploración.
+Shift + clic  Mover un stack entre mochila y acceso rápido, fusionando
+              hasta 30 y conservando el sobrante en otra casilla.
+1–9 / 0 sobre una casilla del inventario: intercambiar con ese acceso rápido.
+Q             Lanzar una unidad del objeto en mano o de la casilla apuntada.
+Ctrl + Q      Lanzar el stack completo.
+Clic derecho / mantener pulsado: conservar el menú de cantidades y opciones.
+H             Guía de campo. F1: mostrar/ocultar la interfaz.
+Los gestos táctiles de desplazamiento y arrastre del catálogo se conservan.
+
+COMPROBACIONES REALIZADAS
+• Construcción en Tierra y Luna: cuatro orientaciones de pared, cubierta
+  desde dentro, barrido del hueco superior, techos vecinos, piezas de distinto
+  tamaño y cimientos girados; apoyo de muebles inclinados y rampas.
+• Selección real de anillos mediante rayos y eventos de puntero, giro
+  continuo, barras, modo lápiz, recuperación y atajos del inventario.
+• Varias entradas/salidas del telescopio sobre un cimiento lunar elevado.
+• Compilación de los 17 programas de sombreado y geometría de 49 objetos.
+• Renderizado local de rayos de sombra: hueco de ventana, pared sólida
+  posterior y sombra rasante distante, con más de 16 partes en la escena.
+• Revisión visual del plato de radio, telescopio y rampa renderizados.
+• Regresiones de inventario, catálogo táctil, fantasma, lámparas y astros.
+Estas comprobaciones usan lógica DOM y renderizado OpenGL local; no equivalen
+a una prueba visual de la página en Safari/Chrome móvil. No se han medido
+FPS en un teléfono físico y no se promete una cifra de rendimiento.
+
+Convenciones consultadas (sin copiar la apariencia de otro juego):
+https://www.minecraft.net/article/minecraft-controls
+https://help.minecraft.net/hc/es-mx/articles/360059148111-Hotkeys-in-Minecraft-Java-Edition
+
+MANUAL GENERAL HEREDADO DE 3.1
+En caso de diferencia con este manual, prevalecen los controles 3.2 de arriba.
+
+Escritorio: WASD para caminar/conducir; Espacio para saltar; Shift mantenido
+para sprint/boost; F para linterna/faros; E para entrar, salir o interactuar.
+Los controles anteriores de mirar y telescopio se conservan.
+B abre la mochila; C abre el catálogo; J abre el cuaderno; H abre la guía. F1 oculta la interfaz.
+1–9 y 0 seleccionan las diez casillas de acceso rápido.
+Con una pieza seleccionada: +/Enter coloca; toque/clic en el paisaje cancela;
+R gira 90 grados sobre el eje seleccionado; Supr recupera la pieza apuntada;
+Ctrl+Z deshace; Ctrl+Y rehace. Los anillos permiten girar tocándolos/arrastrándolos.
+
+Móvil horizontal: joystick izquierdo; mirada arrastrando el paisaje; acciones
+con el pulgar derecho. Se mantiene la captura independiente de varios dedos.
+La mochila y el libro abren sus interfaces; estas pausan la entrada de movimiento
+para no conducir/caminar mientras arrastras objetos. La física de objetos
+lanzados sigue avanzando.
+
+MOCHILA Y CATÁLOGO
+
+30 casillas principales más 10 accesos rápidos, separados visualmente.
+43 objetos del catálogo en cinco categorías y dos tipos de muestras recogibles.
+Una casilla guarda únicamente identificador y cantidad, no modelos 3D ocultos.
+
+Toca un objeto del catálogo para añadirlo o arrástralo a una casilla concreta.
+En móvil desliza verticalmente para explorar. Mantén un instante para levantar
+un objeto y después arrástralo; con ratón puedes arrastrarlo directamente.
+La cantidad creativa se elige de 1 a 30. Arrastra entre casillas para mover,
+intercambiar o fusionar. Al fusionar, el máximo es 30; el exceso de un stack
+existente permanece en su casilla de origen. Una pulsación larga o clic derecho
+abre cantidad, rellenar, dividir, acceso rápido y vaciar.
+
+Arrastrar fuera de la ventana lanza el stack al mundo con velocidad y gravedad,
+sin teletransportarlo al suelo. Cierra pronto la mochila para verlo caer.
+Acércate y usa Recoger/E para devolverlo a la mochila. No se recoge si no cabe.
+Las cajas colocadas permiten guardar diez stacks adicionales cada una.
+
+CONSTRUCCIÓN
+
+Selecciona una pieza en el acceso rápido. Su fantasma indica dónde irá:
+verde si cabe; rojizo y mensaje si la colocación no es válida. Si coincide con
+otra pieza ocupada, se oculta para evitar superposiciones.
+Los anillos y botones X/Y/Z giran en pasos de 90 grados; los cimientos solo giran
+sobre Y para conservar su cara superior horizontal. Las piezas tienen tamaños
+fijos, salvo las dimensiones del cimiento. No hay escalado libre.
+Hay pisos de tres tamaños, paneles completos/medios/bajos, ventanas, acceso,
+esquina, columnas, cubiertas, barandales, escaleras y rampa.
+El ajuste acerca bordes y centros modulares; apliques/repisas se fijan a paredes
+y luminarias de techo debajo de cubiertas. El piso oculta el césped de su huella;
+al recuperarlo el césped reaparece.
+
+En la Luna, primero coloca un cimiento que abarque la construcción. Su ancho y
+fondo se ajustan entre 2 y 24 m en pasos de 2 m; su cara superior queda horizontal
+y su cuerpo se prolonga por debajo de la pendiente. Es sólido y caminable.
+Al apuntar al borde de un cimiento, el siguiente se acopla sin escalón ni banda
+decorativa entre sus caras superiores. Si el terreno sobresale del nivel de esa
+plataforma, avisa y no permite colocar el cimiento enterrado.
+Usa escaleras/rampa si queda elevado. Las piezas estructurales necesitan estar
+sobre su huella. Recupera primero las piezas apoyadas para quitar un cimiento.
+En Tierra no se exige cimiento. Los mismos objetos sirven en ambos mundos.
+
+Deshacer/rehacer conserva los objetos no relacionados que hayas añadido a la
+mochila. Rehacer necesita la unidad correspondiente y deshacer necesita espacio
+para devolverla. Las cajas deben vaciarse antes de recuperarlas.
+
+INTERACCIONES Y LUCES
+
+Sillas/bancos: icono a 0,5 m del objeto; vehículos: 1,4 m desde su contorno.
+El indicador permanece anclado al objeto y su proyección se actualiza cada
+fotograma. E o el botón sirven para sentarse y levantarse, con mirada libre.
+Otros aparatos utilizan el mismo sistema de proximidad e interacción.
+
+Lámparas: encendido y temperaturas cálida 2700 K, neutra 4000 K y fría 6500 K.
+Todas conservan su material luminoso; hasta cuatro lámparas próximas iluminan
+realmente el entorno. Los obstáculos de construcción cercanos atenúan la luz.
+Paneles solares y módulos de energía habilitan aparatos avanzados a 18 m,
+sin cables, combustible ni mantenimiento.
+
+OBSERVACIÓN E INVESTIGACIÓN
+
+Telescopio de piso: colócalo, acércate y usa Mirar/E. La vista parte del ocular
+físico y sigue la orientación del tubo. La geometría del mundo puede tapar el
+cielo: paredes y techos siguen apareciendo en el ocular. Al salir, el instrumento
+conserva la dirección elegida. En su último aumento los siete planetas distintos
+de la Tierra muestran discos ilustrativos; Saturno incluye anillos. A simple
+vista y con el telescopio manual siguen siendo puntos.
+
+Identificador: apunta a un astro y mantén acción/clic para registrarlo.
+Analizador espectral: muestra color B−V, temperatura/clase aproximadas y una
+curva térmica orientativa de una estrella del catálogo.
+Telémetro: apunta a suelo, construcción o vehículo para leer la distancia.
+Mide hasta 600 m; su rayo visible se desvanece progresivamente antes de 60 m.
+Visor celeste: etiquetas con nombres y distancias aproximadas en kilómetros de
+planetas, Sol y Luna/Tierra; temperaturas estelares estimadas cuando existen.
+Solo se muestran hasta ocho etiquetas simultáneas para mantener legibilidad.
+Las distancias estelares no están en el catálogo original y se indican como
+no disponibles. La distancia Tierra–Luna mostrada es un valor medio.
+Recolector: mira suelo natural cercano para obtener suelo/regolito.
+Mesa de análisis: con energía cercana, consume una muestra y registra su ficha.
+Sismómetro: registra una señal simulada, identificada como tal.
+Antena: con energía, sintoniza ejemplos de señal a 32 MHz, 400 MHz y 160 GHz.
+Cámara: guarda una captura pequeña y los datos de observación en el cuaderno.
+Escritorio/cuaderno: abre los registros, exportación e importación.
+Baliza: asigna un nombre para verla discretamente en la dirección correspondiente.
+Estación meteorológica: valores ambientales simulados para Tierra; en la Luna
+informa de la ausencia de atmósfera terrestre.
+
+Filtros del telescopio de piso:
+  Visible: inicial.
+  Infrarrojo: observar/identificar la Luna.
+  Ultravioleta: identificar tres estrellas distintas.
+  Radio/microondas: registrar una señal de la antena.
+  Rayos X: analizar una muestra de regolito.
+  Gamma: completar los cuatro descubrimientos anteriores.
+Los filtros avanzados requieren energía cercana. Son tratamientos didácticos
+en falso color del render visible, no mapas de emisiones ni detectores físicos.
+
+CIELO Y FUENTES
+
+Los siete planetas se calculan con elementos orbitales aproximados de JPL
+para la fecha seleccionable (1800–2050). Se usa la aproximación geocéntrica
+para ambos mundos, sin paralaje Tierra-Luna. El catálogo estelar original se
+conserva; nombres conocidos se vinculan a sus coordenadas y el resto muestra
+su referencia por ascensión recta. Los puntos decorativos no reciben nombres.
+
+Estrellas y planetas se orientan conjuntamente para encajar con el Sol del ciclo
+jugable existente. No es un planetario para una latitud/longitud real. Los discos
+aumentados de los planetas son representaciones estilizadas para jugabilidad.
+La temperatura estelar se estima a partir de B−V, no es una medición espectral.
+Las composiciones de muestras, señales sísmicas/radio y clima son educativos.
+Las fuentes y sus enlaces están en CREDITOS.txt.
+
+GUARDADO
+
+Bases de Tierra y Luna, mochila, objetos lanzados y cuaderno se guardan localmente
+en el navegador. Cambiar de dispositivo/navegador no transfiere esos datos.
+Desde J/cuaderno puedes exportar e importar una expedición JSON. La importación
+pide confirmar el reemplazo de las bases/mochila/cuaderno actuales y ofrece
+exportar antes. El historial de deshacer es de la sesión, no del archivo.
+Los modelos se reconstruyen a partir de tipo, posición, rotación y parámetros.
+No se guardan mallas completas. Las capturas son pequeñas para limitar espacio.
+
+RENDIMIENTO LUNAR
+
+El relieve, las texturas, las estrellas y las luces existentes se conservan.
+La visibilidad del Sol y la Tierra sobre el suelo cercano se calcula en una
+caché de iluminación anclada al terreno y se reutiliza al mirar alrededor.
+Se actualiza al recorrer otra zona o cambiar las direcciones de las luces;
+fuera de esa zona permanece el cálculo original. Los faros/linterna móviles
+mantienen su sombreado dinámico. El césped mantiene el descarte por el FOV.
+Los nuevos props comparten geometría cuando es posible y cada uno combina
+sus piezas en una sola malla. Las luces de bases tienen presupuesto acotado.
+
+COMPROBACIONES Y LÍMITES
+
+Verificado mediante pruebas de integración en ambos mundos: ciclo del fantasma,
+cancelar frente a arrastrar la mirada, captura independiente de los anillos,
+giros de 90°, desplazamiento y arrastre del catálogo, unión de cimientos de
+varios tamaños, identificación de Luna y siete planetas, láser, visor y su
+ocultación tras obstáculos, interruptor de lámparas y guía por destino.
+Comprobados 17 programas gráficos y geometrías válidas de los 45 tipos de objeto.
+La prueba de interacción usa DOM y renderer de prueba; la compilación gráfica
+usa un contexto local. No reemplazan una comprobación visual completa en
+Safari/Chrome: el navegador disponible bloqueó la vista local. No hay medición
+real de FPS en tu teléfono ni se promete una cifra concreta.

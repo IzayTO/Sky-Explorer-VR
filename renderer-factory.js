@@ -1,5 +1,5 @@
 import * as THREE from './three.module.js?v=4.0.0';
-export const RELEASE='VR-1.0.1';
+export const RELEASE='VR-2.0.0';
 export const graphicsInfo={version:RELEASE,three:THREE.REVISION,renderer:'WebGL2 / WebXR',ready:false,world:'earth',pixelRatio:1,averageFrameMs:null,drawCalls:null,xr:false};
 window.SkyDiagnostics=graphicsInfo;
 export function onGraphicsFailure(){}

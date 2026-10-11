@@ -9,5 +9,11 @@
     "commit": "ededa802c1ed72c1218c9c53f177246623183542"
   },
   "remoteAccess": "read-only",
-  "date": "2026-10-09"
+  "date": "2026-10-09",
+  "interface_update": {
+    "version": "VR-2.0.0",
+    "base_commit": "21ab868da8f7ecd70b52f982b53004f02364df75",
+    "github_access": "read-only",
+    "save_format_changed": false
+  }
 }

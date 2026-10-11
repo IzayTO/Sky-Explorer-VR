@@ -17,13 +17,14 @@ export class LunarSky{
     this.sun=new THREE.Vector3();this.moon=new THREE.Vector3();this.field=new THREE.Matrix4();this.rotation=new THREE.Matrix4();this.tilt=new THREE.Matrix4().makeRotationX(-.9);
     this.forward=new THREE.Vector3();this.right=new THREE.Vector3();this.up=new THREE.Vector3();this.viewDirection=new THREE.Vector3();this.adaptation=0;this.solarGlare=0;this.lastTime=0;this.terrain=null;
     this.u=Object.fromEntries(Object.entries(base.u).map(([key,u])=>[key,{value:u.value?.isTexture?u.value:u.value?.clone?.()??u.value}]));this.u.sunDirection.value=this.sun;this.u.moonDirection.value=this.moon;this.u.field.value=this.field;this.u.moonMap.value=earthTexture;
-    Object.assign(this.u,{earthLight:{value:new THREE.Vector3()},earthSpin:{value:0},solarVisible:{value:1},solarGlare:{value:0},adaptation:{value:0},earthIllumination:{value:.5}});
+    Object.assign(this.u,{earthLight:{value:new THREE.Vector3()},earthSpin:{value:0},xrSunDisc:{value:1},solarVisible:{value:1},solarGlare:{value:0},adaptation:{value:0},earthIllumination:{value:.5}});
     const copy=(original,fragment,additive=false)=>{const material=original.material.clone();material.uniforms=this.u;if(fragment)material.fragmentShader=fragment;material.blending=additive?THREE.AdditiveBlending:THREE.NormalBlending;const m=new THREE.Mesh(original.geometry,material);m.layers.set(3);m.frustumCulled=false;m.renderOrder=original.renderOrder;scene.add(m);return m;};
-      this.atmosphere=copy(base.atmosphere,`varying vec3 vRay;uniform vec3 sunDirection;uniform float solarVisible,solarGlare;
+      this.atmosphere=copy(base.atmosphere,`varying vec3 vRay;uniform vec3 sunDirection;uniform float solarVisible,solarGlare,xrSunDisc;
       void main(){vec3 d=normalize(vRay);float a=atan(length(cross(d,sunDirection)),dot(d,sunDirection));float aa=max(fwidth(a),.000018);
-        float disk=1.-smoothstep(.0285-aa,.035+aa,a);
+        float disk=1.-smoothstep(.0285*xrSunDisc-aa,.035*xrSunDisc+aa,a);
         float glow=0.;if(solarGlare>.000001)glow=exp(-pow(a/.19,1.65))*.20+exp(-a*20.)*.55+exp(-a*65.)*.45;
-        vec3 color=vec3(1.,.985,.95)*(disk*2.2+glow*solarGlare);
+        float corona=(1.-xrSunDisc)*.75*exp(-a/(.035*xrSunDisc));
+        vec3 color=vec3(1.,.985,.95)*(disk*2.2+glow*solarGlare+corona);
         gl_FragColor=vec4(color,1.);}`);
     let mw=base.milkyWay.material.fragmentShader.replace('*(1.-moonlight*.82)*smoothstep(.0,.23,d.y)','').replace('color*dust*veil','color*dust*veil*3.35');
     this.milkyWay=copy(base.milkyWay,mw,true);
@@ -40,10 +41,10 @@ export class LunarSky{
     // Reuse the immutable GPU buffers; each world retains its own draw range.
     const starGeometry=new THREE.BufferGeometry();for(const [name,attribute] of Object.entries(base.stars.geometry.attributes)){if(!['quadCorner','uv'].includes(name))starGeometry.setAttribute(name,attribute);}
     this.stars=createStarField(starGeometry,mat);this.stars.layers.set(3);this.stars.frustumCulled=false;this.stars.renderOrder=10002;scene.add(this.stars);this.catalogCount=base.catalogCount;this.starCount=base.starCount;
-    this.moonMesh=copy(base.moonMesh,`varying vec3 vRay;uniform vec3 moonDirection,earthLight;uniform sampler2D moonMap;uniform float earthSpin;
+    this.moonMesh=copy(base.moonMesh,`varying vec3 vRay;uniform vec3 moonDirection,earthLight;uniform sampler2D moonMap;uniform float earthSpin,xrDisc;
       void main(){vec3 d=normalize(vRay);float forward=dot(d,moonDirection);if(forward<.994)discard;
         vec3 right=normalize(cross(moonDirection,vec3(0.,1.,0.))),up=normalize(cross(right,moonDirection));
-        vec2 p=vec2(dot(d,right),dot(d,up))/max(forward,.001)/.078;
+        vec2 p=vec2(dot(d,right),dot(d,up))/max(forward,.001)/(.078*xrDisc);
         float r=length(p),aa=max(fwidth(r),.00025);if(r>1.+aa)discard;float z=sqrt(max(0.,1.-dot(p,p)));vec3 n=vec3(p,z);
         // An axial tilt, a rotating world, and continuous lighting on a sphere.
         float tilt=.4091;vec3 mapped=vec3(n.x*cos(tilt)-n.y*sin(tilt),n.x*sin(tilt)+n.y*cos(tilt),n.z);
@@ -73,6 +74,7 @@ export class LunarSky{
     this.moon.set(-Math.sin(lon),Math.cos(latitude)*Math.cos(lon),Math.sin(latitude)*Math.cos(lon)).normalize();
   }
   update(camera,state,t,pixelRatio){
+    this.u.xrDisc.value=state.xr?.6:1;this.u.xrSunDisc.value=state.xr?.45:1;
     this.u.skyDetail.value=state.graphics?.advancedSky===false?0:1;
     this.orbit(state.hour);const dt=clamp(t-this.lastTime,0,.05)||.016;this.lastTime=t;
     this.right.crossVectors(this.moon,UP).normalize();this.up.crossVectors(this.right,this.moon).normalize();

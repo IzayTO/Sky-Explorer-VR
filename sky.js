@@ -24,7 +24,7 @@ float hash(vec3 p){p=fract(p*.3183099+vec3(.11,.37,.71));p*=17.;return fract(p.x
 float noise3(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(mix(hash(i),hash(i+vec3(1,0,0)),f.x),mix(hash(i+vec3(0,1,0)),hash(i+vec3(1,1,0)),f.x),f.y),mix(mix(hash(i+vec3(0,0,1)),hash(i+vec3(1,0,1)),f.x),mix(hash(i+vec3(0,1,1)),hash(i+vec3(1,1,1)),f.x),f.y),f.z);}
 float fbm(vec3 p){float clouds=.52*noise3(p)+.27*noise3(p*2.07+4.3);if(skyDetail>.5)clouds+=.14*noise3(p*4.13+12.7)+.07*noise3(p*8.19);return clouds;}
 `;
-const atmosphereGLSL=`uniform vec3 sunDirection,moonDirection;uniform float day,twilight,night,moonlight,sunset;
+const atmosphereGLSL=`uniform vec3 sunDirection,moonDirection;uniform float day,twilight,night,moonlight,sunset,xrDisc;
 vec3 atmosphereColor(vec3 d){float h=max(d.y,0.);float sh=sunDirection.y;
         float height=pow(h,.43);
         vec3 dayZenith=vec3(.09,.40,.69),dayHorizon=vec3(.68,.81,.88);
@@ -49,7 +49,7 @@ vec3 atmosphereColor(vec3 d){float h=max(d.y,0.);float sh=sunDirection.y;
         // Disc diameter is independent of the existing atmospheric halo.
         float sunAngular=atan(length(cross(d,sunDirection)),dot(d,sunDirection));
         float solarAA=max(fwidth(sunAngular),.000025);
-        float disk=1.-smoothstep(.026-solarAA,.026+solarAA,sunAngular);
+        float disk=1.-smoothstep(.026*xrDisc-solarAA,.026*xrDisc+solarAA,sunAngular);
         float solarUp=smoothstep(-.055,.015,sh);
         vec3 sunColor=mix(vec3(1.,.38,.10),vec3(1.,.96,.78),smoothstep(-.01,.23,sh));
         float halo=exp(-sunAngular*20.)*.16+exp(-sunAngular*160.)*.19;
@@ -73,7 +73,7 @@ const UP=new THREE.Vector3(0,1,0),GALACTIC_NORMAL=equatorial(192.8595,27.1283),G
 export class Sky {
   constructor(scene,moonTexture){
     this.sun=new THREE.Vector3();this.moon=new THREE.Vector3();this.field=new THREE.Matrix4();this.equatorialTilt=new THREE.Matrix4().makeRotationX(-69*Math.PI/180);this.rotation=new THREE.Matrix4();
-    this.u={skyDetail:{value:1},moonNatural:{value:1},inverseProjection:{value:new THREE.Matrix4()},cameraWorld:{value:new THREE.Matrix4()},sunDirection:{value:this.sun},moonDirection:{value:this.moon},day:{value:1},twilight:{value:0},night:{value:0},moonlight:{value:0},sunset:{value:1},phase:{value:.17},time:{value:0},moonMap:{value:moonTexture},pixelRatio:{value:1},zoomReveal:{value:0},starLimit:{value:5.8},field:{value:this.field},milkyOn:{value:1},galacticNormal:{value:new THREE.Vector3()},galacticCenter:{value:new THREE.Vector3()},galacticTangent:{value:new THREE.Vector3()}};
+    this.u={xrDisc:{value:1},skyDetail:{value:1},moonNatural:{value:1},inverseProjection:{value:new THREE.Matrix4()},cameraWorld:{value:new THREE.Matrix4()},sunDirection:{value:this.sun},moonDirection:{value:this.moon},day:{value:1},twilight:{value:0},night:{value:0},moonlight:{value:0},sunset:{value:1},phase:{value:.17},time:{value:0},moonMap:{value:moonTexture},pixelRatio:{value:1},zoomReveal:{value:0},starLimit:{value:5.8},field:{value:this.field},milkyOn:{value:1},galacticNormal:{value:new THREE.Vector3()},galacticCenter:{value:new THREE.Vector3()},galacticTangent:{value:new THREE.Vector3()}};
     this.atmosphere=backdrop(scene,this.u,`
       varying vec3 vRay;${atmosphereGLSL}
       void main(){vec3 sky=atmosphereColor(normalize(vRay));float dither=fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715))))-.5;gl_FragColor=vec4(sky+dither/255.,1.);}
@@ -110,7 +110,7 @@ export class Sky {
       void main(){
         vec3 d=normalize(vRay);float forward=dot(d,moonDirection);if(forward<.9995)discard;
         vec3 right=normalize(cross(moonDirection,vec3(0.,1.,0.)));vec3 up=normalize(cross(right,moonDirection));
-        vec2 p=vec2(dot(d,right),dot(d,up))/max(forward,.001)/.0255;
+        vec2 p=vec2(dot(d,right),dot(d,up))/max(forward,.001)/(.0255*xrDisc);
         float radius=length(p);float aa=max(fwidth(radius),.0005);if(radius>1.+aa)discard;
         float z=sqrt(max(0.,1.-dot(p,p)));vec3 normal=vec3(p.x,p.y,z);
         vec2 uv=vec2(.5+atan(normal.x,normal.z)/6.283185307,.5+asin(clamp(normal.y,-1.,1.))/3.141592654);
@@ -177,6 +177,7 @@ export class Sky {
     this.stars=createStarField(geo,mat);this.stars.layers.set(3);this.stars.frustumCulled=false;this.stars.renderOrder=10002;scene.add(this.stars);
   }
   update(camera,state,t,pixelRatio){
+    this.u.xrDisc.value=state.xr?.6:1;
     this.u.skyDetail.value=state.graphics?.advancedSky===false?0:1;
     const a=(state.hour-6)/24*TAU,path=state.path*Math.PI/2;
     // Rounded orbital coefficients used to shorten this vector around noon.

@@ -1,8 +1,8 @@
 import {ITEMS,CATEGORIES,MAX_STACK,itemIcon,validStack} from './items.js?v=4.1.2';
 const STORAGE='sky-vr-expedition-inventory-v1';
 export class InventoryStore {
-  constructor(){this.slots=Array(40).fill(null);this.selected=0;this.onChange=()=>{};}
-  changed(){this.onChange();}
+  constructor(){this.slots=Array(40).fill(null);this.selected=0;this.revision=0;this.onChange=()=>{};}
+  changed(){this.revision++;this.onChange();}
   add(id,qty=1){if(!ITEMS[id]||!Number.isInteger(qty)||qty<1)return qty;let left=qty;
     for(let i=0;i<40&&left;i++){const s=this.slots[i];if(s?.id===id){const n=Math.min(30-s.qty,left);s.qty+=n;left-=n;}}
     for(let i=0;i<40&&left;i++)if(!this.slots[i]){const n=Math.min(30,left);this.slots[i]={id,qty:n};left-=n;}

@@ -1,142 +1,79 @@
-SKY EXPLORER VR 1.0.1 — GUÍA DE JUEGO
+SKY EXPLORER VR 2.0 — INTERFAZ ESPACIAL
 
-ENTRAR
-Abre la página HTTPS en Meta Quest Browser con tus mandos activos.
-Pulsa Entrar en VR · Quest. Se abre Tierra si no habías elegido un destino.
-Al iniciar aparece la guía de controles. Y la cierra y vuelve a abrir el menú.
-En PC sin visor elige Explorar Tierra o Explorar Luna y usa ratón/teclado.
-Un teléfono no ofrece joystick ni botones táctiles de juego en esta edición.
+Y abre o cierra el menú. Cuatro sectores: Cielo, Inventario, Construcción,
+Sistema. Joystick IZQUIERDO elige sectores; gatillo izquierdo o A confirma.
+También puedes apuntar con el mando derecho y confirmar/arrastrar con su
+ gatillo. B retrocede un nivel. Y cierra el teclado antes de cerrar el menú.
+Mientras hay un menú no caminas, corres, saltas ni colocas piezas.
 
-MENÚ SOBRE LA MANO IZQUIERDA
-Y: abrir o cerrar con transición suave.
-Tres sectores del semicírculo: Cielo, Expedición y Sistema.
-Joystick izquierdo hacia arriba/izquierda/derecha: elegir sector.
-Gatillo izquierdo o A: entrar/aceptar.
-En una lista: arriba/abajo selecciona; izquierda/derecha ajusta valores.
-También puedes apuntar con el rayo del mando derecho y pulsar su gatillo.
-Los valores numéricos tienen barras. Apunta a una barra y mantén el gatillo
-DERECHO para arrastrar; al soltar se detiene. El valor respeta sus límites y
-pasos. A o gatillo izquierdo conserva la entrada de valor exacto con teclado.
-La barra también permite llegar a los extremos sacando el rayo del panel.
-El rayo y el punto se dibujan por delante de los menús para ver dónde señalas.
-Anteriores/Siguientes recorren páginas; Volver regresa al menú principal.
-Mientras está abierto, el joystick no mueve al personaje. Tu cabeza conserva
-seguimiento físico. Para cerrar sin cambiar nada, pulsa Y.
+CIELO
+Destinos: Tierra/Luna. El destino anterior se guarda y se descarga.
+Tiempo: hora, duración, pausa/reproducción y dirección del ciclo.
+Astronomía: fases, Vía Láctea, fecha del catálogo.
+Observar: telescopio, bandas, cuaderno e instrumentos. Los filtros son
+representaciones didácticas en falso color; conservan desbloqueos y energía.
 
-AYUDAS ALREDEDOR DE LAS MANOS
-Ya no aparece el cartel inferior que seguía la cabeza. Las ayudas se anclan
-a la posición rastreada de cada mano, se orientan para poder leerlas y cambian
-según estés caminando, construyendo, conduciendo o usando el menú.
-No necesitas pulsar el botón para que aparezca su función.
-GAT = gatillo frontal. LAT = agarre/botón lateral. JOY = joystick.
-A/B corresponden al mando derecho; X/Y al izquierdo.
-Las ayudas desaparecen si se pierde el seguimiento del mando. Al conducir
-con manos sin mandos no aparecen etiquetas de botones que no estás usando.
-Avisos, datos de herramientas y FPS opcionales se muestran junto a la izquierda.
-El texto frontal Preparando solo se utiliza durante el cambio de destino.
+INVENTARIO
+30 casillas de mochila (5x6), 10 accesos inferiores. Selecciona un objeto y
+usa Equipar, Mover/unir, Mochila/acceso, Dividir, Lanzar o Más opciones.
+Mover/unir espera que selecciones la casilla de destino. Casillas iguales
+se fusionan hasta 30; objetos diferentes se intercambian. B cancela el traslado.
+Los accesos inferiores equipan al pulsarlos. Vaciar casilla es una acción
+explícita dentro de Más opciones. Las muestras no se crean desde el catálogo.
 
-CAMINAR
-Joystick izquierdo: adelante, atrás y lateral.
-Joystick derecho: giro suave horizontal, sin saltos de 45 grados.
-La cabeza mira libremente; el avance sigue tu orientación horizontal.
-Gatillo derecho mantenido: correr. A: saltar.
-Agarre derecho (botón lateral): alternar linterna.
-X: interactuar con lo señalado por el rayo derecho; también levantarse/bajar.
-Sistema → Joysticks intercambia movimiento y giro. Y/B/A/X y gatillos
-mantienen su función; no se intercambian los nombres de los mandos.
-Sistema permite ajustar velocidad de giro y de caminata.
-El giro no inclina artificialmente el horizonte. No hay balanceo de pasos.
+ANTEBRAZO IZQUIERDO
+Diez accesos en DOS filas de cinco, anclados a la orientación del mando.
+En exploración, mantén agarre izquierdo; apunta con el mando derecho y pulsa
+su gatillo. Suelta el agarre para volver a jugar. Durante esa selección no
+corres ni colocas objetos. En construcción ese agarre se reserva a la rotación.
 
-VEHÍCULOS: CUATRIMOTO Y ROVER
-Acércate y pulsa X para subir. Pulsa X para bajar cuando estés detenido.
-Gatillo derecho: acelerar. Gatillo izquierdo: frenar.
-Para reversa: joystick de movimiento hacia atrás + gatillo derecho.
-Joystick de movimiento horizontal: dirección alternativa al volante/manillar.
-A: salto. Agarre derecho, lejos del volante: alternar faros.
-Impulso: agarre izquierdo lejos del volante, o clic del joystick izquierdo.
-Se separó el impulso del gatillo de freno para evitar órdenes contradictorias.
+CONSTRUCCIÓN
+Cinco categorías: Construcción, Muebles, Iluminación, Investigación, Exterior.
+Las miniaturas estáticas proceden de las geometrías originales. Seleccionar
+una miniatura equipa la cantidad del deslizador y cierra el menú.
+En el arco de categorías, baja el joystick para entrar en la tarjeta de
+herramientas (lápiz, ángulos, deshacer/rehacer); B regresa al arco.
+Gatillo izquierdo coloca. Agarre izquierdo + joystick de giro rota la pieza.
+Clic R3 mientras rotas cambia eje. B guarda el fantasma; no elimina la pila.
+Las validaciones, soportes, colisiones y consumo usan el sistema original.
 
-Para sujetar: acerca un mando al volante o manillar y mantén su agarre lateral.
-Mueve la mano alrededor del volante, o desplaza el manillar, para dirigir.
-Una o dos manos con mando pueden sujetar; soltar devuelve el control al joystick.
-Clic del joystick izquierdo permite impulsar mientras sujetas con la izquierda.
+EXPLORACIÓN
+Joystick izquierdo: caminar. Derecho: giro suave. Puedes intercambiar
+ambos en Sistema/Movimiento; los botones físicos A/B/X/Y no se intercambian.
+A: saltar. B: telescopio. X: interactuar/sentarte/levantarte/subir/bajar.
+Y: menú. Gatillo izquierdo: herramienta. Gatillo derecho mantenido: correr.
+Agarre derecho: linterna. Mantener R3 medio segundo: Modo Lápiz.
 
-Manos sin mandos, solo al conducir:
-Activa Sistema → Manos solo al conducir, sal de VR y vuelve a entrar para
-solicitar seguimiento de manos. Necesitas los mandos para el resto del juego.
-Ya sentado, junta pulgar e índice cerca del volante/manillar para sujetarlo.
-Con ambas manos sujetando, inclina las palmas hacia delante para acelerar
-moderadamente; hacia atrás para frenar. Soltar o perder seguimiento frena.
-Recoge los mandos para abrir menús, salir del vehículo o usar otros controles.
-La disponibilidad depende del seguimiento y permisos de Meta Quest Browser.
+LÁPIZ
+Apunta al objeto; gatillo izquierdo lo selecciona y conserva la selección.
+Mantén X 0,65 segundos para recuperarlo. B deselecciona. Mantén R3 para salir.
+No se recuperan cajas con contenido ni cimientos con piezas dependientes.
+Si la mochila está llena, el objeto permanece. Deshacer y rehacer se conservan.
 
-MOCHILA Y CONSTRUCCIÓN
-Y → Expedición → Catálogo de objetos. Elige categoría, cantidad y pieza.
-Equipar coloca la pieza en el acceso seleccionado y cierra el menú.
-Apunta con el rayo derecho: el fantasma muestra posición/validación reales.
-Gatillo izquierdo: colocar. Se conserva cuadrícula, rampas, cimientos y colisiones.
-El menú Mochila conserva 30 casillas y 10 accesos. Permite equipar, mover,
-intercambiar, dividir cantidades, lanzar, rellenar y vaciar casillas.
+VEHÍCULOS
+Joystick de movimiento: dirección/reversa. Gatillo derecho: acelerar.
+Gatillo izquierdo: frenar. A: salto cuando corresponde. X: bajar. Y: menú.
+Agarre junto al volante/manillar: sujetar y dirigir físicamente.
+Agarre izquierdo libre o L3: impulso; derecho libre: faros.
+Manos sin mandos: opcionales solo al conducir, activadas antes de entrar VR.
+Juntar pulgar e índice sujeta; con ambas manos sujetando, inclinar palmas
+hacia delante acelera y hacia atrás frena. Perder seguimiento frena.
 
-Rotar durante la colocación:
-Mantén agarre izquierdo y mueve horizontalmente el joystick de giro.
-Clic en joystick derecho cambia X/Y/Z. Los anillos rodean la pieza en 3D.
-Construcción, dentro del menú, ofrece ángulos exactos y giro de 90 grados.
-Los cimientos solo rotan en Y; las rampas adaptables mantienen sus restricciones.
-Puedes ajustar ancho/fondo del cimiento, deshacer y rehacer desde ese menú.
+TELESCOPIOS
+B abre/cierra el ocular; joystick de giro vertical cambia aumento; gatillo
+izquierdo registra; Y abre menú. En el de piso, X abandona el asiento.
+R3 recorre filtros SOLO en el telescopio de piso. Se respetan desbloqueos,
+orden y requisitos de energía. El portátil no tiene ese atajo.
+La forma y el fondo del ocular se conservan.
 
-Eliminar:
-En Construcción elige Editar sin fantasma. Apunta a una pieza; pulsa Y y
-vuelve a Construcción → Recuperar pieza marcada. Se usa la dirección que
-señalabas ANTES de abrir el menú, aunque ahora apuntes a sus botones.
-Se conservan las reglas de inventario, soporte y cajas que aún contienen objetos.
-Terminar edición sale del modo de construcción.
+SISTEMA
+Movimiento, Imagen, Sonido, Ayuda, Sesión. Ayuda incluye dibujos de los dos
+mandos Touch Plus con seis perfiles y asignaciones contextuales.
+Sesión incluye guardar, exportar/importar, diagnóstico, offline/actualización,
+recentrar, regresar al punto de llegada y salir de VR. Importar y exportar
+abren el navegador fuera de inmersión. Luego puedes volver a entrar en VR.
 
-INSTRUMENTOS Y MUEBLES
-Equipa herramientas desde la mochila o catálogo. Gatillo izquierdo: usar.
-Identificador: mantén el gatillo sobre el astro unos 0,65 segundos.
-Telémetro: rayo visible desde el mando y distancia a la superficie apuntada.
-Visor celeste: alterna etiquetas de astros usando el gatillo izquierdo.
-Espectrómetro, cámara, muestreador y cuaderno conservan sus funciones.
-X sobre silla, mesa, lámpara, antena, sismómetro, caja, baliza o instrumento
-abre la interacción original en un panel VR. X permite levantarte de una silla.
-Los valores, gráficas, temperaturas, filtros, registros y desbloqueos se
-conectan a los sistemas originales; no son pantallas de muestra.
-Las balizas mantienen nombre, dirección y distancia en la banda de información.
-
-TELESCOPIO
-B abre/cierra el ocular portátil. Apunta con el mando derecho.
-Joystick de giro arriba/abajo: cambiar aumento. Gatillo izquierdo: registrar.
-X sobre un telescopio colocado: usarlo; B o X permiten abandonarlo.
-El ocular magnifica una imagen aparte: no altera la proyección ni separación
-de los ojos del visor. Al mover la cabeza sigues viendo el mundo alrededor.
-Y → Cielo → Bandas del telescopio abre los filtros desbloqueados.
-Fuera del visible siguen siendo ilustraciones didácticas en falso color.
-El ocular se actualiza como máximo a 36 imágenes/s; el mundo usa la frecuencia XR.
-
-TEXTO Y ARCHIVOS
-Al aceptar un campo editable aparece un teclado virtual: apunta letras con
-el rayo o navega con el joystick izquierdo. Guardar confirma; Y cancela.
-Para fechas usa AAAA-MM-DD. Para decimales usa punto.
-Importar/exportar sale de la inmersión para utilizar el selector o descarga
-del navegador. Luego pulsa Entrar en VR para volver. La confirmación de
-importación sigue existiendo; importar reemplaza los datos de ESTA edición.
-
-CIELO, DESTINOS Y RENDIMIENTO
-Cielo permite cambiar hora, ciclo, sentido temporal, fase y duración.
-Elegir Tierra o Luna guarda el mundo anterior y muestra Preparando…
-Solo hay un entorno 3D residente. Los recursos de ambos pueden estar en caché
-offline sin mantener ambas escenas en la GPU.
-Sistema → Rendimiento del paisaje conserva perfiles, pasto, densidad, sombras,
-cielo, distancia de detalle y FPS. No reaparecen montañas terrestres.
-Resolución por ojo se aplica al volver a entrar en VR (límite de la API).
-Foveación ajusta la periferia y se puede cambiar durante la sesión.
-Su adaptación automática responde a presión sostenida, no a un único frame.
-FPS/ms reflejan el intervalo de frames, no un cronómetro de GPU.
-Recentrar postura reajusta la referencia del jugador.
-
-PC
-WASD: moverse. Ratón arrastrando: mirar; doble clic: capturar ratón.
-Espacio: saltar. Shift: correr/impulso. F: linterna/faros. E: interactuar.
-T: telescopio. B: mochila. C: catálogo. Esc: cerrar/liberar ratón.
-Los accesos de inventario y construcción del proyecto siguen disponibles.
+ASTROS
+Solo en VR: Sol/Luna terrestres y Tierra lunar al 60%; Sol lunar al 45%
+con resplandor inmediato sutil. No cambia la iluminación del terreno.
+Fuera de VR conservan su tamaño anterior.

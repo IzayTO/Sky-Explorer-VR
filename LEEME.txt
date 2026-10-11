@@ -1,74 +1,22 @@
-SKY EXPLORER VR — 1.0.1
-Actualización de iluminación y controles visuales · 9 de octubre de 2026
+SKY EXPLORER VR — 2.0.0
+Proyecto completo para reemplazar los archivos de la raíz de Sky-Explorer-VR.
+Todos los recursos e importaciones son locales y no necesitan compilación.
 
-Este paquete ACTUALIZA IzayTO/Sky-Explorer-VR. Contiene solo archivos nuevos o
-modificados completos, sueltos en la raíz. Conserva los demás archivos del repo.
-No sirve para reemplazar Sky-Explorer ni Sky-Explorer-App.
-GitHub se utilizó exclusivamente en lectura; no se hizo ningún cambio remoto.
-Base verificada: main c9bbfaead07e44de3ff26d2859d0d341f4f642c8 (66 archivos).
+PUBLICAR DESDE IPHONE
+1. Guarda el ZIP en Archivos y tócalo para descomprimirlo.
+2. En GitHub abre IzayTO/Sky-Explorer-VR, rama main, raíz del repositorio.
+3. Add file > Upload files. Selecciona TODOS los archivos dentro de la carpeta
+   extraída. No subas el ZIP ni la carpeta contenedora creada por iOS.
+4. Commit changes. Espera que termine el despliegue de GitHub Pages.
+5. Abre el enlace Pages en el navegador del Quest, con conexión a internet.
+6. Cuando aparezca la actualización, acepta Guardar y recargar. La descarga
+   offline se instala como un conjunto completo con verificación de hashes.
+7. En Y > Sistema > Sesión > Diagnóstico debe indicar VR-2.0.0.
 
-ARCHIVOS A REEMPLAZAR (11)
-CAMBIOS-VR.txt
-GUIA-VR.txt
-LEEME.txt
-VERIFICACION-VR.txt
-renderer-factory.js
-service-worker.js
-shadow-atlas.js
-vr-menus.js
-vr-runtime.js
-vr-ui.js
-world-lighting.js
+GitHub se utilizó únicamente para lectura. Este archivo no publica nada.
+Conserva tus datos guardados del mismo origen y ruta; no borres los datos del
+navegador. Si deseas una copia adicional, exporta la expedición desde Sesión.
 
-ARCHIVO NUEVO (1)
-vr-hand-guides.js
-
-QUÉ CAMBIA
-- Ayudas redondeadas junto a cada mano, según la acción actual. Se elimina
-  el cartel inferior permanente. Solo la carga de destino tiene texto frontal.
-- Manos en tono piel mate, sin añadir luces, reflejos ni efectos de brillo.
-- Menú de muñeca 10% menor; paneles de opciones 20% menores.
-- Barras numéricas: apunta y mantén gatillo derecho para arrastrar. Suelta
-  para terminar; también sirven el joystick y A para escribir un valor exacto.
-- Rayo y punto visibles por delante del menú; fuera conservan oclusión del mundo.
-- Menos cálculo de sombras de lámparas y mejor reutilización de su caché.
-- Se conservan brillo, alcance, colores, sombras, construcciones, relieve,
-  controles, instrumentos, vehículos, guardados y preferencias existentes.
-
-PASOS PARA ISAI — QUÉ HAGO AHORA
-1. Guarda el ZIP en Archivos y tócalo para descomprimir.
-2. En GitHub abre IzayTO/Sky-Explorer-VR → Add file → Upload files.
-3. Selecciona los 12 archivos sueltos de esta carpeta. Súbelos juntos en la
-   raíz, donde ya está index.html. No subas la carpeta ni el ZIP.
-4. Pulsa Commit changes. Se reemplazan los nombres existentes y se añade
-   vr-hand-guides.js. No borres previamente los otros archivos.
-5. Espera a que Actions → pages build and deployment termine correctamente.
-   Settings → Pages debe seguir en main / (root). GitHub publica automáticamente.
-6. En Quest Browser, con Internet, abre:
-   https://izayto.github.io/Sky-Explorer-VR/
-7. Espera la descarga. Cuando aparezca Actualización lista → Guardar y recargar,
-   pulsa ese botón. Desde VR: Y → Sistema → Versión offline permite aplicarla
-   saliendo primero al navegador. Cierra otras pestañas antiguas de este juego.
-8. Entra en VR → Y → Sistema → Diagnóstico. Debe indicar VR-1.0.1 y WebGL2 / WebXR.
-   Espera Disponible sin conexión antes de probar sin Internet.
-9. En Catálogo prueba la barra Cantidad. Al mover las manos, las ayudas deben
-   acompañarlas sin saltos. Enciende las mismas lámparas de tu base para comparar.
-
-SI APARECE LA VERSIÓN ANTIGUA
-Cierra las pestañas del juego, vuelve a abrir la URL con Internet y recarga.
-Si aún ocurre, abre:
-https://izayto.github.io/Sky-Explorer-VR/?diagnostico=1
-Usa Buscar actualización. Como último recurso del propio panel usa
-Restablecer solo la caché offline. Esto vuelve a descargar los recursos y
-conserva las partidas. No borres los datos del sitio desde el navegador.
-El diagnóstico puede mostrar el hash de la caché además de VR-1.0.1.
-
-No necesitas Python, Node, Unity, terminal ni compilar. El Service Worker ya
-está regenerado para el conjunto completo de recursos de esta actualización.
-El paquete no cambia las claves sky-vr-* ni el formato de las expediciones.
-Conserva tu ZIP anterior y, si quieres respaldo adicional, exporta tu expedición
-antes de actualizar. Una vuelta al paquete completo anterior también debe
-incluir su propio service-worker.js; no mezcles archivos de distintas versiones.
-
-GUIA-VR.txt: controles. CAMBIOS-VR.txt: detalles técnicos.
-VERIFICACION-VR.txt: pruebas, mediciones locales y límites.
+Consulta GUIA-VR.txt para los nuevos controles. Tres archivos nuevos:
+vr-art.js, vr-controls.js, vr-quickbar.js. Están incluidos y precacheados.
+Los módulos y recursos originales siguen presentes, sin carpetas nuevas.

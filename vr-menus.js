@@ -1,126 +1,60 @@
-import {ITEMS,CATEGORIES} from './items.js?v=4.1.2';
+import {ITEMS,CATEGORIES,MAX_STACK} from './items.js?v=4.1.2';
 import {formRows} from './vr-ui.js';
-const $=id=>document.getElementById(id);
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const CONTROL_ROWS=[
- ['Y · Menú de la mano','Abre/cierra con una pulsación. Tres bloques sobre la mano izquierda.'],
- ['Menú · Seleccionar','Joystick izquierdo: navegar. A o gatillo izquierdo: aceptar. Rayo derecho + gatillo derecho también sirve. Arrastra las barras manteniendo ese gatillo; A permite escribir el valor exacto.'],
- ['Caminar y mirar','Joystick izquierdo: desplazarse. Derecho: giro suave. Mira también con la cabeza. Sistema permite intercambiar joysticks.'],
- ['Correr y saltar','A: salto. Mantén gatillo derecho: correr. No hay balanceo artificial de cabeza en VR.'],
- ['Linterna / faros','Pulsa agarre derecho lejos del volante. Al conducir alterna faros.'],
- ['X · Interactuar','Apunta a silla, vehículo, mesa, lámpara o instrumento y pulsa X. X también sirve para levantarte o bajar.'],
- ['Construcción','Menú → Expedición → Catálogo. Selecciona pieza, Y para cerrar, apunta con mando derecho; gatillo izquierdo para colocar.'],
- ['Rotación libre','Agarre izquierdo mantenido + joystick derecho gira la pieza. Clic en joystick derecho cambia X/Y/Z. Menú Construcción: ángulos exactos, cimiento, deshacer y borrar.'],
- ['Inventario','30 casillas y 10 a mano. Selecciona casilla: equipar, mover, dividir o lanzar. Catálogo: elegir cantidad y equipar.'],
- ['Herramientas','Equipa desde catálogo/inventario. Gatillo izquierdo: usar. Identificador: mantener 0,65 s. El rayo indica la dirección.'],
- ['B · Telescopio','Abre/cierra visor óptico. Joystick derecho arriba/abajo: aumento. Orienta con mando derecho. Gatillo izquierdo: registrar. Filtros en Cielo.'],
- ['Conducir','Gatillo derecho: acelerar. Izquierdo: frenar. Joystick de movimiento hacia atrás: reversa; horizontal: dirección alternativa. A: salto. X: bajar detenido.'],
- ['Volante / manillar','Pon un mando cerca y mantén su agarre para sujetar. Gira la mano alrededor del volante, o mueve el manillar. Suelta para volver al joystick.'],
- ['Impulso','Agarre izquierdo lejos del volante, o clic del joystick izquierdo. No comparte el gatillo de freno.'],
- ['Manos libres · Solo conducción','Opcional en Sistema antes de entrar VR. Pulgar e índice juntos cerca del volante sujetan; abrir suelta. Mandos siguen siendo la forma de acceder al resto del juego.'],
- ['Conducción sin mandos','Ambas manos sujetando: inclina palmas hacia delante para acelerar; hacia atrás para frenar. Soltar ambas frena. No acelera si falta seguimiento.'],
- ['Guardar y archivos','Bases/mochila/cuaderno se guardan automáticamente, separados de otros repos. Importar/exportar abre el navegador fuera de la inmersión.'],
- ['Tierra / Luna','Cielo → destino. Se guarda el anterior y aparece Preparando mientras se carga el elegido. Solo un entorno 3D permanece en memoria.'],
- ['PC','WASD, ratón, Espacio, Shift, F y E conservan los controles originales. T telescopio; B mochila; C catálogo. No hay controles táctiles.']
-];
+const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const CAT_ICONS=['cube','chair','lamp','science','tree'];
 export class VRMenus{
- constructor(vr){this.vr=vr;this.api=vr.api;this.path='root';this.source=null;this.dirty=false;this.lastScan=0;this.slotFrom=null;this.quantity=1;this.catalogCategory=CATEGORIES[0];this.watching=false;
- this.observer=new MutationObserver(()=>{this.dirty=true;});for(const id of ['sky-settings','performance-settings'])$(id).addEventListener('input',()=>this.dirty=true);for(const id of ['sky-settings','performance-settings'])$(id).addEventListener('change',()=>this.dirty=true);this.observer.observe($('science-content'),{subtree:true,childList:true,characterData:true,attributes:true});
- vr.menu.panel.back=()=>this.back();
- }
+ constructor(vr){this.vr=vr;this.api=vr.api;this.path='root';this.source=null;this.dirty=false;this.lastScan=0;this.slotFrom=null;this.bagFocus=30+this.inv.selected;this.quantity=1;this.catalogCategory=CATEGORIES[0];this.history=[];this.revision=-1;this.current=null;
+ this.main=[this.button('Cielo',()=>this.sky(),null,'sky'),this.button('Inventario',()=>this.bag(),null,'bag'),this.button('Construcción',()=>this.construction(),null,'build'),this.button('Sistema',()=>this.system(),null,'system')];this.vr.menu.levels[0].items=this.main;this.vr.menu.drawRadial();
+ this.observer=new MutationObserver(()=>this.dirty=true);this.observer.observe($('science-content'),{subtree:true,childList:true,characterData:true,attributes:true});for(const id of ['sky-settings','performance-settings'])for(const event of ['input','change'])$(id).addEventListener(event,()=>this.dirty=true);vr.menu.panel.back=()=>this.back();this.home();}
  get x(){return this.api.expedition;}get inv(){return this.api.inventory;}
- show(title,rows,path=this.path){this.path=path;this.vr.menu.toggle(true);this.vr.menu.show(title,rows);this.source=null;}
- home(){if(this.api.state.expeditionPanel)this.x.closeDialog();this.path='root';this.source=null;this.vr.menu.home();}
- back(){if(this.vr.keyboard.mesh.visible){this.vr.keyboard.close(false);return;}if(this.api.state.expeditionPanel){this.x.closeDialog();this.exploration();}else this.home();}
- category(i){if(i===0)this.sky();else if(i===1)this.exploration();else this.system();}
- button(label,action,hint){return {label,action,hint};}
- setting(label,get,set,min,max,step=1){return {label,value:()=>String(get()),slider:{min,max,step,get,set},adjust:d=>set(clamp(Number(get())+d*step,min,max)),action:()=>{const input=document.createElement('input');input.type='number';input.min=min;input.max=max;input.step=step;input.value=get();this.vr.keyboard.open(input,()=>{set(clamp(Number(input.value)||0,min,max));this.vr.menu.panel.dirty=true;});},hint:'Barra: gatillo derecho · A: valor exacto'};}
- sky(){const s=this.api.state;this.show('Cielo y destinos',[
- this.button('Explorar Tierra',()=>this.vr.changeDestination('earth')),this.button('Explorar Luna',()=>this.vr.changeDestination('moon')),
- this.setting('Hora / ciclo',()=>s.hour.toFixed(2),v=>this.api.setHour(v),0,23.99,.25),
- {label:'Ciclo temporal',value:()=>s.playing?'En movimiento':'Pausado',action:()=>s.playing=!s.playing},
- {label:'Sentido del tiempo',value:()=>s.direction===1?'Avanzar':'Retroceder',action:()=>s.direction*=-1},
- this.button('Fases, duración y Vía Láctea',()=>this.form('Cielo',$('sky-settings'))),
- this.button('Telescopio · B',()=>{this.vr.menu.toggle(false);this.api.setScope(!s.scope);}),
- this.button('Bandas del telescopio',()=>this.x.science.filters()),
- this.button('Cuaderno y fecha astronómica',()=>this.x.science.journal())
- ],'sky');}
- exploration(){this.show('Expedición',[
- this.button('Catálogo de objetos',()=>this.catalog()),this.button('Mochila · 30 + 10',()=>this.bag()),
- this.button('Construcción y edición',()=>this.build()),
- this.button('Cuaderno de observaciones',()=>this.x.science.journal()),this.button('Guía de instrumentos',()=>this.x.guide.show(this.inv.hand?.id)),
- this.button('Sentarse / interactuar / salir · X',()=>{this.vr.menu.toggle(false);this.vr.withWorldAim(()=>this.vr.interact());}),
- this.button('Linterna / faros',()=>this.api.useLight()),this.button('Terminar construcción',()=>{this.x.cancelBuild();this.vr.menu.toggle(false);}),
- this.button('Ver controles VR',()=>this.controls()),this.button('Volver al punto de llegada',()=>{$('reset-position').click();this.vr.recenter();this.vr.menu.toggle(false);})
- ],'exploration');}
- system(){const p=this.vr.preferences;this.show('Sistema',[
- this.button('Rendimiento del paisaje',()=>this.form('Rendimiento',$('performance-settings'))),
- {label:'Joysticks',value:()=>p.swap?'Derecho mueve · izquierdo gira':'Izquierdo mueve · derecho gira',action:()=>{p.swap=!p.swap;this.vr.savePreferences();}},
- this.setting('Giro suave · grados/s',()=>p.turnSpeed,v=>{p.turnSpeed=v;this.vr.savePreferences();},20,140,10),
- this.setting('Velocidad al caminar',()=>this.api.walker.speed,v=>{$('speed').value=v;$('speed').dispatchEvent(new Event('input'));},.4,4,.1),
- this.setting('Volumen · %',()=>Math.round(this.api.state.volume*100),v=>{$('volume').value=v;$('volume').dispatchEvent(new Event('input'));},0,100,5),
- {label:'Manos solo al conducir',value:()=>p.hands?'Permitidas':'Desactivadas',action:()=>{p.hands=!p.hands;this.vr.savePreferences();this.api.toast('La solicitud de manos se aplica al volver a entrar en VR.');}},
- this.setting('Resolución por ojo · próxima entrada',()=>p.scale.toFixed(2)+'',v=>{p.scale=v;this.vr.savePreferences();},.65,1,.05),
- this.setting('Foveación periférica',()=>p.foveation.toFixed(2),v=>{p.foveation=v;this.vr.foveation=v;this.api.renderer.xr.setFoveation(v);this.vr.savePreferences();},0,.8,.1),
- {label:'Adaptación sostenida de foveación',value:()=>p.auto?'Activada':'Desactivada',action:()=>{p.auto=!p.auto;this.vr.savePreferences();}},
- this.button('Recentrar postura',()=>this.vr.recenter()),this.button('Controles y guía VR',()=>this.controls()),
- this.button('Guardar y exportar',()=>this.vr.desktopAction(()=>this.x.export())),
- this.button('Importar expedición',()=>this.vr.openImport()),
- {label:'Versión offline',value:()=>$('pwa-update').hidden?$('offline-status').textContent:'Actualización lista',action:()=>{if(!$('pwa-update').hidden)this.vr.desktopAction(()=>$('pwa-update').click());else this.diagnostics();}},
- this.button('Diagnóstico',()=>this.diagnostics()),this.button('Salir de la inmersión',()=>this.vr.session?.end())
- ],'system');}
- diagnostics(){const d=window.SkyDiagnostics;this.show('Diagnóstico VR',[
- {type:'text',label:'Versión '+d.version+' · '+d.renderer},
- {type:'text',label:'Sesión inmersiva: '+(this.vr.active?'sí':'no')+' · frecuencia solicitada: '+(this.vr.session?.frameRate||'nativa')+' Hz'},
- {type:'text',label:'Ciclo de frames: '+(this.vr.averageMs?this.vr.averageMs.toFixed(1)+' ms · '+Math.round(1000/this.vr.averageMs)+' FPS':'midiendo')+' (no tiempo de GPU)'},
- {type:'text',label:'Mundo residente: '+this.api.state.destination+' · foveación: '+this.vr.foveation.toFixed(2)},
- {type:'text',label:'Offline: '+($('offline-status')?.textContent||'consultando')},
- this.button('Actualizar lectura',()=>this.diagnostics())
- ],'system');}
- controls(){this.show('Controles · Quest 3S',CONTROL_ROWS.map(([label,hint])=>({type:'text',label:label+' — '+hint})),'controls');}
- bag(){this.show('Mochila · Elige una casilla',[
- ...Array.from({length:10},(_,i)=>this.slotRow(i+30)),...Array.from({length:30},(_,i)=>this.slotRow(i)),
- this.button('Catálogo de objetos',()=>this.catalog())
- ],'inventory');}
- slotRow(i){const s=this.inv.slots[i];return this.button((i>=30?'A mano '+(i-29):'Mochila '+(i+1))+' · '+(s?ITEMS[s.id].name+' ×'+s.qty:'Vacía'),()=>this.slot(i));}
- slot(i){if(this.slotFrom!==null){this.inv.transfer(this.slotFrom,i);this.slotFrom=null;return this.bag();}const s=this.inv.slots[i];if(!s){this.api.toast('Casilla vacía. Usa el catálogo para añadir un objeto.');return;}
- this.show(ITEMS[s.id].name+' ×'+s.qty,[
- this.button('Equipar y cerrar',()=>{if(i<30)this.inv.transfer(i,30+this.inv.selected);else this.inv.select(i-30);this.x.selectHand();this.vr.menu.toggle(false);}),
- this.button('Mover / intercambiar',()=>{this.slotFrom=i;this.bag();this.vr.menu.panel.title='Elige la casilla de destino';}),
- this.button('Mover entre mochila y accesos',()=>{this.inv.quickMove(i);this.bag();}),
- this.button('Dividir stack',()=>{this.inv.split(i);this.bag();}),
- this.button('Lanzar una unidad',()=>{if(this.x.env.world.throwStack({id:s.id,qty:1},this.vr.menuAimCamera)){this.inv.consume(i);this.bag();}}),
- this.button('Rellenar a 30',()=>{s.qty=30;this.inv.changed();this.slot(i);}),
- this.button('Vaciar esta casilla',()=>{this.inv.slots[i]=null;this.inv.changed();this.bag();})
- ],'inventory');}
- catalog(){this.show('Catálogo · '+this.catalogCategory,[
- {label:'Categoría',value:()=>this.catalogCategory,action:()=>{this.catalogCategory=CATEGORIES[(CATEGORIES.indexOf(this.catalogCategory)+1)%CATEGORIES.length];this.catalog();},adjust:d=>{this.catalogCategory=CATEGORIES[(CATEGORIES.indexOf(this.catalogCategory)+d+CATEGORIES.length)%CATEGORIES.length];this.catalog();}},
- this.setting('Cantidad',()=>this.quantity,v=>this.quantity=Math.round(v),1,30),
- ...Object.values(ITEMS).filter(i=>i.category===this.catalogCategory&&!i.sample).map(i=>this.button(i.name,()=>this.catalogItem(i),i.note||'Añadir a mochila o equipar'))
- ],'catalog');}
- catalogItem(item){this.show(item.name,[
- {type:'text',label:item.note||'Objeto del catálogo original de Sky Explorer.'},
- this.button('Equipar ×'+this.quantity,()=>{const slot=30+this.inv.selected,current=this.inv.slots[slot];if(current&&current.id!==item.id){const empty=this.inv.slots.indexOf(null);if(empty<0)return this.api.toast('Mochila llena. Libera una casilla primero.');this.inv.transfer(slot,empty);}this.inv.create(item.id,this.quantity,slot);this.x.selectHand();this.vr.menu.toggle(false);}),
- this.button('Añadir ×'+this.quantity+' a mochila',()=>{const left=this.inv.add(item.id,this.quantity);this.api.toast(left?'No cabe toda la cantidad.':'Añadido a tu mochila.');}),
- this.button('Cómo se usa',()=>this.x.guide.show(item.id)),this.button('Volver al catálogo',()=>this.catalog())
- ],'catalog');}
- build(){const x=this.x;this.show('Construcción',[
- this.button('Editar sin fantasma',()=>{x.startEdit();this.vr.menu.toggle(false);}),this.button('Catálogo de piezas',()=>{this.catalogCategory='Construcción';this.catalog();}),
- ...['x','y','z'].map(axis=>this.setting('Rotación '+axis.toUpperCase()+' · °',()=>Math.round(x.rotation[axis]*180/Math.PI),v=>{if(ITEMS[this.inv.hand?.id]?.adaptive||(this.inv.hand?.id==='foundation'&&axis!=='y'))return;x.rotation[axis]=v*Math.PI/180;x.dimensions.rotationTouched=true;x.lastPose=-1;x.syncRotation();},0,360,5)),
- this.button('Girar 90° en '+x.axis.toUpperCase(),()=>x.rotate()),
- this.setting('Cimiento · ancho en m',()=>x.dimensions.width,v=>{x.dimensions.width=v;x.lastPose=-1;},2,24,2),
- this.setting('Cimiento · fondo en m',()=>x.dimensions.depth,v=>{x.dimensions.depth=v;x.lastPose=-1;},2,24,2),
- this.button('Recuperar pieza marcada',()=>this.vr.withWorldAim(()=>x.removeAimed()),'Apunta a la pieza antes de abrir Y'),this.button('Deshacer',()=>x.undo(false)),this.button('Rehacer',()=>x.undo(true)),this.button('Terminar edición',()=>{x.cancelBuild();this.vr.menu.toggle(false);})
- ],'build');}
- form(title,node){this.path='form';this.source=node;this.vr.menu.toggle(true);this.refreshForm(title,true);}
- refreshForm(title=this.vr.menu.panel.title,reset=false){const rows=formRows(this.source,(input,emit)=>this.vr.keyboard.open(input,emit),input=>this.vr.desktopAction(()=>input.click()));if(this.source===$('performance-settings')){
- const controls=rows.filter(row=>row.source&&row.source.id!=='graphics-resolution');
- rows.splice(0,rows.length,{type:'text',label:'El paisaje conserva sus perfiles. En VR la nitidez se ajusta con Resolución por ojo y Foveación, en Sistema.'},...controls);
- }
- for(const row of rows)if(row.source?.id==='export-field')row.action=()=>this.vr.desktopAction(()=>this.x.export());
- this.vr.menu.show(title,rows,reset);this.dirty=false;}
- update(time){if(this.path==='science'&&this.source&&!this.api.state.expeditionPanel){this.source=null;this.path='root';this.vr.menu.toggle(false);}if(this.api.state.expeditionPanel&&this.source!==$('science-content')){this.source=$('science-content');this.vr.menu.toggle(true);this.path='science';this.refreshForm($('science-title').textContent,true);this.dirty=true;}
- if(this.source&&!this.vr.menu.panel.dragging&&time-this.lastScan>.2){this.lastScan=time;if(this.dirty||this.api.expedition.science.tick){this.refreshForm(this.path==='science'?$('science-title').textContent:this.vr.menu.panel.title);}}
+ button(label,action,hint,icon){return {label,action,hint,icon};}
+ remember(){if(!this.current)return;const p=this.vr.menu.panel;this.current.selection=p.selected;this.current.page=p.page;this.current.levels=this.vr.menu.levels.map(l=>({...l}));this.history.push(this.current);}
+ render(view,reset=true){this.current=view;this.path=view.path;this.source=view.source||null;this.vr.menu.levels=view.levels.map(l=>({...l}));if(view.kind==='orbit')this.vr.menu.setOrbits(this.vr.menu.levels);else this.vr.menu.show(view.title,view.rows,reset,view.layout||'card',view.options||{});if(view.selection!==undefined){this.vr.menu.panel.selected=view.selection;this.vr.menu.panel.page=view.page||0;this.vr.menu.panel.dirty=true;}if(view.orbitFocus)this.vr.menu.mode='radial';this.dirty=false;}
+ show(title,rows,path=this.path,layout='card',options={}){this.remember();this.vr.menu.toggle(true);this.render({title,rows,path,layout,options,kind:'panel',levels:this.vr.menu.levels.map(l=>({...l}))});}
+ orbit(title,items,path){this.remember();const levels=this.vr.menu.levels.map(l=>({...l}));levels.push({items,selected:0,path});this.vr.menu.toggle(true);this.render({title,path,kind:'orbit',levels});}
+ home(){if(this.api.state.expeditionPanel)this.x.closeDialog();this.history=[];this.slotFrom=null;const selected=this.vr.menu.levels[0]?.selected||0;this.render({path:'root',kind:'orbit',levels:[{items:this.main,selected,path:'root'}]});}
+ back(){if(this.path==='construction'&&this.vr.menu.mode==='panel'){this.vr.menu.mode='radial';return;}if(this.vr.keyboard.mesh.visible){this.vr.keyboard.close(false);return;}if(this.api.state.expeditionPanel)this.x.closeDialog();const view=this.history.pop();this.slotFrom=null;if(view){this.render(view);if(this.source)this.refreshForm();}else{this.home();this.vr.menu.toggle(false);}}
+ category(i){this.home();this.vr.menu.levels[0].selected=i;this.vr.menu.drawRadial();this.main[i].action();}
+ chooseOrbit(hit){const level=hit?.level??this.vr.menu.focusLevel,index=hit?.index??this.vr.menu.levels[level].selected;if(level===0)return this.category(index);const selected=this.vr.menu.levels[level];if(this.current.kind!=='orbit'||level<this.vr.menu.levels.length-1){while(this.history.length){const parent=this.history.pop();if(parent.levels.length===level+1&&parent.path===selected.path){this.render(parent);break;}}}this.vr.menu.levels=this.vr.menu.levels.slice(0,level+1);selected.items[index]?.action();}
+ setting(label,get,set,min,max,step=1){return {label,value:()=>String(get()),slider:{min,max,step,get,set},adjust:d=>set(clamp(Number(get())+d*step,min,max)),action:()=>{const input=document.createElement('input');input.type='number';input.min=min;input.max=max;input.step=step;input.value=get();this.vr.keyboard.open(input,()=>{set(clamp(Number(input.value)||0,min,max));this.vr.menu.panel.dirty=true;});}};}
+ input(id,label){const el=$(id),emit=()=>{el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));};return this.setting(label,()=>Number(el.value),v=>{el.value=v;emit();},Number(el.min),Number(el.max),Number(el.step)||1);}
+ sky(){this.orbit('Cielo',[this.button('Destinos',()=>this.destinations(),null,'earth'),this.button('Tiempo',()=>this.time(),null,'clock'),this.button('Astronomía',()=>this.astronomy(),null,'moon'),this.button('Observar',()=>this.observe(),null,'observe')],'sky');}
+ destinations(){this.orbit('Destinos',[this.button('Tierra',()=>this.vr.changeDestination('earth'),null,'earth'),this.button('Luna',()=>this.vr.changeDestination('moon'),null,'moon')],'destinations');}
+ time(){const s=this.api.state;this.show('Tiempo · ciclo del paisaje',[this.setting(s.destination==='moon'?'Ciclo lunar · horas':'Hora del día',()=>Number(s.hour.toFixed(2)),v=>this.api.setHour(v),0,23.99,.25),this.input('duration','Duración · minutos'),{label:'Ciclo',icon:'clock',value:()=>s.playing?'En marcha · pausar':'Pausado · reanudar',action:()=>s.playing=!s.playing},{label:'Dirección',icon:'clock',value:()=>s.direction===1?'Avanzar':'Retroceder',action:()=>s.direction*=-1},this.button('Adelantar una hora',()=>this.api.setHour((s.hour+1)%24),null,'clock'),this.button('Retroceder una hora',()=>this.api.setHour((s.hour+23)%24),null,'clock'),...([...document.querySelectorAll('[data-path]')].map(b=>this.button('Recorrido · '+b.textContent,()=>b.click(),null,'sky')))],'time');}
+ astronomy(){this.orbit('Astronomía',[this.button('Fases',()=>this.phases(),null,'moon'),this.button('Vía Láctea',()=>this.show('Vía Láctea',[{label:'Banda galáctica',icon:'sky',value:()=>this.api.state.milky?'Visible':'Oculta',action:()=>{$('milky').checked=!$('milky').checked;$('milky').dispatchEvent(new Event('change'));}},{type:'text',label:'El brillo responde a la luz del cielo y a la fase. No cambia el catálogo estelar.'}],'milky'),null,'sky'),this.button('Fecha',()=>this.date(),null,'clock')],'astronomy');}
+ phases(){const s=this.api.state;this.show(s.destination==='moon'?'Fases de la Tierra':'Fases de la Luna',[this.input('phase','Fase · 0 nueva / 500 llena / 1000 nueva'),...[...document.querySelectorAll('[data-phase]')].map(b=>this.button(b.textContent,()=>b.click(),null,'moon')), ...(s.destination==='earth'?[...document.querySelectorAll('[data-moon-look]')].map(b=>this.button(b.textContent,()=>b.click(),null,'moon')):[{type:'text',label:'La fase terrestre y el ciclo lunar están conectados: elegir fase mueve el Sol en su órbita.'}])],'phases');}
+ date(){this.show('Fecha astronómica',[{label:'Fecha del catálogo',icon:'clock',value:()=>this.x.env.celestial.date,action:()=>{const input=document.createElement('input');input.type='date';input.min='1800-01-01';input.max='2050-12-31';input.value=this.x.env.celestial.date;this.vr.keyboard.open(input,()=>{if(!this.x.env.celestial.setDate(input.value))this.api.toast('Fecha válida entre 1800 y 2050.');});}},{type:'text',label:'Planetas: aproximación JPL. El ciclo del paisaje no representa una ubicación geográfica real.'}],'date');}
+ observe(){this.orbit('Observar',[this.button('Telescopio',()=>{this.vr.menu.toggle(false);this.api.setScope(!this.api.state.scope);if(this.api.state.scope&&!this.api.state.zoom)this.api.setZoom(1);},null,'observe'),this.button('Bandas',()=>this.x.science.filters(),null,'filter'),this.button('Cuaderno',()=>this.x.science.journal(),null,'book'),this.button('Instrumentos',()=>this.instrumentGuide(),null,'science')],'observe');}
+ instrumentGuide(){this.show('Instrumentos y ciencia',[this.button('Guía del objeto equipado',()=>this.x.guide.show(this.inv.hand?.id),null,'help'),...Object.values(ITEMS).filter(i=>i.tool).map(i=>this.button(i.name,()=>this.x.guide.show(i.id),null,'science'))],'instruments');}
+ construction(){this.orbit('Construcción',CATEGORIES.map((c,i)=>this.button(c,()=>{this.catalogCategory=c;this.catalog();},null,CAT_ICONS[i])),'construction');
+ // Small tool card alongside the category arc, without adding a sixth category.
+ this.vr.menu.show('Herramientas de construcción',[this.button('Modo Lápiz · mantener R3',()=>{this.vr.enterEdit();this.vr.menu.toggle(false);},null,'edit'),this.button('Ángulos y cimientos',()=>this.build(),null,'cube'),this.button('Deshacer',()=>this.x.undo(false),null,'undo'),this.button('Rehacer',()=>this.x.undo(true),null,'undo')]);this.current.kind='panel';this.current.title='Herramientas de construcción';this.current.rows=this.vr.menu.panel.rows;this.current.layout='card';this.current.orbitFocus=true;this.vr.menu.mode='radial';}
+ catalog(){const items=Object.values(ITEMS).filter(i=>i.category===this.catalogCategory&&!i.sample);this.show('Catálogo · '+this.catalogCategory,[this.setting('Cantidad',()=>this.quantity,v=>this.quantity=Math.round(v),1,30),...items.map(item=>({label:item.name+(item.note?' · '+item.note:''),cell:()=>({id:item.id,qty:this.quantity}),action:()=>this.equipCatalog(item)}))],'catalog','catalog');}
+ equipCatalog(item){const index=30+this.inv.selected,current=this.inv.slots[index];if(current&&current.id!==item.id){const empty=this.inv.slots.indexOf(null);if(empty<0)return this.api.toast('Mochila llena. Libera una casilla primero.');this.inv.transfer(index,empty);}this.inv.create(item.id,this.quantity,index);this.x.selectHand();this.vr.menu.toggle(false);this.api.toast(item.name+' equipado.');}
+ bag(){const cells=Array.from({length:40},(_,i)=>({label:'Casilla '+(i<30?i+1:i-29),cell:()=>this.inv.slots[i],action:()=>{if(this.slotFrom!==null){this.inv.transfer(this.slotFrom,i);this.slotFrom=null;}else{this.bagFocus=i;if(i>=30)this.inv.select(i-30);}this.vr.menu.panel.dirty=true;}}));const selected=()=>this.inv.slots[this.bagFocus];const actions=[
+ this.button('Equipar',()=>{if(!selected())return this.api.toast('Elige una casilla con un objeto.');if(this.bagFocus<30)this.inv.transfer(this.bagFocus,30+this.inv.selected);else this.inv.select(this.bagFocus-30);this.x.selectHand();this.vr.menu.toggle(false);}),
+ this.button('Mover / unir',()=>{if(selected()){this.slotFrom=this.bagFocus;this.api.toast('Selecciona la casilla de destino.');}}),
+ this.button('Mochila ↔ acceso',()=>this.inv.quickMove(this.bagFocus)),
+ this.button('Dividir pila',()=>{if(!this.inv.split(this.bagFocus))this.api.toast('Se necesitan dos unidades y una casilla vacía.');}),
+ this.button('Lanzar 1',()=>{const s=selected();if(s&&this.x.env.world.throwStack({id:s.id,qty:1},this.vr.menuAimCamera))this.inv.consume(this.bagFocus);}),
+ this.button('Más opciones',()=>this.slot(this.bagFocus))];this.show('Inventario · 30 + 10',[...cells,...actions],'inventory','inventory',{inventory:this.inv,caption:()=>this.slotFrom!==null?'Mover: elige destino; pilas iguales se fusionan hasta 30.':selected()?ITEMS[selected().id].name+' ×'+selected().qty:'Elige una casilla · accesos inferiores equipan al pulsar'});this.vr.menu.panel.selected=this.bagFocus;}
+ slot(i){const s=this.inv.slots[i];if(!s)return this.api.toast('La casilla está vacía.');this.show(ITEMS[s.id].name,[{type:'text',label:ITEMS[s.id].note||'Objeto del inventario de la expedición.'},this.button('Lanzar pila completa',()=>{const stack=this.inv.slots[i];if(stack&&this.x.env.world.throwStack({...stack},this.vr.menuAimCamera)){this.inv.consume(i,stack.qty);this.back();}}),...(!ITEMS[s.id].sample?[this.button('Completar pila a 30',()=>{this.inv.create(s.id,MAX_STACK-s.qty,i);this.back();})]:[]),this.button('Vaciar casilla',()=>{this.inv.slots[i]=null;this.inv.changed();this.back();}),this.button('Cómo utilizarlo',()=>this.x.guide.show(s.id))],'slot');}
+ build(){const x=this.x;this.show('Ángulos y cimientos',[
+ ...['x','y','z'].map(axis=>this.setting('Rotación '+axis.toUpperCase()+' · grados',()=>Math.round(x.rotation[axis]*180/Math.PI),v=>{if(ITEMS[this.inv.hand?.id]?.adaptive||(this.inv.hand?.id==='foundation'&&axis!=='y'))return;x.rotation[axis]=v*Math.PI/180;x.dimensions.rotationTouched=true;x.lastPose=-1;x.syncRotation();},0,360,5)),this.button('Girar 90° sobre '+x.axis.toUpperCase(),()=>x.rotate(),null,'cube'),this.setting('Cimiento · ancho m',()=>x.dimensions.width,v=>{x.dimensions.width=v;x.lastPose=-1;},2,24,2),this.setting('Cimiento · fondo m',()=>x.dimensions.depth,v=>{x.dimensions.depth=v;x.lastPose=-1;},2,24,2),this.button('Deshacer',()=>x.undo(false),null,'undo'),this.button('Rehacer',()=>x.undo(true),null,'undo'),this.button('Guardar pieza / salir de edición',()=>{this.vr.cancelConstruction();this.vr.menu.toggle(false);},null,'bag')],'build');}
+ system(){this.orbit('Sistema',[this.button('Movimiento',()=>this.movement(),null,'move'),this.button('Imagen',()=>this.image(),null,'image'),this.button('Sonido',()=>this.sound(),null,'sound'),this.button('Ayuda',()=>this.help(),null,'help'),this.button('Sesión',()=>this.session(),null,'session')],'system');}
+ movement(){const p=this.vr.preferences;this.show('Movimiento y comodidad',[this.input('speed','Velocidad al caminar'),this.setting('Giro suave · grados/s',()=>p.turnSpeed,v=>{p.turnSpeed=v;this.vr.savePreferences();},20,140,5),{label:'Joysticks',icon:'move',value:()=>p.swap?'Derecho mueve · izquierdo gira':'Izquierdo mueve · derecho gira',action:()=>{p.swap=!p.swap;this.vr.savePreferences();}},{label:'Manos solo al conducir',value:()=>p.hands?'Permitidas':'Desactivadas',action:()=>{p.hands=!p.hands;this.vr.savePreferences();this.api.toast('Las manos se solicitan al volver a entrar en VR.');}},this.button('Recentrar postura',()=>this.vr.recenter(),null,'move')],'movement');}
+ image(){const p=this.vr.preferences;this.show('Imagen y rendimiento',[this.button('Rendimiento del paisaje',()=>this.form('Paisaje',$('performance-settings')),null,'image'),this.setting('Resolución por ojo · próxima entrada',()=>Number(p.scale.toFixed(2)),v=>{p.scale=v;this.vr.savePreferences();},.65,1,.05),this.setting('Foveación periférica',()=>Number(p.foveation.toFixed(2)),v=>{p.foveation=v;this.vr.foveation=v;this.api.renderer.xr.setFoveation(v);this.vr.savePreferences();},0,.8,.05),{label:'Adaptación de foveación',value:()=>p.auto?'Activada':'Desactivada',action:()=>{p.auto=!p.auto;this.vr.savePreferences();}}],'image');}
+ sound(){this.show('Sonido',[this.input('volume','Volumen · %'),{label:'Ambiente',icon:'sound',value:()=>this.api.getEnv().audio.muted?'Silenciado':'Activo',action:()=>$('sound-button').click()}],'sound');}
+ help(){this.orbit('Ayuda',[this.button('Mandos',()=>this.controls(),null,'help'),this.button('Herramientas',()=>this.instrumentGuide(),null,'science'),this.button('Conducción',()=>this.drivingHelp(),null,'move')],'help');}
+ controls(){this.show('Quest Touch Plus · controles',[],'controls','guide',{profile:0,swap:this.vr.preferences.swap});}
+ drivingHelp(){this.show('Conducción con manos',[{type:'text',label:'Opcional: activar Manos solo al conducir y volver a entrar en VR. El resto del juego utiliza mandos.'},{type:'text',label:'Junta pulgar e índice cerca del volante o manillar para sujetar. Abre los dedos para soltar.'},{type:'text',label:'Ambas manos sujetando: inclina palmas hacia delante para acelerar; hacia atrás para frenar. Soltar ambas frena.'},{type:'text',label:'Con mandos: agarre junto al volante dirige. Agarre izquierdo libre o L3: impulso. Derecho libre: faros.'}],'drivingHelp');}
+ session(){this.show('Sesión',[this.button('Recentrar postura',()=>this.vr.recenter(),null,'move'),this.button('Guardar expedición',()=>{this.inv.save();this.x.env.world.save();this.x.science.save();this.api.toast('Expedición guardada.');},null,'bag'),this.button('Exportar expedición',()=>this.vr.desktopAction(()=>this.x.export()),null,'session'),this.button('Importar expedición',()=>this.vr.openImport(),null,'session'),this.button('Regresar al punto de llegada',()=>{$('reset-position').click();this.vr.recenter();this.vr.menu.toggle(false);},null,'earth'),this.button('Diagnóstico',()=>this.diagnostics(),null,'image'),{label:'Offline / actualización',value:()=>$('pwa-update').hidden?$('offline-status').textContent:'Actualización disponible',action:()=>{if(!$('pwa-update').hidden)this.vr.desktopAction(()=>$('pwa-update').click());else this.diagnostics();}},this.button('Salir de VR',()=>this.vr.session?.end(),null,'session')],'session');}
+ diagnostics(){const d=window.SkyDiagnostics;this.show('Diagnóstico',[{type:'text',label:'Versión '+d.version+' · '+d.renderer},{type:'text',label:'Frecuencia '+(this.vr.session?.frameRate||'nativa')+' Hz · '+(this.vr.averageMs?this.vr.averageMs.toFixed(1)+' ms por frame':'midiendo')},{type:'text',label:'Mundo residente: '+this.api.state.destination+' · foveación '+this.vr.foveation.toFixed(2)},{type:'text',label:'Offline: '+($('offline-status')?.textContent||'consultando')}],'diagnostics');}
+ form(title,node){this.remember();this.vr.menu.toggle(true);this.source=node;this.current={kind:'panel',path:'form',title,source:node,levels:this.vr.menu.levels.map(l=>({...l}))};this.path='form';this.refreshForm(title,true);}
+ refreshForm(title=this.current.title,reset=false){let rows=formRows(this.source,(input,emit)=>this.vr.keyboard.open(input,emit),input=>this.vr.desktopAction(()=>input.click()));if(this.source===$('performance-settings'))rows=rows.filter(r=>r.source&&r.source.id!=='graphics-resolution');for(const row of rows)if(row.source?.id==='export-field')row.action=()=>this.vr.desktopAction(()=>this.x.export());this.current.rows=rows;this.current.title=title;this.vr.menu.show(title,rows,reset);this.dirty=false;}
+ update(time){if(this.api.state.expeditionPanel&&this.path!=='science'){this.remember();this.source=$('science-content');this.path='science';this.current={kind:'panel',path:'science',title:$('science-title').textContent,source:this.source,levels:this.vr.menu.levels.map(l=>({...l}))};this.vr.menu.toggle(true);this.refreshForm(this.current.title,true);}else if(this.path==='science'&&!this.api.state.expeditionPanel){const previous=this.history.pop();if(previous)this.render(previous);else this.home();this.vr.menu.toggle(false);}
+ if(this.source&&!this.vr.menu.panel.dragging&&time-this.lastScan>.2){this.lastScan=time;if(this.dirty||this.x.science.tick)this.refreshForm(this.path==='science'?$('science-title').textContent:this.current.title);}
+ if(this.vr.menu.open&&this.revision!==this.inv.revision){this.revision=this.inv.revision;this.vr.menu.panel.dirty=true;}
+ if(this.vr.menu.open&&['time','phases','diagnostics','sound','session'].includes(this.path)&&time-(this.dynamicAt||0)>.4){this.dynamicAt=time;this.vr.menu.panel.dirty=true;}
  }
 }
-export {CONTROL_ROWS};

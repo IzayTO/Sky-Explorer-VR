@@ -1,137 +1,19 @@
-SKY EXPLORER VR 1.0.1 — VERIFICACIÓN DE ESTA ACTUALIZACIÓN
+VERIFICACIÓN DE ESTA ENTREGA · VR-2.0.0
 
-PRUEBAS LOCALES REALIZADAS
-- Inicialización PC y sesiones XR sintéticas: Tierra/Luna, controles, menú,
-  construcción real, edición, deshacer/rehacer, silla, vehículos, conducción
-  por manos, pérdida de seguimiento, telescopio y cambio/recuperación de mundo.
-- Ayudas siguen cada frame la posición rastreada, sin cartel inferior; no se
-  sube de nuevo su textura cuando el contenido no cambia. Piel con color de
-  vértice, sin emisión. Escalas exactas 0,90 y 0,80 comprobadas.
-- Arrastre real con rayo y gatillo: Cantidad llega a 1 y 30, posición intermedia,
-  límites fuera del panel, soltar y pérdida de seguimiento. Puntero y punto
-  se ordenan después del panel; fuera vuelven a probar profundidad.
-- Renderizado e inspección de las texturas de ayudas, paneles y deslizadores.
-- Compilación/enlace de 22 parejas GLSL reales de la distribución con Mesa.
-- 2676 consultas de sombras renderizadas contra el BVH CPU: 2676 coinciden,
-  incluidos interiores, paredes, ventanas, seis caras y uniones del cubo.
-- Una imagen de 512×512 (262144 píxeles) con proyección de sombra analítica
-  coincidió píxel a píxel con la misma imagen usando la matriz del atlas.
-- Cero cambios de framebuffer en un acierto completo de caché. Cuatro lámparas:
-  apagar y reencender la primera no recalcula las otras ni su cubo conservado.
-  Entrar una quinta en la prioridad calcula solo sus seis caras; todas iluminan.
-- Consultas CPU de exposición reutilizadas para una cámara inmóvil.
-- Sintaxis/imports/rutas locales, hashes SHA-256 y publicación offline completa.
-- Worker simulado: offline, rechazo de publicación corrupta/incompleta,
-  actualización pendiente, convivencia de pestañas viejas/nuevas y limpieza
-  de cachés limitada al scope sin borrar partidas.
-- Aplicar los archivos del ZIP sobre la base verificada reproduce la copia
-  completa de esta versión, incluidos todos los hashes del Service Worker.
+Verificado con los módulos reales y entrada XR sintética:
+inicio en PC; Tierra/Luna; inventario y catálogo; caminar, giro suave y salto;
+linterna; colocación real y deshacer/rehacer; interacción de sillas y vehículos;
+aceleración, freno, dirección por agarre, pérdida de seguimiento de manos;
+controles intercambiados; colisiones físicas; visor y zoom; panel de lámparas;
+cambio de destinos, descarga del anterior, guardados y retorno a PC;
+R3 mantenido para lápiz, selección persistente y recuperación con X;
+selector del antebrazo 2x5 sin sprint ni colocación simultáneos;
+40 casillas reales, actualización por cambios y deslizador de cantidades;
+uniformes astrales al entrar/salir de XR.
 
-MEDICIÓN LOCAL ACOTADA
-Prueba de shader sobre una pared interior de 512×512, con el MISMO atlas:
-proyección con matriz, mediana 4,57 ms; proyección analítica, 1,37 ms, 15 muestras
-por variante después de calentamiento. Renderer de software Mesa llvmpipe en
-este entorno; hubo variabilidad en las muestras. No es el juego completo, no
-es una medida de GPU móvil y no permite prometer ese factor en Quest 3S.
-El resultado útil adicional es la igualdad de los píxeles y la reducción de
-operaciones/invalidaciones verificada. No se entrega una promesa de FPS.
+Se generaron e inspeccionaron las texturas reales de menús, inventario,
+catálogo, guía y miniaturas. La interfaz utiliza Canvas y geometría local.
 
-FALTA VERIFICACIÓN FÍSICA DE ESTA ACTUALIZACIÓN
-FPS sostenidos, temperatura y latencia reales en Meta Quest 3S; tamaño/lectura
-binocular de las nuevas ayudas; soltura del arrastre con mandos reales; luces
-con la base guardada del usuario, y actualización/offline en Meta Quest Browser.
-La prueba positiva del usuario corresponde a la versión anterior, no a esta.
-Las pruebas XR locales usan poses y mandos simulados y un renderer registrador;
-las pruebas de píxeles usan Mesa, no el controlador Qualcomm del visor.
-
-LÍMITES CONSERVADOS
-La primera generación de sombras y las ediciones de geometría aún cuestan.
-Con más de cuatro lámparas priorizadas, las no cacheadas conservan el BVH exacto.
-Un escenario muy complejo o varias luces superpuestas puede seguir costando.
-No se ha reducido el alcance ni se ha hecho desaparecer ninguna luz para ocultarlo.
-No se cambiaron resolución, foveación, densidad ni preferencias del jugador.
-El resto de límites de la edición VR se documenta en la verificación inicial.
-
-A continuación se conserva el registro de verificación de la versión inicial.
-
-SKY EXPLORER VR 1.0.0 — VERIFICACIÓN Y LÍMITES
-
-ALCANCE REAL DE LAS PRUEBAS
-Se probaron los módulos de juego con Node y un DOM simulado, alimentados con
-poses, mandos y sesiones XR sintéticas. Se usaron los módulos originales
-reales de inventario, mundo, física, vehículos, ciencia y construcción.
-En esas pruebas el renderer se sustituyó por un registrador de llamadas;
-no equivalen a ejecutar el juego en un navegador dentro de unas Quest.
-Además se compilaron/enlazaron los shaders GLSL reales con Mesa/llvmpipe y se
-hicieron pruebas de píxeles para la proyección del cielo. Ese controlador
-local tampoco representa el hardware Qualcomm ni el compositor de Meta.
-
-COMPROBACIONES LOCALES
-- Sintaxis de todos los módulos JavaScript y enlace de imports/exports de app.
-- Rutas locales de módulos, HTML, iconos y manifiesto bajo un subdirectorio.
-- Recursos gráficos y motor conservados byte a byte desde la fuente App.
-- Inicialización de Tierra y Luna; gravedad de cada mundo; valores de uniforms
-  finitos; catálogo, 30 casillas y 10 accesos rápidos.
-- Inicio/cierre de sesión XR simulado y retorno a los controles PC.
-- Y abre/cierra menú; selección de sectores; caminar, girar suavemente,
-  saltar, linterna y cambio de joysticks.
-- Catálogo → equipar → fantasma válido → colocar una pieza real.
-- Deshacer/rehacer y recuperación de una pieza desde el menú, reteniendo la
-  dirección marcada antes de apuntar al panel.
-- Uso de silla, subir/bajar de vehículo, aceleración y frenado con gatillos.
-- Agarre de manillar por pose de mando y efecto sobre la dirección física.
-- Pinza y giro de manos simuladas; frenado al perder seguimiento.
-- Movimiento físico horizontal con colisión frente a una pared.
-- Paneles VR de configuración, cambio real del grupo de pasto y de Vía Láctea;
-  teclado virtual que confirma el valor del campo.
-- Panel de lámpara conectado al manejador original y cambio real de encendido.
-- Ocular, aumentos, cámara de telescopio independiente de la proyección del visor.
-- Telescopio colocado: base y asiento estables al mover mirada/mando en VR.
-- Pasadas de sombra/caché con sustitución de cámara XR desactivada/restaurada.
-- Cambio de mundos: una escena residente, gravedad correcta, recuperación de
-  construcciones previas y capas del cielo visibles para los dos ojos.
-- Luna: 96 meshes después de agrupar teselas lejanas, sin quitar triángulos.
-- Las claves nuevas están aisladas bajo sky-vr-*.
-- 22 parejas reales de shaders GLSL compiladas y enlazadas localmente,
-  incluidos Tierra, Luna, construcciones, sombras, cielo y ocular.
-- 12 pruebas de píxeles del shader del cielo: proyecciones asimétricas de ambos
-  ojos, giro de cabeza y FOV de 96°, 20° y 0,1°, comparados contra rayos calculados.
-- Texturas de menú semicircular, opciones, guía y teclado renderizadas a PNG;
-  inspección visual de espaciado y legibilidad a resolución de textura.
-- Worker generado sobre todos los archivos finales: tamaño, SHA-256, lista
-  completa y huella de versión verificados.
-- Simulación del worker: carga offline de ambos mundos/motor/módulos VR,
-  navegación con query, rechazo atómico de archivo corrupto/publicación
-  incompleta, espera de actualización, ventanas fijadas a versiones distintas,
-  limpieza limitada a cachés propias sin borrar guardados.
-- ZIP íntegro, archivos completos sueltos en raíz, sin node_modules ni build.
-
-QUÉ REQUIERE PRUEBA FÍSICA EN META QUEST 3S
-- Solicitud de sesión/permisos, presentación estéreo y acceso a los mandos
-  reales de la versión de Meta Quest Browser instalada.
-- Comodidad, escala/distancia del menú, lectura y alcance del volante/manillar.
-- Colores, sombras, ambas lentes, fotografía y óptica del telescopio bajo el
-  controlador gráfico real del visor.
-- Seguimiento de manos, oclusión de dedos, pinza y postura de conducción.
-- FPS sostenidos, latencia, temperatura, autonomía y escenas con muchas bases.
-- Cierre/reapertura real del navegador, permisos de archivos y retención de
-  caché offline del dispositivo; pérdida/restauración real de contexto gráfico.
-No se ha afirmado ninguna medición de FPS físicos ni una prueba con el visor puesto.
-
-LÍMITES CONOCIDOS
-- No es APK, aplicación de la tienda Meta ni edición móvil. Se usa por HTTPS
-  en un navegador WebXR; PC sin visor mantiene la vista de escritorio.
-- Se necesita pulsar Entrar en VR. Una web no inicia inmersión automáticamente.
-- El giro solicitado es suave. No se añadieron teletransporte ni snap turn.
-- Las manos sin mandos se limitan a conducción y dependen del soporte del
-  navegador. Para menús, inventario y demás acciones se utilizan los mandos.
-- Importar/exportar vuelve al navegador para su selector/descarga y requiere
-  volver a entrar en VR. No se simula un selector nativo dentro del mundo.
-- El ocular es una imagen ampliada monoscópica dentro del entorno VR, no dos
-  cámaras telescópicas estereoscópicas. No altera la proyección de la cabeza.
-- Foveación depende del soporte del runtime. La escala de framebuffer cambia
-  en la siguiente sesión, conforme al funcionamiento de WebXRManager.
-- Las cachés pueden ser retiradas por el navegador si borras datos o falta
-  espacio. Exportar expediciones sigue siendo el respaldo recomendable.
-- Los sistemas originales de astronomía y bandas no visibles conservan sus
-  aproximaciones y carácter didáctico; no se presentan como mediciones reales.
+Limitación: no se ejecutó esta actualización en un Meta Quest 3S físico.
+Las comprobaciones locales no certifican FPS, comodidad ni seguimiento
+óptico de un visor real. No se afirma una mejora de FPS medida en Quest.

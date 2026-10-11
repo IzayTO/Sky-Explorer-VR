@@ -1,19 +1,8 @@
-VERIFICACIÓN DE ESTA ENTREGA · VR-2.0.0
-
-Verificado con los módulos reales y entrada XR sintética:
-inicio en PC; Tierra/Luna; inventario y catálogo; caminar, giro suave y salto;
-linterna; colocación real y deshacer/rehacer; interacción de sillas y vehículos;
-aceleración, freno, dirección por agarre, pérdida de seguimiento de manos;
-controles intercambiados; colisiones físicas; visor y zoom; panel de lámparas;
-cambio de destinos, descarga del anterior, guardados y retorno a PC;
-R3 mantenido para lápiz, selección persistente y recuperación con X;
-selector del antebrazo 2x5 sin sprint ni colocación simultáneos;
-40 casillas reales, actualización por cambios y deslizador de cantidades;
-uniformes astrales al entrar/salir de XR.
-
-Se generaron e inspeccionaron las texturas reales de menús, inventario,
-catálogo, guía y miniaturas. La interfaz utiliza Canvas y geometría local.
-
-Limitación: no se ejecutó esta actualización en un Meta Quest 3S físico.
-Las comprobaciones locales no certifican FPS, comodidad ni seguimiento
-óptico de un visor real. No se afirma una mejora de FPS medida en Quest.
+VR-2.0.1
+Comprobaciones técnicas de integración con los módulos reales y entradas XR
+simuladas: inventario, cambios de panel/textura, traslados/división/equipado,
+orientación lateral, postura/seguimiento, lámparas, distancia, conducción,
+cambio de destino y regreso a escritorio. Shaders compilados localmente.
+Dependencias y recursos locales revisados; caché regenerada y ZIP íntegro.
+No se ha realizado una sesión física en Meta Quest 3S ni una medición de FPS
+sobre ese dispositivo. Las comprobaciones locales no equivalen a esa medición.

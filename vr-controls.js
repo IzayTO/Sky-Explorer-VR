@@ -3,14 +3,14 @@ import {UI,round,wrap} from './vr-art.js';
 // 3 thumbstick click, 4 X/A, 5 Y/B. Stick axes 2/3. System buttons are not used.
 export const XR_BUTTON={trigger:0,grip:1,stick:3,primary:4,secondary:5};
 export const PROFILES=['Exploración','Construcción','Edición','Conducción','Telescopio','Menú'];
-export function controlLabels(mode,{swap=false,mountedScope=false,quick=false,interaction='Interactuar',rotating=false,keyboard=false}={}){
+export function controlLabels(mode,{swap=false,mountedScope=false,quick=false,interaction='Interactuar',rotating=false,keyboard=false,lampAction=null}={}){
  if(quick)return {left:[['LAT','Mantén: accesos'],['Y','Menú']],right:[['GAT','Elegir casilla']]};
  if(mode==='blocked')return {left:[],right:[]};
  if(mode==='menu')return {left:[['Y',keyboard?'Cerrar teclado':'Cerrar menú'],['JOY','Navegar'],['GAT','Aceptar']],right:[['A','Aceptar'],['B','Volver'],['GAT','Elegir / deslizar']]};
- if(mode==='vehicle')return {left:[['Y','Menú'],['X','Bajar'],['GAT','Frenar'],['JOY',swap?'Giro suave':'Dirigir / reversa'],['LAT','Volante / impulso'],['L3','Impulso']],right:[['A','Salto vehículo'],['GAT','Acelerar'],['JOY',swap?'Dirigir / reversa':'Giro suave'],['LAT','Volante / faros']]};
+ if(mode==='vehicle')return {left:[['Y','Menú'],['X','Bajar'],['GAT','Freno / reversa'],['JOY',swap?'Giro suave':'Dirigir'],['LAT','Volante / impulso'],['L3','Impulso']],right:[['A','Salto vehículo'],['GAT','Acelerar'],['JOY',swap?'Dirigir':'Giro suave'],['LAT','Volante / faros']]};
  if(mode==='telescope')return {left:[['Y','Menú'],...(mountedScope?[['X','Levantarse']]:[]),['GAT','Registrar'],['JOY',swap?'Giro / aumento':mountedScope?'Orientar postura':'Caminar']],right:[['B','Cerrar visor'],['JOY',swap?'Caminar':'Giro / aumento'],...(mountedScope?[['R3','Siguiente filtro']]:[])]};
  const left=[['Y','Menú'],['X',mode==='edit'?'Mantén: recuperar':interaction],['GAT',mode==='edit'?'Seleccionar':mode==='build'?'Colocar':'Usar herramienta'],['JOY',swap?'Giro suave':'Caminar']];
- const right=[['A','Saltar'],['B',mode==='edit'?'Deseleccionar':mode==='build'?'Guardar pieza':'Telescopio'],['GAT','Correr'],['JOY',swap?'Caminar':'Giro suave'],['LAT','Linterna']];
+ const right=[['A','Saltar'],['B',mode==='edit'?'Deseleccionar':mode==='build'?'Guardar pieza':'Telescopio'],['GAT','Correr'],['JOY',swap?'Caminar':'Giro suave'],['LAT',lampAction||'Linterna']];
  if(mode==='build'){left.push(['LAT','Mantén: rotar']);if(rotating)right.push(['R3','Cambiar eje']);}
  else if(mode==='edit')right.push(['R3','Mantén: salir']);
  else {left.push(['LAT','Mantén: accesos']);right.push(['R3','Mantén: editar']);}

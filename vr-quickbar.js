@@ -1,7 +1,7 @@
 import {canvasMesh} from './vr-ui.js';
 import {UI,icon,tile,round} from './vr-art.js';
 export class ForearmInventory{
- constructor(inventory,grip){Object.assign(this,canvasMesh(1024,440,.28,.1203));this.inventory=inventory;this.revision=-1;this.hovered=-1;this.active=false;this.dirty=true;this.hits=[];this.mesh.name='Diez accesos · antebrazo izquierdo';this.mesh.position.set(-.018,.058,.16);this.mesh.rotation.set(-Math.PI/2,0,.13);this.mesh.renderOrder=19950;grip.add(this.mesh);}
+ constructor(inventory,grip){Object.assign(this,canvasMesh(1024,440,.26,.11172));this.inventory=inventory;this.revision=-1;this.hovered=-1;this.active=false;this.dirty=true;this.hits=[];this.mesh.name='Diez accesos · antebrazo izquierdo';this.mesh.position.set(-.018,.058,.16);this.mesh.rotation.set(-Math.PI/2,0,.13);this.mesh.renderOrder=19950;grip.add(this.mesh);}
  setActive(active){if(active!==this.active){this.active=active;this.hovered=-1;this.dirty=true;}}
  hover(uv){if(!this.active)return null;const x=uv.x*1024,y=(1-uv.y)*440,hit=this.hits.find(h=>x>=h.x&&x<=h.x+h.w&&y>=h.y&&y<=h.y+h.h);const next=hit?.index??-1;if(next!==this.hovered){this.hovered=next;this.dirty=true;}return hit;}
  select(hit){if(!this.active||!hit)return false;this.inventory.select(hit.index);return true;}

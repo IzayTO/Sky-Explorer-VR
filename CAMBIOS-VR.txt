@@ -1,15 +1,24 @@
-VR-2.0.0 · Interfaz espacial
-Base: main 21ab868da8f7ecd70b52f982b53004f02364df75, GitHub solo lectura.
+VR-2.0.1 · Correcciones y comodidad
+Base: main ee38ab2b923b9a4e99a7f76711bcb6781f8f4f9c. GitHub solo lectura.
 
-Cuatro sectores y navegación por arcos con retorno por nivel.
-Inventario visual real 30+10 y catálogo con miniaturas estáticas de los modelos.
-Diez accesos 2x5 anclados al mando/antebrazo izquierdo; selección contextual.
-Entrada central por estados y bloqueo de botones mantenidos al cambiar contexto.
-R3 mantenido: lápiz; selección persistente, X mantenido: recuperación segura.
-R3 en telescopio de piso: filtros desbloqueados con validación de energía.
-Guía vectorial Touch Plus, manos procedimentales y etiquetas contextuales menores.
-Tarjetas compactas, temperaturas de lámparas con indicadores de color.
-Diámetros astrales reducidos mediante parámetros XR; halo solar lunar económico.
-No hay cambios de formato de partidas ni de identificadores de objetos.
-Se mantienen iluminación, sombras, terreno, física y carga de un único entorno.
-Recursos offline regenerados como conjunto coherente.
+Inventario: lienzos y texturas de tamaño fijo reutilizables; elimina el cambio
+incompatible de dimensiones tras subir la textura a la GPU. Contenido y zonas
+de selección se actualizan juntos. Mochila real 6 columnas x 5 filas y 10 accesos.
+Abanico ligeramente menor; tarjeta lateral mira a los ojos desde su propio
+centro, independientemente de la inclinación del abanico. Ambos siguen la mano.
+Antebrazo y ayudas más compactos. Manos con palma orientada hacia dentro,
+dedos curvados y muñeca alineada con el agarre, sin modificar su seguimiento.
+Indicador de distancia real del rayo derecho, con textura pequeña independiente
+que se actualiza como máximo 10 veces/s y solo si cambia el valor.
+Agarre derecho: enciende/apaga la lámpara apuntada hasta 4,5 m; fuera de ella
+controla la linterna. X conserva los detalles. Prioridad de vehículos intacta.
+Sistema > Movimiento: postura física de pie/sentado, guardada. Compensación
+calibrada compartida por cabeza y mandos; no se suma en asientos virtuales.
+Asiento VR del vehículo adelantado 25 cm sobre su eje local de avance.
+Gatillo izquierdo frena y después retrocede proporcionalmente al mantenerlo;
+soltar deja de acelerar. Tiene prioridad si se aprietan los dos gatillos.
+Discos XR respecto a VR-2.0.0: en Tierra Sol 85%, Luna 65%; en Luna Sol 50%,
+Tierra 60%. Halo lunar conserva su extensión/brillo y añade un centro suave.
+Con hasta cuatro luces, se reutilizan selección/uniformes hasta un cambio real,
+en lugar de recalcularlos al mover la cabeza. No se reduce luz ni sombra.
+Caché offline regenerada. Conserva partidas, catálogos, escritorio y recursos.

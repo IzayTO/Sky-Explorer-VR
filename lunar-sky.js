@@ -23,8 +23,11 @@ export class LunarSky{
       void main(){vec3 d=normalize(vRay);float a=atan(length(cross(d,sunDirection)),dot(d,sunDirection));float aa=max(fwidth(a),.000018);
         float disk=1.-smoothstep(.0285*xrSunDisc-aa,.035*xrSunDisc+aa,a);
         float glow=0.;if(solarGlare>.000001)glow=exp(-pow(a/.19,1.65))*.20+exp(-a*20.)*.55+exp(-a*65.)*.45;
-        float corona=(1.-xrSunDisc)*.75*exp(-a/(.035*xrSunDisc));
-        vec3 color=vec3(1.,.985,.95)*(disk*2.2+glow*solarGlare+corona);
+        // Keep the existing halo radius/energy; only the solid disc shrinks.
+        float haloScale=xrSunDisc<.99?.45:1.;
+        float corona=(1.-haloScale)*.75*exp(-a/(.035*haloScale));
+        float coreGlow=xrSunDisc<.99?.16*exp(-pow(a/(.042*xrSunDisc),2.)):0.;
+        vec3 color=vec3(1.,.985,.95)*(disk*2.2+glow*solarGlare+corona+coreGlow);
         gl_FragColor=vec4(color,1.);}`);
     let mw=base.milkyWay.material.fragmentShader.replace('*(1.-moonlight*.82)*smoothstep(.0,.23,d.y)','').replace('color*dust*veil','color*dust*veil*3.35');
     this.milkyWay=copy(base.milkyWay,mw,true);
@@ -74,7 +77,7 @@ export class LunarSky{
     this.moon.set(-Math.sin(lon),Math.cos(latitude)*Math.cos(lon),Math.sin(latitude)*Math.cos(lon)).normalize();
   }
   update(camera,state,t,pixelRatio){
-    this.u.xrDisc.value=state.xr?.6:1;this.u.xrSunDisc.value=state.xr?.45:1;
+    this.u.xrDisc.value=state.xr?.36:1;this.u.xrSunDisc.value=state.xr?.225:1;
     this.u.skyDetail.value=state.graphics?.advancedSky===false?0:1;
     this.orbit(state.hour);const dt=clamp(t-this.lastTime,0,.05)||.016;this.lastTime=t;
     this.right.crossVectors(this.moon,UP).normalize();this.up.crossVectors(this.right,this.moon).normalize();

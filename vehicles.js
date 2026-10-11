@@ -60,7 +60,8 @@ export class Vehicle{
     this.boostHeld=Boolean(boost||this.boostTouch)&&walker.enabled;
     const before=this.heading;this.integrate(dt,forward,steering,walker.enabled);
     walker.yaw+=this.heading-before;
-    walker.pos.copy(this.root.localToWorld(this._seat.copy(this.model.seat)));
+    this._seat.copy(this.model.seat);if(walker.xrActive)this._seat.z-=.25;
+    walker.pos.copy(this.root.localToWorld(this._seat));
     this.seatBlend=Math.min(1,this.seatBlend+dt*3.2);const t=this.seatBlend*this.seatBlend*(3-2*this.seatBlend);
     walker.camera.position.lerpVectors(this._cameraFrom,walker.pos,t);
     const comfort=walker.sway?Math.min(1,walker.sensitivity*3):0;

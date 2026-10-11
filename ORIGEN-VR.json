@@ -15,5 +15,12 @@
     "base_commit": "21ab868da8f7ecd70b52f982b53004f02364df75",
     "github_access": "read-only",
     "save_format_changed": false
+  },
+  "polish_update": {
+    "version": "VR-2.0.1",
+    "base_commit": "ee38ab2b923b9a4e99a7f76711bcb6781f8f4f9c",
+    "date": "2026-10-11",
+    "github_access": "read-only",
+    "save_format_changed": false
   }
 }

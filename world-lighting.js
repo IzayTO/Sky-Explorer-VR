@@ -188,7 +188,12 @@ export class WorldLighting{
  blocked(origin,dir,limit=2000){let index=0;while(index<this.nodes.length){const n=this.nodes[index];if(!boundsHit(origin,dir,n.bounds,limit)){index=n.skip;continue;}if(n.box&&(n.box.shape?dishBlocked(origin,dir,n.box,limit):rayBox(origin,dir,n.box,limit)!==null))return true;index++;}return false;}
  update(world,eye,time,camera=null){
   if(this.revision!==(world.spatialRevision??world.revision))this.rebuild(world);
-  const dirty=world.lightingDirty;if(time-this.last<.12&&!dirty)return;this.last=time;world.lightingDirty=false;
+  const dirty=world.lightingDirty;
+  // Up to four lights all have permanent atlas slots. Camera movement cannot
+  // change their contribution or membership: only an actual world/light edit
+  // needs new uniforms. Larger installations retain distance prioritisation.
+  if(!dirty&&this.last!==-99&&this.u.baseLightCount.value<=4)return;
+  if(time-this.last<.12&&!dirty)return;this.last=time;world.lightingDirty=false;
   const previous=this.selected;this.selected=this.previousSelected||[];this.previousSelected=previous;this.selected.length=0;this.distances.length=0;
   if(camera){this.projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);this.frustum.setFromProjectionMatrix(this.projection,camera.coordinateSystem);}
   this.allLamps.length=0;

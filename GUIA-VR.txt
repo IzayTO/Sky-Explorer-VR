@@ -1,4 +1,4 @@
-SKY EXPLORER VR 2.0 — INTERFAZ ESPACIAL
+SKY EXPLORER VR 2.0.1 — INTERFAZ ESPACIAL
 
 Y abre o cierra el menú. Cuatro sectores: Cielo, Inventario, Construcción,
 Sistema. Joystick IZQUIERDO elige sectores; gatillo izquierdo o A confirma.
@@ -42,7 +42,9 @@ Joystick izquierdo: caminar. Derecho: giro suave. Puedes intercambiar
 ambos en Sistema/Movimiento; los botones físicos A/B/X/Y no se intercambian.
 A: saltar. B: telescopio. X: interactuar/sentarte/levantarte/subir/bajar.
 Y: menú. Gatillo izquierdo: herramienta. Gatillo derecho mantenido: correr.
-Agarre derecho: linterna. Mantener R3 medio segundo: Modo Lápiz.
+Agarre derecho: linterna; si apuntas a una lámpara a menos de 4,5 m,
+enciende/apaga esa lámpara. X abre sus ajustes. Junto a la mano derecha se
+muestra la distancia real al impacto del rayo cuando existe un objetivo. Mantener R3 medio segundo: Modo Lápiz.
 
 LÁPIZ
 Apunta al objeto; gatillo izquierdo lo selecciona y conserva la selección.
@@ -51,8 +53,10 @@ No se recuperan cajas con contenido ni cimientos con piezas dependientes.
 Si la mochila está llena, el objeto permanece. Deshacer y rehacer se conservan.
 
 VEHÍCULOS
-Joystick de movimiento: dirección/reversa. Gatillo derecho: acelerar.
-Gatillo izquierdo: frenar. A: salto cuando corresponde. X: bajar. Y: menú.
+Joystick de movimiento: dirección. Gatillo derecho: acelerar hacia delante.
+Gatillo izquierdo: frena el avance; mantenlo después de detenerte para dar
+reversa. Su intensidad regula la velocidad. Soltar deja de acelerar en reversa.
+Si aprietas ambos gatillos, manda el izquierdo. A: salto cuando corresponde. X: bajar. Y: menú.
 Agarre junto al volante/manillar: sujetar y dirigir físicamente.
 Agarre izquierdo libre o L3: impulso; derecho libre: faros.
 Manos sin mandos: opcionales solo al conducir, activadas antes de entrar VR.
@@ -67,6 +71,10 @@ orden y requisitos de energía. El portátil no tiene ese atajo.
 La forma y el fondo del ocular se conservan.
 
 SISTEMA
+Movimiento > Postura física: Jugar de pie usa tu altura natural del visor;
+Jugar sentado compensa hasta la altura de exploración. Mantén tu postura
+cómoda al activarlo. Recentrar vuelve a calibrarla. La preferencia se guarda;
+conduciendo o en una silla virtual no se añade dos veces la compensación.
 Movimiento, Imagen, Sonido, Ayuda, Sesión. Ayuda incluye dibujos de los dos
 mandos Touch Plus con seis perfiles y asignaciones contextuales.
 Sesión incluye guardar, exportar/importar, diagnóstico, offline/actualización,
@@ -74,6 +82,7 @@ recentrar, regresar al punto de llegada y salir de VR. Importar y exportar
 abren el navegador fuera de inmersión. Luego puedes volver a entrar en VR.
 
 ASTROS
-Solo en VR: Sol/Luna terrestres y Tierra lunar al 60%; Sol lunar al 45%
-con resplandor inmediato sutil. No cambia la iluminación del terreno.
-Fuera de VR conservan su tamaño anterior.
+Respecto a la versión 2.0.0, solamente en VR: Sol terrestre al 85%, Luna
+al 65%; desde la Luna, Tierra al 60% y Sol al 50%. El halo lunar conserva
+su tamaño y añade un resplandor central suave. Iluminación del terreno y
+tamaños fuera de VR permanecen iguales.

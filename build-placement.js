@@ -1,4 +1,4 @@
-import {smallPlacement,covered} from './expansion-placement.js?v=2.1.0';
+import {smallPlacement,wallPlacement,covered} from './expansion-placement.js?v=2.1.0';
 import * as THREE from './three.module.js?v=4.0.0';
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z), TAU=Math.PI*2;
 const walls=new Set(['wall','window','door','corner','column']);
@@ -29,6 +29,10 @@ function cell(point,w,d,frame,rot){
 function edge(point,e){const p=local(point,e),[w,d]=footprint(e.item,e.params);const candidates=[{axis:'x',sign:-1,distance:Math.abs(p.x+w/2)},{axis:'x',sign:1,distance:Math.abs(p.x-w/2)},{axis:'z',sign:-1,distance:Math.abs(p.z+d/2)},{axis:'z',sign:1,distance:Math.abs(p.z-d/2)}];return {...candidates.sort((a,b)=>a.distance-b.distance)[0],p,w,d};}
 function neighbor(position,item,rotation,e,point){const pick=edge(point,e),[w,d]=footprint(item),a=rotation.y-e.rotation.y,hx=(Math.abs(Math.cos(a))*w+Math.abs(Math.sin(a))*d)/2,hz=(Math.abs(Math.sin(a))*w+Math.abs(Math.cos(a))*d)/2;
  const p=pick.p;p.x=Math.round((p.x+pick.w/2-hx)/(hx*2))*hx*2-pick.w/2+hx;p.z=Math.round((p.z+pick.d/2-hz)/(hz*2))*hz*2-pick.d/2+hz;if(hx<=pick.w/2)p.x=Math.max(-pick.w/2+hx,Math.min(pick.w/2-hx,p.x));if(hz<=pick.d/2)p.z=Math.max(-pick.d/2+hz,Math.min(pick.d/2-hz,p.z));
+ if(item.kind==='module'&&e.item.kind==='module'){
+  const q=local(point,e),axis=pick.axis==='x'?'z':'x',available=(axis==='x'?pick.w/2-hx:pick.d/2-hz);
+  p[axis]=available<=0?0:Math.max(-available,Math.min(available,Math.round(q[axis])));
+ }
  if(pick.axis==='x')p.x=pick.sign*(pick.w/2+hx);else p.z=pick.sign*(pick.d/2+hz);p.y=0;position.copy(worldPoint(p,e));return position;
 }
 function roofRay(world,camera,direction){
@@ -66,6 +70,7 @@ export function placement(world,item,camera,rotation,dimensions={}){
  }else if(item.surface==='wall'){
   if(!target||Math.abs(hit.normal.y)>.35){valid=false;reason='Acerca la mira a una pared.';}
   if(!dimensions.rotationTouched)rot.set(0,Math.atan2(hit.normal.x,hit.normal.z),0);position.addScaledVector(hit.normal,.012);position.y-=item.size[1]/2;
+  if(valid&&item.expansion){const problem=wallPlacement(item,hit,position,rot,params);if(problem){valid=false;reason=problem;}}
  }else if(item.surface==='ceiling'){
   if(!target||hit.normal.y>-.5){valid=false;reason='Mira la parte inferior de una cubierta.';}position.y-=.008;
  }else if(item.small){const problem=smallPlacement(world,item,hit,position,rot,params,magnet);if(problem){valid=false;reason=problem;}
@@ -80,7 +85,17 @@ export function placement(world,item,camera,rotation,dimensions={}){
     if(frame){const q=local(position,frame),[fw,fd]=footprint(frame.item,frame.params),a=rot.y-frame.rotation.y,hx=(Math.abs(Math.cos(a))*item.size[0]+Math.abs(Math.sin(a))*item.size[2])/2,hz=(Math.abs(Math.sin(a))*item.size[0]+Math.abs(Math.cos(a))*item.size[2])/2;if(fw>=hx*2&&fd>=hz*2){q.x=Math.max(-fw/2+hx,Math.min(fw/2-hx,q.x));q.z=Math.max(-fd/2+hz,Math.min(fd/2-hz,q.z));const y=position.y;position.copy(worldPoint(q,frame));position.y=y;}}
    }else{valid=false;reason='Apunta a una pared alta, al hueco superior o a otra cubierta.';}
    params.snapped=valid;
-  }else if(kind==='module'||kind==='platform'){if(target?.item.kind==='module'||target?.item.kind==='platform'){if(!dimensions.rotationTouched)rot.y=target.rotation.y;neighbor(position,item,rot,target,hit.point);position.y=target.position.y;}else{cell(position,item.size[0],item.size[2],frame,rot);position.y=world.support(position.x,position.z,hit.point.y);}params.snapped=!!target;
+  }else if(kind==='module'||kind==='platform'){if(target?.item.kind==='module'||target?.item.kind==='platform'){if(!dimensions.rotationTouched)rot.y=target.rotation.y;neighbor(position,item,rot,target,hit.point);position.y=target.position.y;}else{
+   if(!dimensions.rotationTouched&&frame)rot.y=frame.rotation.y;
+   const aim=frame?local(position,frame):position.clone();cell(position,item.size[0],item.size[2],frame,rot);
+   if(item.id==='pressure-corridor'){
+    const yaw=frame?.rotation.y||0,a=rot.y-yaw,hx=(Math.abs(Math.cos(a))*item.size[0]+Math.abs(Math.sin(a))*item.size[2])/2,hz=(Math.abs(Math.sin(a))*item.size[0]+Math.abs(Math.cos(a))*item.size[2])/2;
+    const q=frame?local(position,frame):position.clone(),axis=hx<hz?'x':'z',size=frame?footprint(frame.item,frame.params)[axis==='x'?0:1]:Infinity,room=size/2-Math.min(hx,hz);
+    q[axis]=Math.round(aim[axis]);if(room>=0&&Number.isFinite(room))q[axis]=Math.max(-room,Math.min(room,q[axis]));
+    const out=frame?worldPoint(q,frame):q;position.x=out.x;position.z=out.z;
+   }
+   position.y=world.support(position.x,position.z,hit.point.y);
+  }params.snapped=!!target;
   }else if(kind==='floor'){
    if(target?.item.kind==='floor'){if(!dimensions.rotationTouched)rot.y=target.rotation.y;neighbor(position,item,rot,target,hit.point);position.y=target.position.y;}
    else{cell(position,item.size[0],item.size[2],frame,rot);position.y=target&&tiles.has(target.item.kind)?top(target):world.support(position.x,position.z,hit.point.y);}

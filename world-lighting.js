@@ -162,7 +162,7 @@ export class WorldLighting{
    for(const part of parts){
     const matrix=this.matrix.multiplyMatrices(e.mesh.matrixWorld,part.matrix),box=orientedBox(part.box,matrix);
     this.delta.copy(e.anchor).sub(box.center);
-    const emitterInside=e.item.category==='Iluminación'&&box.axes.every((a,i)=>Math.abs(this.delta.dot(a))<=box.half.getComponent(i)+.005);
+    const emitterInside=(e.item.category==='Iluminación'||e.item.decorLight)&&box.axes.every((a,i)=>Math.abs(this.delta.dot(a))<=box.half.getComponent(i)+.005);
     if(box.half.lengthSq()<=.0001||emitterInside)continue;
     if(part.shape){box.center.set(0,0,0).applyMatrix4(matrix);box.shape=part.shape;box.type=3;}
     else box.type=box.axes.every(a=>Math.max(Math.abs(a.x),Math.abs(a.y),Math.abs(a.z))>1-1e-6)?1:2;
@@ -198,7 +198,7 @@ export class WorldLighting{
   if(camera){this.projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);this.frustum.setFromProjectionMatrix(this.projection,camera.coordinateSystem);}
   this.allLamps.length=0;
   for(const e of world.lamps||world.entities){
-   if(e.item.category!=='Iluminación'||e.params.on===false)continue;this.allLamps.push(e);
+   if((e.item.category!=='Iluminación'&&!e.item.decorLight)||e.params.on===false)continue;this.allLamps.push(e);
    this.sphere.center.copy(e.anchor);
    const visible=!camera||this.frustum.intersectsSphere(this.sphere);
    const distance=(1+e.anchor.distanceToSquared(eye))*(visible?1:64)*(previous.includes(e)?.65:1);let i=0;while(i<this.distances.length&&distance>=this.distances[i])i++;
@@ -216,12 +216,12 @@ export class WorldLighting{
   for(let i=0;i<this.selected.length;i++)this.u.baseLightSlots.value[i]=this.cacheSlots.indexOf(this.selected[i]);
   if(dirty)this.exposureAt=-Infinity;
   this.u.baseLightCount.value=this.allLamps.length;
-  for(let i=0;i<this.selected.length;i++){const e=this.selected[i];this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);this.u.baseLights.value[i].set(e.anchor.x,e.anchor.y,e.anchor.z,12);this.u.baseColors.value[i].set(this.c.r,this.c.g,this.c.b,2.8);}
+  for(let i=0;i<this.selected.length;i++){const e=this.selected[i];this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);this.u.baseLights.value[i].set(e.anchor.x,e.anchor.y,e.anchor.z,12);this.u.baseColors.value[i].set(this.c.r,this.c.g,this.c.b,e.item.lightPower??2.8);}
   if(this.allLamps.length>4){
    if(dirty||this.gridLampCount!==this.allLamps.length||!this.lightTexture){this.rebuildLightGrid();this.gridLampCount=this.allLamps.length;}
    if(dirty||previous.length!==this.selected.length||this.selected.some((e,i)=>e!==previous[i])||!this.gridRecordsReady){
     const data=this.lightTexture.image.data;
-    for(let i=0;i<this.allLamps.length;i++){const e=this.allLamps[i],p=e.anchor;this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);data.set([p.x,p.y,p.z,(this.selected.includes(e)?this.cacheSlots.indexOf(e):-1),this.c.r,this.c.g,this.c.b,2.8],i*8);}
+    for(let i=0;i<this.allLamps.length;i++){const e=this.allLamps[i],p=e.anchor;this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);data.set([p.x,p.y,p.z,(this.selected.includes(e)?this.cacheSlots.indexOf(e):-1),this.c.r,this.c.g,this.c.b,e.item.lightPower??2.8],i*8);}
     this.lightTexture.needsUpdate=true;this.gridRecordsReady=true;
    }
   }else this.gridRecordsReady=false;
@@ -235,7 +235,7 @@ export class WorldLighting{
   if(now-this.exposureAt<1000/15)return this.exposureValue;
   if(this.exposureAt!==-Infinity&&camera.position.distanceToSquared(this.exposureEye)<1e-8&&this.dir.distanceToSquared(this.exposureDirection)<1e-8)return this.exposureValue;
   this.exposureAt=now;this.exposureEye.copy(camera.position);this.exposureDirection.copy(this.dir);
-  let result=0;for(const e of this.allLamps){this.delta.copy(e.anchor).sub(camera.position);const d=this.delta.length();if(d>=14)continue;this.delta.normalize();const contribution=Math.max(0,1-d/14)*Math.max(.1,this.dir.dot(this.delta))*.45;if(contribution<=result)continue;if(!this.blocked(camera.position,this.delta,d-.10))result=contribution;}
+  let result=0;for(const e of this.allLamps){this.delta.copy(e.anchor).sub(camera.position);const d=this.delta.length();if(d>=14)continue;this.delta.normalize();const contribution=Math.max(0,1-d/14)*Math.max(.1,this.dir.dot(this.delta))*.45*(e.item.lightPower===undefined?1:e.item.lightPower/2.8);if(contribution<=result)continue;if(!this.blocked(camera.position,this.delta,d-.10))result=contribution;}
   return this.exposureValue=result;
  }
 

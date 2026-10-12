@@ -1,0 +1,58 @@
+SKY EXPLORER VR 2.2.0 · PULIDO DE MODELOS
+
+Copia completa para sustituir los archivos de la raíz. No hay que ejecutar
+comandos ni instalar dependencias. Conserva los identificadores y el formato
+de las partidas. Los objetos ya colocados muestran los modelos actualizados.
+
+64 OBJETOS EN LA EXPANSIÓN
+Los 53 anteriores se han revisado desde seis vistas. Se retocan los modelos
+que lo necesitaban; los que ya estaban bien conservan su diseño.
+Hay 11 incorporaciones, no 10: dos macetas grandes y nueve adornos.
+
+Vegetación: Strelitzia y palmera Rhapis, en macetas grandes de suelo.
+Decoración: lámpara lunar esférica, mapa lunar enmarcado, ADN, placa Apollo,
+sistema planetario de escritorio, exhibidor de parche de misión, casco en
+soporte, plano técnico enmarcado y vitrina de muestra de misión.
+Todos están disponibles directamente, con miniaturas del mismo modelo.
+Los nueve adornos nuevos son estáticos. Los globos anteriores conservan X
+para girarlos y el reloj anterior sigue el tiempo del juego.
+
+PULIDO
+- Astronauta: visor curvo exterior, anillo del casco, pivotes, mochila,
+  conexiones, mangueras, mangas, pantalones y botas continuos.
+- Cohete: etapas, anillos, cuatro aletas, cinco motores y torre de escape.
+- Globos: cartografía original con continentes y mares; soporte de medio aro.
+- Plantas: hojas curvas de doble cara, nervaduras, tallos continuos, macetas
+  huecas y tierra. Poto colgante sin hojas en forma de pirámide.
+- Antena: superficies curvas separadas y normales suaves, sin caras
+  coincidentes; apoyos, alimentador y estructura posterior.
+- Maqueta lunar: uniones, ventanas, patas, células solares y pequeño rover.
+- Satélite: células y marco alineados con las alas; reverso y conectores.
+- Equipos: detalles posteriores, paneles de servicio, conectores y rejillas.
+- Cajones con pared posterior móvil; bisagras y cara interna del armario.
+- Cristales de módulos/vitrinas como láminas, evitando cajas transparentes
+  superpuestas. Sombra sencilla por pieza principal, sin sombrear cada hoja.
+
+COLOCACIÓN Y ACCESOS
+El pasillo admite izquierda, centro y derecha sobre los pisos de 4 × 4 m;
+también puede alinearse al centro del puerto de otro módulo.
+El módulo habitable tiene puertas independientes en ambos extremos.
+La esclusa conserva su interbloqueo: hay que cerrar una antes de abrir otra.
+La cúpula tiene puertas abatibles y un vestíbulo acristalado.
+X acciona el acceso próximo. Las puertas empiezan cerradas.
+La comprobación de apertura considera las partes móviles y sus obstáculos,
+sin confundir las uniones de paredes/suelo estáticos con un bloqueo.
+Los cuadros se apoyan en una pared continua. El resto usa las mesas y
+repisas existentes; el sistema comprueba los apoyos de las bases.
+Los adornos nuevos no tienen animaciones de fondo.
+La lámpara lunar produce luz constante muy tenue mediante el sistema de
+luces existente; no añade bloom ni un renderizador separado.
+
+ALCANCE
+Se conserva la interfaz, los controles, la conducción y los ajustes de
+astros ya presentes en el repositorio. No se vuelven a multiplicar sus tamaños.
+Las ilustraciones son originales y didácticas, inspiradas en las referencias
+indicadas en REFERENCIAS-OBJETOS.txt. No son recursos oficiales de NASA.
+Comprobaciones locales: registro, geometrías, vistas, colisiones, aperturas,
+almacenamiento, energía, persistencia en ambos destinos, shaders y recursos.
+Esta revisión no sustituye una medición de FPS ni una sesión física en Quest.

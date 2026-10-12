@@ -1,7 +1,7 @@
 import * as T from './three.module.js?v=4.0.0';
 import {createProp,propGeometry,disposePropDetails} from './props.js?v=4.1.2';
-import {entityBoxes,boxesOverlap,orientedBox} from './spatial.js?v=4.1.2';
-import {covered,smallPlacement} from './expansion-placement.js?v=2.1.0';
+import {entityBoxes,boxesOverlap,orientedBox,rayBox} from './spatial.js?v=4.1.2';
+import {covered,smallPlacement,wallPlacement} from './expansion-placement.js?v=2.1.0';
 const V=(x=0,y=0,z=0)=>new T.Vector3(x,y,z),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const note='<p class="science-note">Modelo didáctico del juego. No recibe señales externas ni mide radiación real.</p>';
@@ -11,22 +11,30 @@ export class ExpansionSystems{
  supported(e){return this.world.entities.some(a=>a.params.supportUid===e.uid);}
  changeShape(e,patch,{clearance=true}={}){
   const w=this.world,x=this.x;if(!w.entities.includes(e))return false;
-  const dependents=clearance?w.entities.filter(a=>a.params.supportUid===e.uid&&a.item.small):[];
+  const dependents=clearance?w.entities.filter(a=>a.params.supportUid===e.uid):[];
   const params={...e.params,...patch},steps=clearance?6:1,oldGeometry=e.mesh.geometry;
   const body=orientedBox(new T.Box3(V(-.22,-1.58,-.22),V(.22,.08,.22)),new T.Matrix4().makeTranslation(...x.walker.pos.toArray()));
   // Test intermediate positions as well as the final pose, so hinged panels
   // cannot swing through a neighbour and end on its other side.
   for(let i=1;i<=steps;i++){const q={...params};for(const key of ['open','folded','doorA','doorB'])if(key in patch)q[key]=(Number(e.params[key])||0)+((Number(patch[key])||0)-(Number(e.params[key])||0))*i/steps;
-   const geo=propGeometry(e.id,q),boxes=entityBoxes(geo,e.mesh.matrixWorld);let blocked=dependents.some(a=>smallPlacement(w,a.item,{normal:V(0,1,0),point:a.position.clone().add(V(0,-.006,0)),entity:{...e,colliders:boxes}},a.position.clone(),a.rotation,{},false));
-   if(clearance&&!blocked)for(const b of boxes){if(boxesOverlap(b,body,.015)){blocked=true;break;}for(const other of w.index.query((b.bounds.min.x+b.bounds.max.x)/2,(b.bounds.min.z+b.bounds.max.z)/2,Math.max(b.bounds.max.x-b.bounds.min.x,b.bounds.max.z-b.bounds.min.z)/2)){if(other===e)continue;if(other.colliders.some(c=>boxesOverlap(b,c,.025))){blocked=true;break;}}if(blocked)break;}
+   const geo=propGeometry(e.id,q),boxes=entityBoxes(geo,e.mesh.matrixWorld);let blocked=dependents.some(a=>{
+    const target={...e,colliders:boxes};
+    if(a.item.surface==='wall')return !!wallPlacement(a.item,{entity:target,normal:V(0,0,1).applyEuler(a.rotation)},a.position,a.rotation,{});
+    if(a.item.surface==='ceiling')return !boxes.some(b=>rayBox(a.position,V(0,1,0),b,.04)!==null);
+    return !!smallPlacement(w,a.item,{normal:V(0,1,0),point:a.position.clone().add(V(0,-.006,0)),entity:target},a.position.clone(),a.rotation,{},false);
+   });
+   // Only moving panels need a sweep test. Existing static wall/floor contacts
+   // are legal module joints, not new obstructions to the door.
+   const moved=boxes.filter(b=>!e.colliders.some(a=>a.center.distanceToSquared(b.center)<1e-10&&a.half.distanceToSquared(b.half)<1e-10&&a.axes.every((axis,j)=>Math.abs(axis.dot(b.axes[j]))>1-1e-9)));
+   if(clearance&&!blocked)for(const b of moved){if(boxesOverlap(b,body,.015)){blocked=true;break;}for(const other of w.index.query((b.bounds.min.x+b.bounds.max.x)/2,(b.bounds.min.z+b.bounds.max.z)/2,Math.max(b.bounds.max.x-b.bounds.min.x,b.bounds.max.z-b.bounds.min.z)/2)){if(other===e)continue;if(other.colliders.some(c=>boxesOverlap(b,c,.025))){blocked=true;break;}}if(blocked)break;}
    if(geo.userData.owned)geo.dispose();if(blocked){x.toast('No hay espacio libre para mover esta pieza. Retira el obstáculo o aléjate.');return false;}
   }
   const replacement=createProp(e.id,w.material,params);disposePropDetails(e.mesh);e.mesh.geometry=replacement.geometry;for(const child of [...replacement.children])e.mesh.add(child);const owner=e.mesh.userData.entity;e.mesh.userData={...replacement.userData,entity:owner};if(oldGeometry.userData.owned)oldGeometry.dispose();Object.assign(e.params,patch);w.refresh(e);w.revision++;w.dirty=true;w.save();x.tickSound();return true;
  }
  panel(e,html,actions,ranges=[]){const c=this.x.dialog(e.item.name,html+ranges.map((r,i)=>`<label>${esc(r.label)} <input data-exp-range="${i}" type="range" min="${r.min}" max="${r.max}" step="${r.step||1}" value="${r.value}"></label>`).join('')+actions.map((a,i)=>`<button data-exp-action="${i}" class="science-primary" ${a.disabled?'disabled':''}>${esc(a.label)}</button>`).join(''));for(const b of c.querySelectorAll('[data-exp-action]'))b.onclick=()=>actions[Number(b.dataset.expAction)].run();for(const input of c.querySelectorAll('[data-exp-range]')){const r=ranges[Number(input.dataset.expRange)];input.onchange=()=>r.run(Number(input.value));}return c;}
  interact(e){if(!e.item.expansion||!e.item.action)return false;const x=this.x,id=e.id;
-  if(id==='airlock-module'){const local=(x.near?.point||x.aimCamera.position).clone().applyMatrix4(e.inverse),key=local.z<0?'doorA':'doorB',other=key==='doorA'?'doorB':'doorA';if(!e.params[key]&&e.params[other]){x.toast('Cierra la otra puerta antes de abrir ésta.');return true;}this.changeShape(e,{[key]:e.params[key]?0:1});}
-  else if(id==='floor-hatch')this.changeShape(e,{open:e.params.open?0:1});
+  if(id==='airlock-module'||id==='habitat-module'){const local=(x.near?.point||x.aimCamera.position).clone().applyMatrix4(e.inverse),key=local.z<0?'doorA':'doorB',other=key==='doorA'?'doorB':'doorA';if(id==='airlock-module'&&!e.params[key]&&e.params[other]){x.toast('Cierra la otra puerta antes de abrir ésta.');return true;}this.changeShape(e,{[key]:e.params[key]?0:1});}
+  else if(id==='floor-hatch'||id==='panorama-dome')this.changeShape(e,{open:e.params.open?0:1});
   else if(['folding-bunk','folding-table','deployable-canopy'].includes(id))this.changeShape(e,{folded:e.params.folded?0:1});
   else if(id==='vertical-ladder')this.climb(e);
   else if(id==='swivel-chair'){x.sit(e);this.swivel(e);}

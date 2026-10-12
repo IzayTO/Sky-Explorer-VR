@@ -1,4 +1,4 @@
-SKY EXPLORER VR 2.1.0 — INTERFAZ ESPACIAL Y EXPANSIÓN
+SKY EXPLORER VR 2.2.0 — INTERFAZ ESPACIAL Y EXPANSIÓN
 
 Y abre o cierra el menú. Cuatro sectores: Cielo, Inventario, Construcción,
 Sistema. Joystick IZQUIERDO elige sectores; gatillo izquierdo o A confirma.
@@ -99,3 +99,5 @@ X acciona el objeto apuntado o abre sus controles específicos.
 Escalera: X sujeta; joystick de movimiento sube/baja; X o A suelta.
 Silla giratoria: X se sienta; joystick de movimiento gira; X se levanta.
 Consulta EXPANSION-OBJETOS.txt para apoyos, almacenamiento, ciencia y energía.
+
+Actualización 2.2.0: catálogo con 64 objetos de expansión. Consulta PULIDO-MODELOS.txt.

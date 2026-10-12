@@ -1,4 +1,4 @@
-SKY EXPLORER VR 2.1.0 — REFERENCIAS VISUALES DE LA EXPANSIÓN
+SKY EXPLORER VR 2.2.0 — REFERENCIAS VISUALES DE LA EXPANSIÓN
 
 Los 53 modelos son geometría procedural original, adaptada a la paleta y al
 detalle del juego. Se consultaron fotos para proporciones, estructura y rasgos
@@ -81,3 +81,65 @@ capa sencilla, las plantas usan hojas de pocos polígonos, y los objetos no
 contienen renderizadores individuales ni modelos de miniatura animados.
 Las referencias guían formas y proporciones; las capacidades científicas y
 energéticas están definidas por el motor del juego, no por esos productos.
+
+PULIDO 2.2.0 Y ONCE INCORPORACIONES
+Se contrastaron siluetas, perfiles y reversos con estas referencias; todos los
+modelos y dibujos que usa el juego son originales. No se descargan fotos
+externas durante la experiencia. Los emblemas son tributos, no certificaciones
+ni insignias oficiales.
+
+Traje A7L, vistas frontal, lateral y posterior de réplica:
+https://cdn.shopify.com/s/files/1/1504/5330/products/SUIT-A7L-REPLICA-2.jpg?v=1548193598
+Visor Apollo conservado por Smithsonian: contorno, anillo y pivotes:
+https://airandspace.si.edu/collection-objects/visor-extravehicular-apollo-a7-l-apollo-11-armstrong-flown/nasm_A19730040001
+Saturn V / S-IC: cinco motores y estructura de la etapa inferior:
+https://www.cyradex.com/pages/saturn-v-sic
+Globos de mesa: meridiano de medio círculo y apoyos de los polos:
+https://ultimateglobes.com/collections/desk-globes
+Modelos de base lunar: agrupación de módulos y equipos exteriores:
+https://www.orbital-velocity.com/paper-models
+
+Strelitzia: porte, hojas anchas, pecíolos y proporción de maceta:
+https://green-bubble.com/de/products/strelitzia-nicolai-190cm
+https://plantenmagie.nl/de/products/strelitzia-nicolai-150cm-o24
+Rhapis: tallos y hojas palmeadas segmentadas:
+https://www.plantes.ae/products/rhapis-excelsa-miniature-fan-palm-lady-palm-bamboo-palm?variant=45583626141834
+Suculentas: roseta y distribución de hojas:
+https://unsplash.com/photos/close-up-photo-of-succulent-plants-L3QWHd254eY
+
+Lámpara lunar: esfera con relieve y soporte de escritorio:
+https://thangs.com/designer/RuvenBals/3d-model/Moon%20night%20Light-971989
+Mapa lunar: estructura cartográfica y terminología:
+https://www.usgs.gov/news/featured-story/visit-moon-without-leaving-your-desk
+Modelo de ADN: dos cadenas y pares de bases transversales:
+https://nexerasci.com/products/united-scientific-r-pre-assembled-dna-model-rotating-16-base-pair-double-helix-classroom-demonstration-kit-24-height
+Placa conmemorativa Apollo 11, Smithsonian:
+https://www.si.edu/object/plaque-apollo-11-commemorative-michael-collins%3Anasm_A19870029000
+Sistema planetario: estructura radial y proporciones de modelo de escritorio:
+https://www.techingedu.com/productinfo/3574675.html
+Se eliminan las varillas de cada planeta a petición del usuario; modelo estático.
+Exhibidor de parche: marco y presentación del emblema:
+https://prints.sciencesource.com/featured/apollo-11-mission-patch-science-source.html?product=metal-print
+Plano técnico del rover: vistas de planta, perfil y frente:
+https://simplycutart.com/products/lunar-rover-blueprint-wall-art-space-art-nasa-decor-laser-cut-8x10-or-a4-sized
+Vitrina lunar y contenedor de muestras:
+https://spacecenter.org/new-lunar-sample/
+https://commons.wikimedia.org/wiki/File%3ANASA_Lunar_Sample_Return_Container.jpg
+
+Antena, reflector y trípode desde varios ángulos:
+https://www.leroymerlin.fr/produits/pack-parabole-satellite-acier-65cm-bras-repliable-lnb-single-hdsat-trepied-83398616.html
+Lunar I-Hab, accesos y paneles:
+https://www.esa.int/ESA_Multimedia/Images/2024/05/Stanley_G._Love_and_the_Lunar_I-Hab
+https://ciencia.nasa.gov/sistema-solar/gateway-la-vida-en-un-modulo-lunar/
+Mobiliario técnico y servicios:
+https://www.hohenloher.de/de/produkte/medienversorgungssysteme/
+Reverso de equipo científico: conectores, carcasa y panel de servicio:
+https://crystal-photonics.com/glb/pic/txt/img_sg03_back.htm
+Equipos energéticos, ventilación y conexiones:
+https://fullbattery.com/products/48v-dc-to-120-240-v-3-phase-ac-inverter
+
+RECURSOS DEL JUEGO
+prop-artwork.js dibuja un único atlas local reutilizable: continentes, relieve
+lunar estilizado, mapa, plano del rover, placa, parche y fichas de equipos.
+Las miniaturas se calculan una vez a partir del mismo modelo 3D, incluidas sus
+caras impresas. Los materiales y geometrías estáticos se reutilizan.

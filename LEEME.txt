@@ -1,23 +1,19 @@
-SKY EXPLORER VR — 2.1.0 · EXPANSIÓN DE 53 OBJETOS
-Proyecto completo para reemplazar los archivos de la raíz de Sky-Explorer-VR.
-Todos los recursos e importaciones son locales y no necesitan compilación.
+SKY EXPLORER VR — 2.2.0 · PULIDO Y 64 OBJETOS DE EXPANSIÓN
 
-PUBLICAR DESDE IPHONE
-1. Guarda el ZIP en Archivos y tócalo para descomprimirlo.
-2. En GitHub abre IzayTO/Sky-Explorer-VR, rama main, raíz del repositorio.
-3. Add file > Upload files. Selecciona TODOS los archivos dentro de la carpeta
-   extraída. No subas el ZIP ni la carpeta contenedora creada por iOS.
-4. Commit changes. Espera que termine el despliegue de GitHub Pages.
-5. Abre el enlace Pages en el navegador del Quest, con conexión a internet.
-6. Cuando aparezca la actualización, acepta Guardar y recargar. La descarga
-   offline se instala como un conjunto completo con verificación de hashes.
-7. En Y > Sistema > Sesión > Diagnóstico debe indicar VR-2.1.0.
+1. Descarga el ZIP y ábrelo en Archivos del iPhone para descomprimirlo.
+2. Entra en la carpeta extraída y selecciona sus archivos sueltos.
+3. En GitHub abre IzayTO/Sky-Explorer-VR, en la raíz de la rama main.
+4. Add file > Upload files. Sube los archivos del ZIP, no la carpeta.
+5. Incluye los nuevos prop-detail-models.js y prop-artwork.js, y confirma
+   Commit changes. No borres los archivos de guardado del navegador.
+6. Espera a que termine la publicación de GitHub Pages y abre la página con
+   conexión. Si ya estaba abierta, Sistema > Sesión > Actualizar aplicación.
+7. En el diagnóstico debe aparecer VR-2.2.0. El sistema offline instala una
+   copia coherente de todos los recursos antes de activar la actualización.
 
-GitHub se utilizó únicamente para lectura. Este archivo no publica nada.
-Conserva tus datos guardados del mismo origen y ruta; no borres los datos del
-navegador. Si deseas una copia adicional, exporta la expedición desde Sesión.
+https://izayto.github.io/Sky-Explorer-VR/
 
-Consulta EXPANSION-OBJETOS.txt para los 53 objetos y sus interacciones,
-GUIA-VR.txt para controles y REFERENCIAS-OBJETOS.txt para las referencias visuales.
-Se incluye el proyecto completo y la caché actualizada.
-Los módulos y recursos originales siguen presentes, sin carpetas nuevas.
+PULIDO-MODELOS.txt resume esta actualización. EXPANSION-OBJETOS.txt conserva
+las interacciones de los 53 objetos anteriores. REFERENCIAS-OBJETOS.txt recoge
+las fotografías utilizadas como referencia de forma y proporciones.
+Todos los recursos y módulos necesarios están incluidos en esta raíz.

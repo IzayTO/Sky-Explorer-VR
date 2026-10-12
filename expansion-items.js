@@ -1,10 +1,10 @@
 // Original models inspired by the visual references in REFERENCIAS-OBJETOS.txt.
 // Append-only persistent IDs; the original five category indices never move.
 const rows=[
- ['habitat-module','Módulo habitable modular',0,'module',[4,3.12,4],'Recinto transitable · puertos de 2 m · suelo a 16 cm.',{structural:true}],
+ ['habitat-module','Módulo habitable modular',0,'module',[4,3.12,4],'Recinto transitable · puertos de 2 m · suelo a 16 cm.',{structural:true,action:'Abrir / cerrar acceso',dynamic:true}],
  ['airlock-module','Esclusa de acceso · dos puertas',0,'module',[4,3.12,4],'X: puerta próxima. Cierre interbloqueado; sin simulación de presión.',{structural:true,action:'Accionar esclusa',dynamic:true}],
  ['pressure-corridor','Pasillo presurizado de conexión',0,'module',[2,3.12,4],'Pasillo arquitectónico transitable; acople modular de 2 m.',{structural:true}],
- ['panorama-dome','Cúpula panorámica',0,'module',[4,3.12,4],'Cúpula acristalada con acceso frontal; suelo modular.',{structural:true}],
+ ['panorama-dome','Cúpula panorámica',0,'module',[4,3.12,4],'Cúpula acristalada con acceso frontal abatible; suelo modular.',{structural:true,action:'Abrir / cerrar acceso',dynamic:true}],
  ['reinforced-window','Ventanal reforzado',0,'window',[4,2.8,.20],'Marco rigidizado y vidrio transparente.',{structural:true}],
  ['raised-platform','Plataforma elevada con soportes',0,'platform',[4,1.4,4],'Tablero a 1,4 m; conectar escalera, rampa o pasarela.',{structural:true}],
  ['metal-catwalk','Pasarela metálica',0,'floor',[2,.16,4],'Tramo de 4 m con barandas laterales; extremos libres.',{structural:true}],
@@ -24,8 +24,8 @@ const rows=[
  ['earth-globe','Globo terrestre giratorio',5,'decoration',[.36,.48,.34],'X: girar 30 grados; cartografía estilizada original.',{small:true,base:[.25,.25],action:'Girar globo',dynamic:true}],
  ['moon-globe','Globo lunar',5,'decoration',[.32,.40,.30],'Globo con mares y cráteres estilizados. X: girar.',{small:true,base:[.23,.23],action:'Girar globo',dynamic:true}],
  ['meteorite-case','Meteorito en vitrina',5,'decoration',[.36,.40,.30],'Muestra decorativa con superficie irregular y vitrina transparente.',{small:true}],
- ['rocket-model','Miniatura de cohete',5,'decoration',[.30,.76,.30],'Etapas, motores, aletas y torre de escape.',{small:true}],
- ['framed-photo','Fotografía enmarcada',5,'decoration',[.36,.29,.14],'X: guardar en el marco una captura real de tu expedición.',{small:true,base:[.32,.14],action:'Fotografía'}],
+ ['rocket-model','Miniatura de cohete',5,'decoration',[.30,.80,.30],'Etapas, motores, aletas y torre de escape.',{small:true}],
+ ['framed-photo','Fotografía enmarcada',5,'decoration',[.36,.29,.14],'X: guardar en el marco una captura real de tu expedición.',{small:true,base:[.32,.24],baseOffset:[0,-.045],action:'Fotografía'}],
  ['satellite-model','Réplica de satélite',5,'decoration',[.62,.40,.28],'Paneles plegados en alas, cuerpo térmico y antena.',{small:true,base:[.22,.22]}],
  ['station-clock','Reloj de estación',5,'decoration',[.35,.38,.16],'Esfera y agujas sincronizadas con el ciclo del paisaje.',{small:true,base:[.30,.16]}],
  ['mineral-crystal','Cristal mineral',5,'decoration',[.25,.36,.23],'Grupo de prismas hexagonales sobre matriz rocosa.',{small:true}],
@@ -53,7 +53,19 @@ const rows=[
  ['power-inverter','Inversor eléctrico',7,'energy',[.45,.62,.28],'Conversión DC/AC del puesto; habilita los equipos de mesa.',{action:'Inversor',energy:'inverter'}],
  ['power-distributor','Distribuidor eléctrico',7,'energy',[.55,.80,.30],'Nodo con salida conmutable; extiende la red 18 m por enlace.',{action:'Distribución',energy:'distributor'}],
  ['rover-charger','Estación de carga para rover',7,'energy',[.65,1.15,.55],'X: acoplar rover estacionado a menos de 4 m y cargar su reserva auxiliar.',{action:'Cargar rover',energy:'charger',watts:80}],
- ['rtg-generator','Generador termoeléctrico RTG',7,'energy',[.85,1.0,.85],'Suministro constante de 110 W simulados. Aletas y módulo térmico.',{action:'Generador RTG',energy:'source'}]
+ ['rtg-generator','Generador termoeléctrico RTG',7,'energy',[.85,1.0,.85],'Suministro constante de 110 W simulados. Aletas y módulo térmico.',{action:'Generador RTG',energy:'source'}],
+ ['floor-strelitzia','Strelitzia · maceta de suelo',6,'plant',[1.12,1.82,1.12],'Hojas lanceoladas, pecíolos y maceta grande. En la Luna, bajo cubierta.',{small:true,base:[.47,.47],plant:true}],
+ ['floor-rhapis','Palmera Rhapis · maceta de suelo',6,'plant',[1.02,1.63,1.02],'Cinco tallos y hojas palmeadas divididas. Vegetación estática de interior.',{small:true,base:[.47,.47],plant:true}],
+ ['moon-lamp','Lámpara lunar esférica',5,'decoration',[.30,.37,.30],'Relieve lunar estilizado, soporte de tres apoyos y luz tenue constante.',{small:true,base:[.24,.24],decorLight:true,lightPower:.10,lightHeight:.22}],
+ ['framed-lunar-map','Mapa lunar enmarcado',5,'decoration',[1,.90,.07],'Cartografía lunar ilustrada con mares y cráteres; montaje en pared.',{surface:'wall'}],
+ ['dna-model','Modelo de ADN',5,'decoration',[.31,.59,.31],'Doble hélice con pares de bases y esqueleto bicolor, sobre peana.',{small:true,base:[.31,.31]}],
+ ['mission-plaque','Placa conmemorativa · Apollo',5,'decoration',[.42,.32,.21],'Homenaje metálico a la exploración lunar, sobre soporte de escritorio.',{small:true,base:[.27,.23],baseOffset:[0,-.045]}],
+ ['desktop-planetarium','Sistema planetario de escritorio',5,'decoration',[.74,.29,.74],'Ocho planetas en órbitas estáticas; sólo el Sol tiene poste. Escala decorativa.',{small:true,base:[.74,.74]}],
+ ['mission-patch','Exhibidor de parche de misión',5,'decoration',[.37,.40,.21],'Emblema original inspirado en Apollo, presentado como pieza de colección.',{small:true,base:[.24,.23],baseOffset:[0,-.045]}],
+ ['helmet-display','Casco de astronauta en soporte',5,'decoration',[.36,.45,.36],'Casco de presión con visor dorado curvo, anillo y pivotes laterales.',{small:true,base:[.35,.35]}],
+ ['mission-blueprint','Plano técnico enmarcado · rover',5,'decoration',[1.15,.82,.07],'Dibujo técnico original del rover: vistas lateral, frontal y superior.',{surface:'wall'}],
+ ['mission-sample-case','Vitrina de muestra de misión',5,'decoration',[.50,.34,.43],'Roca lunar de exhibición, pedestal, cubierta y ficha de réplica didáctica.',{small:true,base:[.50,.38]}]
+
 ];
 export const EXPANSION_ITEMS=rows.map(([id,name,category,kind,size,note,extra])=>({id,name,category,kind,size,note,expansion:true,tool:false,sample:false,structural:false,surface:'floor',...extra}));
 export const EXPANSION_IDS=new Set(EXPANSION_ITEMS.map(i=>i.id));

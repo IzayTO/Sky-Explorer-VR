@@ -57,10 +57,10 @@ export class Vehicle{
   cycleLights(){this.lightMode=(this.lightMode+1)%3;return this.lightMode;}
   resetInput(){this.jumpQueued=false;this.boostHeld=false;this.boostTouch=false;this.boosting=false;this.throttle=0;}
   drive(dt,walker,forward,steering,boost){
-    this.boostHeld=Boolean(boost||this.boostTouch)&&walker.enabled;
+    this.boostHeld=Boolean(boost||this.boostTouch)&&walker.enabled&&(!this.auxEnergy?.managed||this.auxEnergy.wh>.001);
     const before=this.heading;this.integrate(dt,forward,steering,walker.enabled);
     walker.yaw+=this.heading-before;
-    this._seat.copy(this.model.seat);if(walker.xrActive)this._seat.z-=.25;
+    this._seat.copy(this.model.seat);if(walker.xrActive){this._seat.z-=this.lunar?.10:.35;if(this.lunar)this._seat.x+=.10;}
     walker.pos.copy(this.root.localToWorld(this._seat));
     this.seatBlend=Math.min(1,this.seatBlend+dt*3.2);const t=this.seatBlend*this.seatBlend*(3-2*this.seatBlend);
     walker.camera.position.lerpVectors(this._cameraFrom,walker.pos,t);
@@ -74,7 +74,7 @@ export class Vehicle{
   integrate(dt,throttle=0,steering=0,enabled=true){
     if(dt<=0){this.applyPose(0);return;}
     if(!enabled){throttle=0;steering=0;this.boostHeld=false;this.boostTouch=false;}
-    this.throttle=throttle;this.boosting=this.mounted&&enabled&&this.boostHeld&&throttle>0;
+    if(this.auxEnergy?.managed&&this.boosting){this.auxEnergy.wh=Math.max(0,this.auxEnergy.wh-dt*1.25);this.onEnergyUse?.();}this.throttle=throttle;this.boosting=this.mounted&&enabled&&this.boostHeld&&throttle>0;
     this.impact*=Math.exp(-dt*9);
     if(!this.mounted&&Math.abs(this.speed)<.001&&this.grounded&&!this.jumpQueued)return;
     const substeps=Math.ceil(dt*120),step=dt/substeps;

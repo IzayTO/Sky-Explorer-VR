@@ -48,7 +48,7 @@ export class VRRuntime{
  }
  for(const side of ['left','right'])readPad(this.hands[side].tracked&&!this.hands[side].bare?this.pads[side].source:null,this.pads[side],dt);
  }
- context(){const a=this.api,x=a.expedition;if(this.loading||this.pause||!a.state.active)return 'blocked';if(this.menu.open||this.keyboard.mesh.visible||a.state.expeditionPanel)return 'menu';if(a.getEnv()?.vehicle.mounted)return 'vehicle';if(a.state.scope||a.state.mountedScope)return 'telescope';if(x.editMode&&!x.buildMode)return 'edit';if(x.buildMode)return 'build';return 'explore';}
+ context(){const a=this.api,x=a.expedition;if(this.loading||this.pause||!a.state.active)return 'blocked';if(this.menu.open||this.keyboard.mesh.visible||a.state.expeditionPanel)return 'menu';if(a.getEnv()?.vehicle.mounted)return 'vehicle';if(a.state.scope||a.state.mountedScope)return 'telescope';if(x.seated?.ladder)return 'ladder';if(x.seated?.entity?.id==='swivel-chair')return 'swivel';if(x.editMode&&!x.buildMode)return 'edit';if(x.buildMode)return 'build';return 'explore';}
  consumeTransition(next){if(next===this.inputState)return;this.api.walker.resetInput();this.api.expedition.actionHeld(false);this.api.expedition.xrRotationHeld=false;this.actionOn=false;this.r3Fired=this.recoverFired=false;for(const p of Object.values(this.pads))for(let i=0;i<6;i++){if(p.buttons[i]>.6&&!p.edge[i]){p.suppressed[i]=true;p.buttons[i]=0;p.duration[i]=0;}}this.inputState=next;}
  enterEdit(){if(this.api.getEnv()?.vehicle.mounted||this.api.state.scope||this.api.expedition.seated)return;this.api.expedition.startEdit();this.editSelection=this.editHover=null;this.noticeText('Lápiz · apunta y selecciona con gatillo izquierdo.');}
  exitEdit(){this.api.expedition.cancelBuild();this.editSelection=this.editHover=null;this.noticeText('Exploración');}
@@ -57,7 +57,7 @@ export class VRRuntime{
  beforeFrame(frame,dt,time,raw=dt){if(!this.active)return;if(!this.updatePose(frame))return;this.pollHands(frame,dt);const a=this.api,w=a.walker,x=a.expedition,vehicle=a.getEnv()?.vehicle,l=this.pads.left,r=this.pads.right;if(!vehicle)return;
  if(this.pause||this.loading){this.consumeTransition('blocked');w.enabled=false;if(vehicle.mounted)this.driveInputs(vehicle,dt,true);return;}
  if(l.edge[5]){if(this.keyboard.mesh.visible)this.keyboard.close(false);else{const opening=!this.menu.open;if(opening){this.menuAimCamera.copy(this.aimCamera);this.menus.home();}else if(a.state.expeditionPanel)x.closeDialog();this.menu.toggle(opening);}}
- let state=this.context();if(this.quickSelecting&&(state==='menu'||state==='vehicle'||state==='telescope'||state==='edit'||(l.source?.gamepad?.buttons[1]?.value||0)<=.6)){this.quickSelecting=false;this.arm.setActive(false);}
+ let state=this.context();if(this.quickSelecting&&(state==='menu'||state==='vehicle'||state==='telescope'||state==='ladder'||state==='swivel'||state==='edit'||(l.source?.gamepad?.buttons[1]?.value||0)<=.6)){this.quickSelecting=false;this.arm.setActive(false);}
  if(state==='explore'&&l.edge[1]&&this.hands.left.tracked){this.quickSelecting=true;this.arm.setActive(true);}
  if(this.quickSelecting)state='quick';
  if(state!==this.inputState){if(state==='menu')this.menuAimCamera.copy(this.aimCamera);this.consumeTransition(state);}
@@ -73,7 +73,8 @@ export class VRRuntime{
   else{x.xrRotationHeld=false;this.bodyYaw+=turn.x*this.preferences.turnSpeed*Math.PI/180*dt;}
   w.yaw=this.bodyYaw-this.headEuler.y;w.pitch=this.headEuler.x;this.inputYaw=w.yaw;
   w.joy.x=move.x;w.joy.y=-move.y;w.sprintHeld=r.buttons[0]>.1;
-  if(state==='vehicle'){if(r.edge[4])w.jump();if(l.edge[4])this.interact();}
+  if(state==='ladder'||state==='swivel'){w.sprintHeld=false;if(l.edge[4]||state==='ladder'&&r.edge[4])this.interact();if(r.edge[1])this.usePointedLight();}
+  else if(state==='vehicle'){if(r.edge[4])w.jump();if(l.edge[4])this.interact();}
   else if(state==='telescope'){
    if(r.edge[5]){if(a.state.scope)a.setScope(false);else if(x.seated?.telescope)x.exitSeat();}
    if(Math.abs(turn.y)>.65&&time-this.navigateAt>.28){a.setZoom(clamp(a.state.zoom+(turn.y<0?1:-1),0,3));this.navigateAt=time;}
@@ -150,7 +151,7 @@ export class VRRuntime{
  }
  updateStatus(time){const a=this.api,x=a.expedition;this.status.mesh.visible=this.loading;if(this.loading){this.status.mesh.position.set(0,-.12,-1.15).applyQuaternion(a.camera.quaternion).add(a.camera.position);this.status.mesh.quaternion.copy(a.camera.quaternion);if(this.lastStatus!==this.loadingText){this.lastStatus=this.loadingText;const c=this.status.ctx;c.clearRect(0,0,1000,180);c.fillStyle='#e5eadf';c.font='36px system-ui';c.textAlign='center';c.fillText(this.loadingText,500,99);this.status.texture.needsUpdate=true;}return;}
  for(const hand of Object.values(this.hands))hand.guide.pose(hand,a.camera,!this.pause);
- if(time-this.statusAt<.15)return;this.statusAt=time;const state=this.context(),labels=controlLabels(state,{swap:this.preferences.swap,mountedScope:a.state.mountedScope,quick:this.quickSelecting,interaction:x.seated?'Levantarse':x.near?.action||'Interactuar',rotating:x.xrRotationHeld,keyboard:this.keyboard.mesh.visible,lampAction:this.aimedLamp?(this.aimedLamp.params.on===false?'Encender lámpara':'Apagar lámpara'):null});let message='';
+ if(time-this.statusAt<.15)return;this.statusAt=time;const state=this.context(),labels=controlLabels(state,{swap:this.preferences.swap,mountedScope:a.state.mountedScope,quick:this.quickSelecting,interaction:x.seated?.ladder?'Soltar escalera':x.seated?'Levantarse':x.near?.action||'Interactuar',rotating:x.xrRotationHeld,keyboard:this.keyboard.mesh.visible,lampAction:this.aimedLamp?(this.aimedLamp.params.on===false?'Encender lámpara':'Apagar lámpara'):null});let message='';
  if(performance.now()<this.noticeUntil)message=this.notice;else if(state==='edit'&&this.editSelection){message=this.editSelection.item.name+' · '+(this.pads.left.buttons[4]>.6?'Recuperando '+Math.min(100,Math.round(this.pads.left.duration[4]/.65*100))+' %':'mantén X para recuperar');}else if(state==='build')message=x.proposal?.valid?'Gatillo izquierdo · colocar':x.proposal?.reason||'';else if(state==='telescope')message=(x.target?.name||'Telescopio')+' · '+x.filterLabel.textContent;
  if(a.graphics.settings.fps&&this.averageMs)message+=(message?' · ':'')+Math.round(1000/this.averageMs)+' FPS';this.hands.left.guide.content(labels.left,message);this.hands.right.guide.content(labels.right);
  }

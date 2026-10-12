@@ -1,0 +1,21 @@
+// Wireless game network: 18 m between equipment nodes. No extra real lights.
+// Watts and watt-hours belong to this illustrative management model only.
+export class ExpansionEnergy{
+ constructor(world){this.world=world;this.version=-1;this.groups=[];this.last=-1;this.day=1;}
+ rebuild(){const w=this.world;if(this.version===w.revision)return;this.version=w.revision;const nodes=w.entities.filter(e=>(e.item.energy&&e.item.energy!=='charger'||['solar','power'].includes(e.item.kind))&&e.params.on!==false);this.groups=[];const remaining=new Set(nodes);while(remaining.size){const seed=remaining.values().next().value,group={nodes:[seed],sources:[],batteries:[],controllers:[],inverters:[],loads:[],supply:0,load:0};remaining.delete(seed);for(let i=0;i<group.nodes.length;i++)for(const n of remaining)if(n.position.distanceToSquared(group.nodes[i].position)<=324){group.nodes.push(n);remaining.delete(n);}for(const e of group.nodes){if(e.item.energy==='battery'){e.params.wh=Math.max(0,Math.min(500,Number.isFinite(e.params.wh)?e.params.wh:250));group.batteries.push(e);}if(e.item.energy==='controller')group.controllers.push(e);if(e.item.energy==='inverter')group.inverters.push(e);if(e.item.energy==='source'||['solar','power'].includes(e.item.kind))group.sources.push(e);}this.groups.push(group);}}
+ groupFor(e){this.rebuild();let closest=null,best=324;for(const g of this.groups)for(const n of g.nodes){const d=n.position.distanceToSquared(e.position);if(d<=best){best=d;closest=g;}}return closest;}
+ generated(g){return g.sources.reduce((sum,e)=>sum+(e.item.energy==='source'?110:e.item.kind==='solar'?240*Math.max(0,this.day):200),0);}
+ status(e,watts=e.item?.watts||1,ac=e.id==='raman-spectrometer'){const g=this.groupFor(e);if(!g)return {ok:false,reason:'Sin red: acerca una fuente, batería o distribuidor a menos de 18 m.'};if(e.params?.on===false)return {ok:false,g,reason:'Este dispositivo está aislado.'};if(ac&&!g.inverters.length)return {ok:false,g,reason:'Conecta un inversor encendido a esta red para alimentar la mesa Raman.'};const available=this.generated(g)+g.batteries.reduce((s,b)=>s+(b.params.wh>.001?300:0),0),needed=watts/(ac?.92:1);const own=e.params?.running||e.params?.charging?needed:0;if(available+1e-6<Math.max(0,g.load-own)+needed)return {ok:false,g,reason:'Potencia insuficiente. Añade suministro o carga las baterías.'};return {ok:true,g,watts:needed,available};}
+ powered(e){return this.status(e,1,false).ok;}
+ spend(e,watts,seconds=1){const st=this.status(e,watts);if(!st.ok)return st;const deficit=Math.max(0,st.watts-this.generated(st.g))*seconds/3600;let left=deficit;for(const b of st.g.batteries){const n=Math.min(left,b.params.wh);b.params.wh-=n;left-=n;}if(deficit)this.world.dirty=true;return st;}
+ tick(t,sky,vehicle){if(this.last<0){this.last=t;return;}if(t-this.last<1)return;const dt=Math.min(2,t-this.last);this.last=t;this.day=Math.max(0,sky.sun?.y??sky.day??1);this.rebuild();for(const g of this.groups){g.supply=this.generated(g);g.load=0;g.loads=[];g.charging=0;}
+  for(const e of this.world.entities){if(!e.item.watts||(!e.params.running&&!e.params.charging)||e.params.on===false)continue;const g=this.groupFor(e);if(!g)continue;let demand=e.item.watts;
+   if(e.id==='rover-charger'){const pack=this.world.vehicleEnergy;const valid=pack&&pack.wh<50&&vehicle.position.distanceTo(e.position)<4&&Math.abs(vehicle.speed)<.08&&!vehicle.mounted;if(!valid){e.params.charging=false;this.world.dirty=true;continue;}}
+   if(e.id==='raman-spectrometer')demand/=.92;const supply=g.supply+g.batteries.reduce((s,b)=>s+(b.params.wh>.001?300:0),0);if(g.load+demand> supply)continue;g.load+=demand;g.loads.push(e);
+   if(e.id==='rover-charger'){this.world.vehicleEnergy.wh=Math.min(50,this.world.vehicleEnergy.wh+demand*.90*dt/3600);this.world.dirty=true;}
+  }
+  for(const g of this.groups){let balance=(g.supply-g.load)*dt/3600;if(balance<0){let deficit=-balance;for(const b of g.batteries){const n=Math.min(b.params.wh,300*dt/3600,deficit);b.params.wh-=n;deficit-=n;if(n)this.world.dirty=true;}}
+   else if(g.controllers.length){let excess=Math.min(balance,g.controllers.reduce((s,c)=>s+Math.max(10,Math.min(300,Number(c.params.chargeLimit)||150)),0)*dt/3600);for(const b of g.batteries){const n=Math.min(500-b.params.wh,excess*.95);b.params.wh+=n;excess-=n/.95;g.charging+=n*3600/dt;if(n)this.world.dirty=true;}}
+  }
+ }
+}

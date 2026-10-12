@@ -177,7 +177,7 @@ export class Sky {
     this.stars=createStarField(geo,mat);this.stars.layers.set(3);this.stars.frustumCulled=false;this.stars.renderOrder=10002;scene.add(this.stars);
   }
   update(camera,state,t,pixelRatio){
-    this.u.xrDisc.value=state.xr?.39:1;this.u.xrSunDisc.value=state.xr?.51:1;
+    this.u.xrDisc.value=state.xr?.312:1;this.u.xrSunDisc.value=state.xr?.4335:1;
     this.u.skyDetail.value=state.graphics?.advancedSky===false?0:1;
     const a=(state.hour-6)/24*TAU,path=state.path*Math.PI/2;
     // Rounded orbital coefficients used to shorten this vector around noon.

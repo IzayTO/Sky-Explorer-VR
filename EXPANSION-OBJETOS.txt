@@ -1,0 +1,139 @@
+SKY EXPLORER VR 2.1.0 — 53 OBJETOS NUEVOS
+
+ACCESO
+Y > Construcción. Las cinco categorías anteriores mantienen su posición.
+Se añaden Decoración, Vegetación y Energía. Todos los objetos están disponibles
+desde el inicio en Tierra y Luna. Seleccionar una miniatura equipa el objeto;
+gatillo izquierdo coloca, agarre izquierdo + joystick gira, B cancela.
+Los accesos del antebrazo, mochila, cantidades y guardado siguen siendo únicos.
+
+CONSTRUCCIÓN · 10
+Módulo habitable modular; esclusa de acceso con dos puertas; pasillo
+presurizado; cúpula panorámica; ventanal reforzado; plataforma elevada;
+pasarela metálica; escotilla de suelo; panel aislante; escalera vertical.
+
+Los módulos tienen puertos compatibles de 2 m y suelo de 16 cm. Los módulos
+principales ocupan una cuadrícula de 4 m. Usa cimientos en la Luna según las
+reglas existentes. Plataformas, puentes, pasarelas y suelos tienen colisiones
+transitables. Usa una rampa, escalera o tramo compatible para acceder a una
+plataforma elevada. Las estructuras conservan snap, rotaciones y recuperación.
+X en la esclusa acciona la puerta más cercana al punto apuntado; ambas puertas
+no se abren simultáneamente. El recorrido se comprueba para evitar obstáculos.
+La escotilla sustituye un tramo de suelo; no corta automáticamente un piso o
+cimiento colocado debajo. X abre o cierra su tapa.
+Escalera: X sujeta; joystick de movimiento sube o baja; X o A suelta. Al llegar
+arriba, se intenta salir sobre un apoyo válido. El menú pausa la subida.
+Estos espacios son arquitectura habitable; no incorporan una simulación de
+presión, oxígeno o supervivencia ajena al juego.
+
+MUEBLES · 10
+Silla giratoria; litera plegable; mesa de laboratorio; escritorio técnico;
+estantería con repisas; armario de herramientas; cajonera metálica; banco de
+trabajo; mesa plegable; asiento de descanso.
+
+X sienta/levanta en los asientos. En la silla giratoria, el joystick de
+movimiento gira el asiento. X pliega/despliega la litera y la mesa plegable.
+Retira primero objetos apoyados en una superficie que vaya a desaparecer.
+El escritorio abre el cuaderno existente. El banco y las mesas admiten objetos
+sobre sus tableros; las cuatro repisas de la estantería son apoyos reales.
+Armario: puertas móviles y almacenamiento de 10 casillas. Cajonera: tres
+cajones independientes, con 4, 3 y 3 casillas. El panel permite elegir el cajón,
+abrirlo y transferir objetos hacia/desde el inventario del jugador.
+Los muebles con contenido no pueden recuperarse hasta vaciarlos.
+
+DECORACIÓN · 10
+Globo terrestre giratorio; globo lunar; meteorito en vitrina; miniatura de
+cohete; fotografía enmarcada; réplica de satélite; reloj de estación;
+cristal mineral; maqueta de base lunar; figura de astronauta.
+
+X gira los globos en pasos de 30 grados, conservando la orientación guardada.
+El reloj sigue el tiempo del ciclo del destino, incluida pausa y retroceso.
+El marco permite capturar la expedición o elegir una fotografía reciente
+guardada en el cuaderno. Las fotos se guardan con ese marco.
+Son modelos originales simplificados: no se han copiado texturas de las fotos
+de referencia. Cristales, cohete, astronauta y satélite tienen geometría propia.
+
+VEGETACIÓN · 3
+Suculenta en maceta; helecho compacto; poto colgante.
+
+Apunta a una mesa, repisa, suelo o soporte estable. El poto cuelga del techo.
+En la Luna, las plantas requieren cubierta interior; no simulan crecimiento,
+producción de oxígeno ni resistencia al vacío. Las hojas son geometría estática.
+
+APOYAR OBJETOS PEQUEÑOS
+Apunta directamente a la cara superior de una superficie. Se verifica el apoyo
+de la base y el espacio disponible; ajuste fino de 2,5 cm. Si el fantasma es
+inválido, sepáralo de otros objetos o del borde de la repisa. También puedes
+poner adornos en las repisas interiores del armario con las puertas abiertas.
+Un mueble que sostiene objetos no se recupera hasta retirar esos objetos.
+No se arrastran adornos automáticamente cuando pliegas o retiras un soporte.
+
+INVESTIGACIÓN · 4
+Espectrómetro Raman; gravímetro; dosímetro; detector de partículas.
+
+X abre el panel propio de cada instrumento. Los registros van al cuaderno real.
+Raman: introduce una muestra de suelo o regolito del inventario, conecta
+suministro e inversor y analiza. Consume una muestra y genera un espectro
+didáctico de referencia. No identifica químicamente una muestra real.
+Gravímetro: muestra la gravedad usada por el motor (Tierra/Luna), permite fijar
+una referencia y registrar la diferencia relativa. No necesita sensor físico.
+Dosímetro: iniciar, detener, reiniciar y registrar dosis acumulada simulada;
+su tasa ilustrativa distingue destinos y el abrigo de una cubierta.
+Detector: iniciar/detener una adquisición, cambiar umbral, ver conteo e
+histograma y registrar. Los eventos son simulados, no radiación real.
+Dosímetro y detector solo acumulan mientras funcionan y reciben suministro.
+No se añaden instrumentos excluidos ni se eliminan los anteriores.
+
+EXTERIOR · 10
+Refugio para rover; plataforma de aterrizaje; valla perimetral; señal de
+orientación; baliza de sendero; contenedor hermético; puente modular;
+antena orientable; toldo desplegable; soporte exterior de instrumentos.
+
+X en la señal permite nombrarla y orientar su flecha; muestra rumbo y distancia
+al punto de llegada. La baliza utiliza el sistema de nombres del juego.
+El contenedor tiene tapa móvil y 10 casillas persistentes de almacenamiento.
+La antena permite ajustar azimut/elevación, orientarse al destino y establecer
+un enlace didáctico dependiente de la alineación y la energía. No transmite
+radio real. En la Luna apunta a la Tierra; en Tierra, al puesto de llegada.
+X extiende/recoge el toldo. El refugio, puente y plataforma son utilizables
+físicamente; el soporte admite equipos pequeños sobre su placa superior.
+
+ENERGÍA · 6
+Banco de baterías; controlador de carga; inversor eléctrico; distribuidor;
+estación de carga para rover; generador termoeléctrico RTG.
+
+Los nodos activos se conectan por proximidad (18 m por enlace), conforme al
+alcance del puesto. El distribuidor puede ampliar la red o cortar su ramal.
+Los equipos solares y energéticos anteriores siguen sirviendo como fuentes.
+RTG: suministro constante de juego de 110 W. Banco: 500 Wh de capacidad y
+250 Wh iniciales. El controlador permite cargarlo con excedentes; el banco
+alimenta las cargas cuando falta generación. El inversor habilita las cargas
+que requieren AC, incluido Raman. Los paneles muestran producción, demanda,
+reserva y conexiones calculadas por esta red, con unidades y estados reales
+del juego. No son valores de un sistema eléctrico físico certificado.
+
+Para cargar, estaciona el rover o la cuatrimoto a menos de 4 m, baja del vehículo,
+apunta a la estación y pulsa X para acoplar. Se requiere energía disponible.
+La estación carga una reserva auxiliar de 50 Wh con 80 W nominales y 90% de
+eficiencia: la carga necesita tiempo, no se completa instantáneamente.
+El primer acoplamiento activa una reserva inicial del 50% para ese vehículo.
+Desde ese momento el impulso consume esa reserva; la tracción normal sigue
+funcionando aunque se agote. Si nunca lo acoplas, conserva su comportamiento
+anterior. La reserva se guarda independientemente en cada destino.
+
+AJUSTES VISUALES Y DE POSTURA
+Todos los porcentajes siguientes son relativos a la versión 2.0.1 anterior:
+solo en VR, Sol de Tierra al 85%, Luna de Tierra al 80%, Sol lunar al 50%.
+El halo lunar mantiene tamaño y brillo; su núcleo difumina más el borde.
+La Tierra vista desde la Luna no cambia. Luz natural terrestre +4% en VR.
+Rover lunar: asiento 15 cm atrás y 10 cm a la derecha en su eje local.
+Cuatrimoto de Tierra: asiento 10 cm adelante. Escritorio/móvil sin esos ajustes.
+
+COMPATIBILIDAD
+Se mantienen los identificadores y partidas anteriores; los nuevos estados se
+guardan como parámetros de los objetos y como reserva opcional del vehículo.
+Las miniaturas son estáticas y reutilizadas. No se añaden luces dinámicas para
+los props; reloj y paneles actualizan únicamente lo necesario.
+Se realizaron comprobaciones de código, importaciones, geometrías, colisiones,
+inventario, interacciones, guardado y caché. No se ha probado físicamente esta
+entrega en un Meta Quest 3S; no se atribuyen mediciones de FPS del visor.

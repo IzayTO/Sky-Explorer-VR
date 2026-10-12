@@ -1,0 +1,83 @@
+SKY EXPLORER VR 2.1.0 — REFERENCIAS VISUALES DE LA EXPANSIÓN
+
+Los 53 modelos son geometría procedural original, adaptada a la paleta y al
+detalle del juego. Se consultaron fotos para proporciones, estructura y rasgos
+reconocibles. No son réplicas de ingeniería, ni modelos oficiales de las marcas
+o agencias citadas. No se incorporan sus fotografías, logotipos o texturas al
+juego; todos los recursos necesarios funcionan localmente y offline.
+
+HÁBITATS, ESCLUSAS Y ESTRUCTURAS
+ESA, interior de la maqueta Lunar I-Hab: módulos, portales, revestimientos,
+volúmenes de servicio y circulación interior.
+https://www.esa.int/ESA_Multimedia/Images/2024/04/Lunar_I-Hab_mock-up_interior
+Lockheed Martin, prototipo de hábitat cislunar: paneles, uniones y mobiliario
+integrado. Interpretados con módulos de 4 m compatibles con el juego.
+https://news.lockheedmartin.com/2019-03-14-Returning-Astronauts-to-the-Moon-Lockheed-Martin-Finalizes-Full-Scale-Cislunar-Habitat-Prototype
+Cupola de ISS: marcos radiales y paños transparentes de la cúpula.
+https://scitechdaily.com/space-station-cosmonauts-prep-for-spacewalk-as-astronauts-work-science-and-maintenance/
+Accesos BEAM: marcos y apertura de escotillas.
+https://www.collectspace.com/ubb/Forum30/HTML/001363.html
+Stepform: escalera vertical, plataformas, barandas y rigidizadores de pasarelas.
+https://www.stepform.com.au/gallery.html
+
+MOBILIARIO TÉCNICO
+AS ONE y Santre: tableros, bastidores, grifería, repisas y puestos de trabajo.
+https://axel.as-1.co.jp/asone/d/3-7774-04/
+https://santreindustrial.com/productos/mesas-configurables-para-laboratorio/
+Labolan: proporciones de mesa con montante y equipamiento de laboratorio.
+https://labolan.es/producto/mesas-de-trabajo-bajas-con-montante-1500x750x720mm-superficie-hpl/
+Expand Furniture y Micamaabatible: camas dobles abatibles, eje lateral, apoyos
+y despeje para plegado. El modelo del juego usa una bisagra simplificada.
+https://expandfurniture.com/products/amore-flat-side-folding-wall-bunks-desk
+https://www.micamaabatible.es/camas-abatibles/1541-litera-abatible-horizontal-con-escritorio-y-opcion-de-altillo-ref-can31000.html
+
+DECORACIÓN Y VEGETACIÓN
+Globos Replogle Tierra/Luna: aro inclinado, eje, pedestal y proporción de esfera.
+https://www.theeveningdesk.com/products/mid-century-replogle-double-globe-rare-earth-and-moon-on-stands
+Meteorito en vitrina: roca irregular, base, urna transparente y placa frontal.
+https://fama.ua/uk/p/sertifitsirovannyy-meteorit-campo-del-cielo-uacd-0001-61-g-argentina-32964
+Miniaturas de astronautas y Saturn V: etapas, aletas, motores, casco, traje,
+mochila y botas. Cohete y astronauta son versiones originales estilizadas.
+https://www.bullockauctioneers.com/auctions/29440/lot/118169-group-of-4-astronauts-and-apollo-saturn-v-rocket
+Plantas en maceta y colgantes: hojas, frondas y disposición de tallos.
+https://jungle-houseplants.co.uk/products/trailing-plant-bundle
+https://nurserylive.com/products/top-3-hanging-basket-plants
+Los demás adornos se construyen con rasgos convencionales del objeto:
+satélite con alas y antena, reloj con esfera y agujas, cristal prismático,
+marco con caballete y maqueta que reutiliza la arquitectura original del juego.
+
+INSTRUMENTOS CIENTÍFICOS
+Metrohm Raman: carcasa de sobremesa, cámara de muestra y controles.
+https://www.metrohm.com/en/products/raman-spectroscopy.html
+Ahura First Defender: pantalla, cuerpo de instrumento y acceso de muestra.
+https://www.ntc-tech.com/products/ahura-scientific-first-defender-2000-raman-spectrometer-with-accessories-1
+Micro-g LaCoste CG-6: asa, módulo de lectura, patas niveladoras y cuerpo compacto.
+https://microglacoste.com/product/cg-6-autograv-gravity-meter/
+https://microglacoste.com/wp-content/uploads/2017/03/CG-6-Brochure_R16.pdf
+SPECTRA: formato de dosímetro portátil, pantalla y controles frontales.
+https://www.directindustry.com/prod/sparing-vist-center/product-34944-1959107.html
+SwRI RAD y Nuclear Instruments LEM: detector por capas, bastidor, módulo de
+electrónica y adquisición. El equipo del juego muestra eventos didácticos.
+https://www2.boulder.swri.edu/~hassler/rad/
+https://www.nuclearinstruments.eu/projects/lem/
+
+EXTERIOR Y ENERGÍA
+Container Shelters: pilares, cubierta ligera y brazos de apoyo.
+https://www.containershelters.co.nz/pages/installation-options
+Rover lunar Apollo: escala relativa del refugio y equipo exterior.
+https://www.designnews.com/industry/see-the-apollo-lunar-rover-like-never-before
+Instalaciones Victron: armarios, ventilación, terminales, indicadores y
+separación visual de controlador, inversor, batería y distribución.
+https://volts.ca/blogs/educational/victron-energy-system-installation-tips-tricks
+https://communityarchive.victronenergy.com/questions/171220/et112-ess-distribution-board-installation.html
+NASA MMRTG: cuerpo central, aletas longitudinales, apoyos y módulo térmico.
+https://science.nasa.gov/resource/mars-2020s-mmrtg/
+https://science.nasa.gov/image-detail/mmrtg-pull-apart/
+https://science.nasa.gov/planetary-science/programs/radioisotope-power-systems/faq/
+
+ADAPTACIÓN Y COSTE GRÁFICO
+Los detalles se agrupan en geometría pintada y se reutilizan. El vidrio es una
+capa sencilla, las plantas usan hojas de pocos polígonos, y los objetos no
+contienen renderizadores individuales ni modelos de miniatura animados.
+Las referencias guían formas y proporciones; las capacidades científicas y
+energéticas están definidas por el motor del juego, no por esos productos.

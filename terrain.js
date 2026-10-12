@@ -4,7 +4,7 @@ import {flashlightGLSL,vehicleLightGLSL,vehicleLightUniforms,updateVehicleLightU
 // Continuous flat ground, with nearby instanced grass. The shader shades distant
 // detail analytically: no tiling photograph, loaded model, shadow atlas or edge.
 const common=`
-uniform float daylight,twilight,moonlight,clockTime,torch;uniform vec3 sunDirection,eye,forward;
+uniform float daylight,twilight,moonlight,clockTime,torch,earthBoost;uniform vec3 sunDirection,eye,forward;
 ${flashlightGLSL}${vehicleLightGLSL}${worldLightGLSL}
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
@@ -15,7 +15,7 @@ vec3 illumination(vec3 base,float occlusion){
   vec3 nightTint=vec3(.019,.027,.027)*(0.62+base.g*2.);
   lit=mix(nightTint,lit,daylight);
   lit+=base*vec3(.19,.23,.31)*moonlight*.47;
-  return lit;
+  return lit*earthBoost;
 }
 vec3 torchLight(vec3 lit,vec3 base,vec3 pos,float occlusion){
   if(daylight>.001&&sunDirection.y>-.02)lit*=mix(1.,vehicleOcclusion(pos+vec3(0.,.004,0.),sunDirection)*baseDirectionalVisibility(pos+vec3(0.,.03,0.),sunDirection,0.),daylight*.82);
@@ -33,7 +33,7 @@ vec3 groundHaze(vec3 c,vec3 pos){float d=length(pos.xz-eye.xz);float haze=1.-exp
 export class Terrain{
   constructor(scene,mobile){
     this.torchLevel=0;this.lastTime=0;
-    this.u={...worldUniforms(),...vehicleLightUniforms(),buildMask:{value:null},buildMaskOrigin:{value:new THREE.Vector2()},daylight:{value:1},twilight:{value:0},moonlight:{value:0},clockTime:{value:0},torch:{value:0},forward:{value:new THREE.Vector3()},sunDirection:{value:new THREE.Vector3()},eye:{value:new THREE.Vector3()},grassRange:{value:18}};
+    this.u={...worldUniforms(),...vehicleLightUniforms(),buildMask:{value:null},buildMaskOrigin:{value:new THREE.Vector2()},earthBoost:{value:1},daylight:{value:1},twilight:{value:0},moonlight:{value:0},clockTime:{value:0},torch:{value:0},forward:{value:new THREE.Vector3()},sunDirection:{value:new THREE.Vector3()},eye:{value:new THREE.Vector3()},grassRange:{value:18}};
     const geometry=new THREE.PlaneGeometry(16000,16000,1,1);geometry.rotateX(-Math.PI/2);
     const mat=new THREE.ShaderMaterial({uniforms:this.u,toneMapped:false,extensions:{derivatives:true},vertexShader:`varying vec3 vWorld;void main(){vWorld=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vWorld,1.);}`,
     fragmentShader:`varying vec3 vWorld;${common}
@@ -105,5 +105,5 @@ export class Terrain{
     }
     this.cellX=cx;this.cellZ=cz;
   }
-  update(camera,sky,t,state={}){const dt=Math.min(.05,Math.max(0,t-this.lastTime))||.016;this.lastTime=t;updateVehicleLightUniforms(this.u,state.vehicleLighting);this.torchLevel+=((state.flashlight?1:0)-this.torchLevel)*(1-Math.exp(-dt*13));this.u.torch.value=this.torchLevel;camera.getWorldDirection(this.u.forward.value);this.u.eye.value.copy(camera.position);this.u.sunDirection.value.copy(sky.sun);this.u.daylight.value=sky.day;this.u.twilight.value=sky.twilight;this.u.moonlight.value=sky.moonlight;if(this.grassEnabled){this.u.clockTime.value=t;this.cullGrass(camera);}}
+  update(camera,sky,t,state={}){const dt=Math.min(.05,Math.max(0,t-this.lastTime))||.016;this.lastTime=t;updateVehicleLightUniforms(this.u,state.vehicleLighting);this.torchLevel+=((state.flashlight?1:0)-this.torchLevel)*(1-Math.exp(-dt*13));this.u.torch.value=this.torchLevel;camera.getWorldDirection(this.u.forward.value);this.u.eye.value.copy(camera.position);this.u.sunDirection.value.copy(sky.sun);this.u.earthBoost.value=state.xr?1.04:1;this.u.daylight.value=sky.day;this.u.twilight.value=sky.twilight;this.u.moonlight.value=sky.moonlight;if(this.grassEnabled){this.u.clockTime.value=t;this.cullGrass(camera);}}
 }

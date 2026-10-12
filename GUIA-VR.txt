@@ -1,4 +1,4 @@
-SKY EXPLORER VR 2.0.1 — INTERFAZ ESPACIAL
+SKY EXPLORER VR 2.1.0 — INTERFAZ ESPACIAL Y EXPANSIÓN
 
 Y abre o cierra el menú. Cuatro sectores: Cielo, Inventario, Construcción,
 Sistema. Joystick IZQUIERDO elige sectores; gatillo izquierdo o A confirma.
@@ -28,7 +28,8 @@ su gatillo. Suelta el agarre para volver a jugar. Durante esa selección no
 corres ni colocas objetos. En construcción ese agarre se reserva a la rotación.
 
 CONSTRUCCIÓN
-Cinco categorías: Construcción, Muebles, Iluminación, Investigación, Exterior.
+Ocho categorías: Construcción, Muebles, Iluminación, Investigación, Exterior,
+Decoración, Vegetación y Energía. Todas disponibles desde el inicio.
 Las miniaturas estáticas proceden de las geometrías originales. Seleccionar
 una miniatura equipa la cantidad del deslizador y cierra el menú.
 En el arco de categorías, baja el joystick para entrar en la tarjeta de
@@ -82,7 +83,19 @@ recentrar, regresar al punto de llegada y salir de VR. Importar y exportar
 abren el navegador fuera de inmersión. Luego puedes volver a entrar en VR.
 
 ASTROS
-Respecto a la versión 2.0.0, solamente en VR: Sol terrestre al 85%, Luna
-al 65%; desde la Luna, Tierra al 60% y Sol al 50%. El halo lunar conserva
-su tamaño y añade un resplandor central suave. Iluminación del terreno y
-tamaños fuera de VR permanecen iguales.
+Respecto a la versión 2.0.1, solamente en VR: Sol terrestre al 85%, Luna
+al 80%; desde la Luna, Sol al 50% y Tierra sin cambios. El halo lunar conserva
+su tamaño y el resplandor central disimula más el borde del disco.
+La luz natural terrestre recibe un ajuste suave de +4% en VR, sin añadir luces
+ni cambiar sombras. Los tamaños y la iluminación fuera de VR no cambian.
+
+AJUSTES DE ASIENTO EN VR
+Respecto a 2.0.1: en el rover lunar, 15 cm hacia atrás y 10 cm a la derecha,
+en coordenadas locales del vehículo. En la cuatrimoto terrestre, 10 cm hacia
+delante. Se conserva el seguimiento de cabeza/manos y la postura física.
+
+OBJETOS NUEVOS
+X acciona el objeto apuntado o abre sus controles específicos.
+Escalera: X sujeta; joystick de movimiento sube/baja; X o A suelta.
+Silla giratoria: X se sienta; joystick de movimiento gira; X se levanta.
+Consulta EXPANSION-OBJETOS.txt para apoyos, almacenamiento, ciencia y energía.

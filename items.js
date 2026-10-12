@@ -1,6 +1,7 @@
+import {EXPANSION_ITEMS} from './expansion-items.js?v=2.1.0';
 // Stored stacks contain only these IDs and quantities. Geometry is created only
 // for a placed object, one preview, or a visible dropped stack.
-export const CATEGORIES=['Construcción','Muebles','Iluminación','Investigación','Exterior'];
+export const CATEGORIES=['Construcción','Muebles','Iluminación','Investigación','Exterior','Decoración','Vegetación','Energía'];
 const rows=[
  ['foundation','Cimiento modular · 8 × 8 m',0,'foundation',[8,.35,8],'Nivel horizontal; rellena la pendiente lunar.'],
  ['floor','Piso · 4 × 4 m',0,'floor',[4,.16,4]],
@@ -58,6 +59,7 @@ const rows=[
  ['regolith','Muestra de regolito',3,'sample',[.15,.2,.15]]
 ];
 export const ITEMS=Object.fromEntries(rows.map(([id,name,category,kind,size,note=''])=>[id,{id,name,category:CATEGORIES[category],kind,size,note,adaptive:id.startsWith('ramp-adaptive'),tool:kind==='tool',sample:kind==='sample',structural:category===0&&!['foundation','stairs','ramp','rail'].includes(kind),surface:kind==='wall-lamp'||kind==='shelf'?'wall':kind==='ceiling-lamp'?'ceiling':'floor'}]));
+for(const item of EXPANSION_ITEMS)ITEMS[item.id]={...item,category:CATEGORIES[item.category]};
 export const MAX_STACK=30;
 export const PALETTE={shell:0xc9d2c9,frame:0x52616a,dark:0x24303a,blue:0x4c768c,teal:0x6a9b93,gold:0xc89d64,white:0xe1e3d4,rubber:0x35413f};
 const symbols={foundation:'M3 9 12 5l9 4-9 4-9-4v9l9 4 9-4V9M12 13v9',floor:'m2 14 10-6 10 6-10 6-10-6Zm5-3 10 6m-10 0 10-6',wall:'M3 5h18v15H3zM3 15h18M7 5v15',window:'M3 4h18v17H3zM7 8h10v7H7z',door:'M3 21V4h18v17M8 21V9h8v12',roof:'m2 13 10-9 10 9M4 12v7h16v-7',stairs:'M3 20h18V5h-5v5h-5v5H6v5',ramp:'M3 20 21 5v15H3Z',chair:'M6 3v11h13v7M6 9h10v5M5 21v-7',table:'M3 10h18M5 10v11m14-11v11M3 6h18v4H3z',lamp:'M12 10v11M7 21h10M7 10h10l-2-7H9l-2 7Z',telescope:'m3 11 13-7 4 7-13 7-4-7ZM12 16v5m0-5-5 5m5-5 5 5',radio:'M6 3c-5 10 5 17 12 10L6 3Zm3 9 9-8M12 14v7m-4 0h8',solar:'m5 3 16 3-3 12L2 15 5 3Zm-2 6 16 3m-9-8-3 12m9-11-3 12M10 17v4',tool:'M8 3h8v18H8zM10 6h4v6h-4M11 17h2',beacon:'M12 4v17M6 21h12M6 9a8 8 0 0 1 12 0M9 12a4 4 0 0 1 6 0',sample:'M8 3h8v3l3 11a3 3 0 0 1-3 4H8a3 3 0 0 1-3-4L8 6V3Zm-1 12h10',box:'m3 7 9-4 9 4v13H3V7Zm0 0h18M9 12h6'};

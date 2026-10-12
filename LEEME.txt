@@ -1,4 +1,4 @@
-SKY EXPLORER VR — 2.0.1
+SKY EXPLORER VR — 2.1.0 · EXPANSIÓN DE 53 OBJETOS
 Proyecto completo para reemplazar los archivos de la raíz de Sky-Explorer-VR.
 Todos los recursos e importaciones son locales y no necesitan compilación.
 
@@ -11,12 +11,13 @@ PUBLICAR DESDE IPHONE
 5. Abre el enlace Pages en el navegador del Quest, con conexión a internet.
 6. Cuando aparezca la actualización, acepta Guardar y recargar. La descarga
    offline se instala como un conjunto completo con verificación de hashes.
-7. En Y > Sistema > Sesión > Diagnóstico debe indicar VR-2.0.1.
+7. En Y > Sistema > Sesión > Diagnóstico debe indicar VR-2.1.0.
 
 GitHub se utilizó únicamente para lectura. Este archivo no publica nada.
 Conserva tus datos guardados del mismo origen y ruta; no borres los datos del
 navegador. Si deseas una copia adicional, exporta la expedición desde Sesión.
 
-Consulta GUIA-VR.txt para postura, lámparas y freno/reversa.
-Se incluyen los 70 archivos completos del proyecto y la caché actualizada.
+Consulta EXPANSION-OBJETOS.txt para los 53 objetos y sus interacciones,
+GUIA-VR.txt para controles y REFERENCIAS-OBJETOS.txt para las referencias visuales.
+Se incluye el proyecto completo y la caché actualizada.
 Los módulos y recursos originales siguen presentes, sin carpetas nuevas.

@@ -7,6 +7,7 @@ export function controlLabels(mode,{swap=false,mountedScope=false,quick=false,in
  if(quick)return {left:[['LAT','Mantén: accesos'],['Y','Menú']],right:[['GAT','Elegir casilla']]};
  if(mode==='blocked')return {left:[],right:[]};
  if(mode==='menu')return {left:[['Y',keyboard?'Cerrar teclado':'Cerrar menú'],['JOY','Navegar'],['GAT','Aceptar']],right:[['A','Aceptar'],['B','Volver'],['GAT','Elegir / deslizar']]};
+ if(mode==='ladder'||mode==='swivel')return {left:[['Y','Menú'],['X',mode==='ladder'?'Soltar':'Levantarse'],['JOY',swap?'Giro suave':mode==='ladder'?'Subir / bajar':'Girar asiento']],right:[...(mode==='ladder'?[['A','Soltar']]:[]),['JOY',swap?(mode==='ladder'?'Subir / bajar':'Girar asiento'):'Giro suave'],['LAT',lampAction||'Linterna']]};
  if(mode==='vehicle')return {left:[['Y','Menú'],['X','Bajar'],['GAT','Freno / reversa'],['JOY',swap?'Giro suave':'Dirigir'],['LAT','Volante / impulso'],['L3','Impulso']],right:[['A','Salto vehículo'],['GAT','Acelerar'],['JOY',swap?'Dirigir':'Giro suave'],['LAT','Volante / faros']]};
  if(mode==='telescope')return {left:[['Y','Menú'],...(mountedScope?[['X','Levantarse']]:[]),['GAT','Registrar'],['JOY',swap?'Giro / aumento':mountedScope?'Orientar postura':'Caminar']],right:[['B','Cerrar visor'],['JOY',swap?'Caminar':'Giro / aumento'],...(mountedScope?[['R3','Siguiente filtro']]:[])]};
  const left=[['Y','Menú'],['X',mode==='edit'?'Mantén: recuperar':interaction],['GAT',mode==='edit'?'Seleccionar':mode==='build'?'Colocar':'Usar herramienta'],['JOY',swap?'Giro suave':'Caminar']];

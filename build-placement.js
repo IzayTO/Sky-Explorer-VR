@@ -1,3 +1,4 @@
+import {smallPlacement,covered} from './expansion-placement.js?v=2.1.0';
 import * as THREE from './three.module.js?v=4.0.0';
 const V=(x=0,y=0,z=0)=>new THREE.Vector3(x,y,z), TAU=Math.PI*2;
 const walls=new Set(['wall','window','door','corner','column']);
@@ -67,7 +68,8 @@ export function placement(world,item,camera,rotation,dimensions={}){
   if(!dimensions.rotationTouched)rot.set(0,Math.atan2(hit.normal.x,hit.normal.z),0);position.addScaledVector(hit.normal,.012);position.y-=item.size[1]/2;
  }else if(item.surface==='ceiling'){
   if(!target||hit.normal.y>-.5){valid=false;reason='Mira la parte inferior de una cubierta.';}position.y-=.008;
- }else if(magnet&&upright(rot)&&(!dimensions.rotationTouched||Math.abs(Math.sin((rot.y-(nearestFloor(world,position)?.rotation.y||0))*2))<.001)&&item.category==='Construcción'){
+ }else if(item.small){const problem=smallPlacement(world,item,hit,position,rot,params,magnet);if(problem){valid=false;reason=problem;}
+ }else if(magnet&&upright(rot)&&(!dimensions.rotationTouched||Math.abs(Math.sin((rot.y-(nearestFloor(world,position)?.rotation.y||0))*2))<.001)&&(item.category==='Construcción'||item.id==='perimeter-fence'||item.id==='modular-bridge')){
   const frame=hit.frame||nearestFloor(world,position),[w,d]=item.size;
   if(kind==='roof'){
    if(target?.item.kind==='roof'&&!hit.roofPlane){if(!dimensions.rotationTouched)rot.y=target.rotation.y;neighbor(position,item,rot,target,hit.point);position.y=target.position.y;}
@@ -78,6 +80,7 @@ export function placement(world,item,camera,rotation,dimensions={}){
     if(frame){const q=local(position,frame),[fw,fd]=footprint(frame.item,frame.params),a=rot.y-frame.rotation.y,hx=(Math.abs(Math.cos(a))*item.size[0]+Math.abs(Math.sin(a))*item.size[2])/2,hz=(Math.abs(Math.sin(a))*item.size[0]+Math.abs(Math.cos(a))*item.size[2])/2;if(fw>=hx*2&&fd>=hz*2){q.x=Math.max(-fw/2+hx,Math.min(fw/2-hx,q.x));q.z=Math.max(-fd/2+hz,Math.min(fd/2-hz,q.z));const y=position.y;position.copy(worldPoint(q,frame));position.y=y;}}
    }else{valid=false;reason='Apunta a una pared alta, al hueco superior o a otra cubierta.';}
    params.snapped=valid;
+  }else if(kind==='module'||kind==='platform'){if(target?.item.kind==='module'||target?.item.kind==='platform'){if(!dimensions.rotationTouched)rot.y=target.rotation.y;neighbor(position,item,rot,target,hit.point);position.y=target.position.y;}else{cell(position,item.size[0],item.size[2],frame,rot);position.y=world.support(position.x,position.z,hit.point.y);}params.snapped=!!target;
   }else if(kind==='floor'){
    if(target?.item.kind==='floor'){if(!dimensions.rotationTouched)rot.y=target.rotation.y;neighbor(position,item,rot,target,hit.point);position.y=target.position.y;}
    else{cell(position,item.size[0],item.size[2],frame,rot);position.y=target&&tiles.has(target.item.kind)?top(target):world.support(position.x,position.z,hit.point.y);}
@@ -97,5 +100,8 @@ export function placement(world,item,camera,rotation,dimensions={}){
  if(world.lunar&&item.structural){const [w,d]=footprint(item,params),checks=walls.has(kind)?[[-w/2+.10,0],[w/2-.10,0]]:[[-w/2+.08,-d/2+.08],[w/2-.08,d/2-.08],[w/2-.08,-d/2+.08],[-w/2+.08,d/2-.08]];
   if(checks.some(([x,z])=>{const p=V(x,0,z).applyAxisAngle(V(0,1,0),rot.y).add(position);return !world.foundationAt(p.x,p.z);})){valid=false;reason='Primero coloca un cimiento que cubra esta pieza.';}
  }
+ if(item.expansion&&!item.small&&item.surface==='floor'&&!item.structural&&!['floor','rail','platform'].includes(item.kind)&&hit.normal.y<.5){valid=false;reason='Apunta al suelo o a una plataforma horizontal.';}
+ if(item.plant&&world.lunar&&!(item.surface==='ceiling'&&target)&&!covered(world,position)){valid=false;reason='En la Luna, coloca la planta bajo una cubierta o dentro de un módulo habitable.';}
+ if(item.surface==='ceiling'&&target)params.supportUid=target.uid;
  return {valid,reason,position,rotation:rot,params,hit};
 }

@@ -259,3 +259,23 @@ body.ui-hidden[data-view-mode="explore"] #hud .movement-actions button,
 body.ui-hidden[data-view-mode="explore"] #hud #vehicle-enter,
 body.ui-hidden[data-view-mode="explore"] #hud #object-interact,
 body.ui-hidden[data-view-mode="explore"] #hud #object-exit{pointer-events:auto!important}
+
+/* Shared authored-model thumbnails: no per-frame 3D thumbnail renderer. */
+.item-model-thumbnail{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.inventory-slot>.item-model-thumbnail{position:absolute;inset:3%;width:94%;height:94%}
+.catalog-item>.item-model-thumbnail{width:76px;height:70px;flex:none;margin:auto}
+.stack-drag>.item-model-thumbnail{width:58px;height:58px}
+.storage-grid .item-model-thumbnail{width:70px;height:64px;margin:auto}
+.lamp-controls{display:grid;gap:12px;margin:12px 0 22px}
+.lamp-controls>label{display:flex;justify-content:space-between;gap:12px}
+.lamp-controls>label output{color:var(--gold,#e3c797);font-variant-numeric:tabular-nums}
+.lamp-controls>input{width:100%;margin:0;accent-color:#ddc68e}
+#lamp-temperature{background:linear-gradient(90deg,#d4e6ff,#ffe6cc,#ffc38c);border-radius:20px}
+.science-panel:has(.lighting-plan){width:min(94vw,940px);max-width:940px}
+.lighting-plan{width:100%;height:auto;display:block;touch-action:none;border:1px solid #639fa369;border-radius:18px;cursor:crosshair}
+.plan-accessible{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.plan-accessible button{font-size:12px;padding:8px 12px;flex:1 0 150px}
+.zone-capture-hint{position:fixed;left:50%;top:14%;transform:translateX(-50%);padding:10px 16px;border-radius:18px;background:#102d35e0;border:1px solid #6caeb5aa;max-width:min(600px,90vw);color:#e8e6dc;text-align:center;font-size:14px;pointer-events:none;z-index:20}
+body.in-xr .zone-capture-hint{display:none}
+
+.guide-items .item-model-thumbnail{width:38px;height:38px;flex-shrink:0}.guide-icon .item-model-thumbnail{width:88px;height:88px}

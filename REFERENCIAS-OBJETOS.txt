@@ -138,6 +138,18 @@ https://crystal-photonics.com/glb/pic/txt/img_sg03_back.htm
 Equipos energéticos, ventilación y conexiones:
 https://fullbattery.com/products/48v-dc-to-120-240-v-3-phase-ac-inverter
 
+INSTRUMENTOS DE ILUMINACIÓN — 2.3.0
+Delimitador: proporciones de receptor GNSS Leica GS18, radomo, soporte,
+patas extensibles, abrazaderas y pies de trípode:
+https://leica-geosystems.kg/index.php?product_id=498&route=product/product
+https://www.globalprecision.pe/product/gps-diferencial-leica-gs18t-base-y-rover
+Panel: instalación mural, bisel fino y organización de mandos de iluminación:
+https://www.lutron.com/us/en/controls/keypads-remotes
+https://www.lutron.com/us/en/case-studies/ritz-tower
+https://design-milk.com/lutron-palladiom-shading-system/
+Los dos modelos son geometría original simplificada y estática; las fotos no
+se incorporan como texturas. Se revisaron frente, reverso, lados y parte alta.
+
 RECURSOS DEL JUEGO
 prop-artwork.js dibuja un único atlas local reutilizable: continentes, relieve
 lunar estilizado, mapa, plano del rover, placa, parche y fichas de equipos.

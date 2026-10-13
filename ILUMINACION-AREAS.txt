@@ -1,0 +1,64 @@
+SKY EXPLORER VR 2.3.0 — LUCES Y ÁREAS
+
+DOS OBJETOS NUEVOS · CATÁLOGO / INVESTIGACIÓN
+
+Delimitador de área
+Colócalo sobre una superficie horizontal. Apunta al instrumento y usa E en PC
+o X en Quest. Elige «Marcar cuatro puntos» y marca las esquinas siguiendo el
+contorno de tu base, sin cruzar sus lados.
+
+PC: apunta al suelo o a un piso y pulsa clic izquierdo o E.
+Quest: apunta con el mando derecho y pulsa el gatillo izquierdo o X.
+Backspace en PC o L3 en Quest retira la última esquina.
+Esc en PC o B en Quest cancela sin reemplazar el área anterior.
+Al completar cuatro puntos, escribe el nombre y pulsa «Guardar área».
+En Quest puedes usar el teclado VR existente.
+
+Puedes caminar mientras eliges los puntos. Usa superficies a menos de 120 m.
+El contorno desaparece al finalizar; sólo es visible durante el trazado o en
+el plano. Cada delimitador guarda una sola área: coloca otro para otra base.
+Cambiar de lugar el instrumento no mueve las esquinas ya guardadas.
+Recuperar o eliminar el delimitador retira también el área que contiene.
+
+Panel de iluminación
+Colócalo en una pared y ábrelo con E en PC o X en Quest.
+Selecciona un área guardada; el panel recuerda su elección.
+El plano muestra las construcciones reales y omite los techos para ver el
+interior. Los controles de nivel permiten recorrer plantas separadas 3 m;
+el zoom, centrado y flechas permiten inspeccionar áreas grandes.
+
+Pulsa un punto de lámpara para encenderla o apagarla. En PC se usa el ratón;
+en Quest, el rayo y gatillo derecho. El joystick izquierdo y A o el gatillo
+izquierdo también permiten navegar y confirmar los controles.
+La lámpara elegida aparece en la tarjeta lateral: «Ajustar luz» abre sus
+deslizadores y permite regresar al plano.
+«Encender todas» y «Apagar todas» afectan las lámparas del área, también las
+de otras plantas. Las lámparas situadas fuera del contorno no cambian.
+Las lámparas nuevas colocadas dentro del área aparecen automáticamente.
+
+GRUPOS
+Pulsa «Crear grupo», escribe el nombre y elige sus lámparas en el plano.
+En esta selección, pulsar una lámpara la añade o retira del grupo, sin
+encenderla ni apagarla. Guarda el grupo al terminar.
+Desde «Grupos» puedes encender, apagar, ver o eliminar cada grupo.
+Cuando eliges un grupo en el plano, los botones generales actúan sobre ese
+grupo. Elige «Área completa» para volver a controlar todas las lámparas.
+Los grupos pertenecen al panel donde los creaste. Borrar un grupo no elimina
+las lámparas; las lámparas retiradas del mundo dejan de ser objetivos.
+
+REGULACIÓN DE LÁMPARAS
+Abre los ajustes directamente con E / X o desde la tarjeta del plano.
+Temperatura: desliza desde fría (6500 K) hasta cálida (2700 K).
+Intensidad: de 0 % a 100 %. El 100 % conserva la potencia anterior; no añade
+un nivel más fuerte. Al apagar y encender, se conserva la regulación elegida.
+Las lámparas existentes mantienen su temperatura e intensidad originales.
+La lámpara lunar decorativa también admite estos controles.
+
+GUARDADO Y COMPATIBILIDAD
+Áreas, grupos y ajustes se guardan junto a las construcciones del destino.
+Forman parte de su exportación e importación habitual; Tierra y Luna tienen
+sus propias áreas. La mochila y el acceso rápido conservan sus datos reales.
+Los menús espaciales y controles de manos aparecen sólo durante VR; PC usa
+su interfaz habitual con miniaturas estáticas del mismo modelo 3D.
+La interfaz y miniaturas reutilizan recursos. Regular una luz no reconstruye
+la geometría ni cambia el límite anterior de intensidad.

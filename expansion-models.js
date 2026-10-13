@@ -1,3 +1,4 @@
+import {lightingToolModel} from './lighting-tool-models.js';
 import * as T from './three.module.js?v=4.0.0';
 import {refinedModel} from './prop-detail-models.js?v=2.2.0';
 import {mapArtwork} from './prop-artwork.js?v=2.2.0';
@@ -28,7 +29,7 @@ export function expansionModel(p,item,s,P){
  function port(Z,door=false,amount=0){for(const x of [-1,1]){const side=Math.max(0,(w-2)/2);if(side)b([side,2.8,.12],[x*(1+side/2),1.56,Z]);b([.065,2.45,.18],[x*1.025,1.36,Z],P.teal);}b([Math.min(w,2.1),.32,.14],[0,2.8,Z]);detail([2,.03,.19],[0,2.62,Z],P.gold);
   if(door)for(const sign of [-1,1])group([sign*(.50+.93*amount),.16,Z-Math.sign(Z)*.13],[0,0,0],()=>{b([.98,1.425,.08],[0,.7125,0],P.shell);b([.98,.425,.08],[0,2.1875,0],P.shell);for(const x of[-.345,.345])b([.29,.55,.08],[x,1.70,0],P.shell);detail([.85,.06,.086],[0,.20,0],P.blue);pane([.40,.55,.084],[0,1.7,0]);for(const y of [.1,2.28])detail([.87,.025,.09],[0,y,0],P.frame);detail([.04,.22,.10],[-sign*.35,1.08,0],P.gold);});
  }
- if(refinedModel({p,item,s,P,b,c,orb,tor,line,group,shape,pane,detail})){}else if(['habitat-module','airlock-module','pressure-corridor'].includes(id)){
+ if(lightingToolModel({p,item,s,P,b,c,orb,tor,line,group,shape,pane,detail})||refinedModel({p,item,s,P,b,c,orb,tor,line,group,shape,pane,detail})){}else if(['habitat-module','airlock-module','pressure-corridor'].includes(id)){
   deck(w,d,.16);b([w,.16,d],[0,3.04,0],P.shell);for(const x of [-w/2+.06,w/2-.06]){b([.12,2.8,d],[x,1.56,0]);for(const z of [-1.8,0,1.8])b([.08,2.72,.09],[x-Math.sign(x)*.085,1.56,z],P.frame);detail([.022,.13,d-.12],[x-Math.sign(x)*.071,.40,0],P.blue);}
   port(-d/2+.06,id!=='pressure-corridor',Number(s.doorA)||0);port(d/2-.06,id!=='pressure-corridor',Number(s.doorB)||0);
   for(const z of [-1.9,1.9])b([w-.15,.08,.08],[0,2.91,z],P.teal);for(const x of [-w/2-.005,w/2+.005])for(const z of [-1.8,0,1.8])detail([.022,2.7,.055],[x,1.56,z],P.teal);for(const z of [-1,1])detail([w-.18,.013,.025],[0,3.127,z],P.frame);

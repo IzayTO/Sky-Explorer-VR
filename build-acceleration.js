@@ -47,7 +47,7 @@ export class BuildBatches{
   for(const e of world.entities){
    // Luminaires retain independent callbacks. Telescope optics / parameterized
    // foundations and ramps are never captured in a static shared batch.
-   if(e.item.category==='Iluminación'||(e.mesh.geometry.userData.owned||e.mesh.children.length>0))continue;
+   if(e.item.category==='Iluminación'||e.item.decorLight||(e.mesh.geometry.userData.owned||e.mesh.children.length>0))continue;
    const p=e.position,key=e.mesh.geometry.uuid+':'+Math.floor(p.x/CELL)+','+Math.floor(p.y/CELL)+','+Math.floor(p.z/CELL);
    let list=groups.get(key);if(!list)groups.set(key,list=[]);list.push(e);
   }

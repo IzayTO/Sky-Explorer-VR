@@ -1,19 +1,25 @@
-SKY EXPLORER VR — 2.2.0 · PULIDO Y 64 OBJETOS DE EXPANSIÓN
+SKY EXPLORER VR — 2.3.0 · ILUMINACIÓN, ÁREAS Y MINIATURAS EN PC / QUEST
 
 1. Descarga el ZIP y ábrelo en Archivos del iPhone para descomprimirlo.
 2. Entra en la carpeta extraída y selecciona sus archivos sueltos.
 3. En GitHub abre IzayTO/Sky-Explorer-VR, en la raíz de la rama main.
 4. Add file > Upload files. Sube los archivos del ZIP, no la carpeta.
-5. Incluye los nuevos prop-detail-models.js y prop-artwork.js, y confirma
-   Commit changes. No borres los archivos de guardado del navegador.
+5. Sube TODOS los archivos, incluidos los nuevos lamp-settings.js,
+   lighting-areas.js, lighting-control.js, lighting-plan.js y
+   lighting-tool-models.js. Confirma Commit changes.
+   No borres los archivos de guardado del navegador.
 6. Espera a que termine la publicación de GitHub Pages y abre la página con
    conexión. Si ya estaba abierta, Sistema > Sesión > Actualizar aplicación.
-7. En el diagnóstico debe aparecer VR-2.2.0. El sistema offline instala una
+7. En el diagnóstico debe aparecer VR-2.3.0. El sistema offline instala una
    copia coherente de todos los recursos antes de activar la actualización.
 
 https://izayto.github.io/Sky-Explorer-VR/
 
-PULIDO-MODELOS.txt resume esta actualización. EXPANSION-OBJETOS.txt conserva
-las interacciones de los 53 objetos anteriores. REFERENCIAS-OBJETOS.txt recoge
-las fotografías utilizadas como referencia de forma y proporciones.
+ILUMINACION-AREAS.txt explica los dos instrumentos nuevos, los grupos y los
+controles de intensidad y temperatura. Las miniaturas de los modelos reales
+ahora aparecen también en la mochila, catálogo y accesos rápidos de PC.
+PULIDO-MODELOS.txt y EXPANSION-OBJETOS.txt conservan las instrucciones de los
+objetos anteriores. REFERENCIAS-OBJETOS.txt recoge sus referencias visuales.
+Esta entrega conserva los modelos y tamaños de los astros de la versión 2.2.0.
+Sólo corresponde a Sky-Explorer-VR (PC y Quest), no a Sky-Explorer-App.
 Todos los recursos y módulos necesarios están incluidos en esta raíz.

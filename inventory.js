@@ -1,4 +1,5 @@
 import {ITEMS,CATEGORIES,MAX_STACK,itemIcon,validStack} from './items.js?v=4.1.2';
+import {itemThumbnail} from './vr-art.js';
 const STORAGE='sky-vr-expedition-inventory-v1';
 export class InventoryStore {
   constructor(){this.slots=Array(40).fill(null);this.selected=0;this.revision=0;this.onChange=()=>{};}
@@ -56,12 +57,12 @@ export class Inventory extends InventoryStore {
   select(index){super.select(index);this.onSelect(index);}
   save(){try{localStorage.setItem(STORAGE,JSON.stringify({slots:this.slots,selected:this.selected}));}catch{this.notify('No se pudo guardar la mochila. Exporta tu expedición.');}}
   render(){const draw=(b,i)=>{const s=this.slots[i],item=s&&ITEMS[s.id],key=(s?s.id+':'+s.qty:'')+':'+this.selected;if(b.dataset.renderKey===key)return;b.dataset.renderKey=key;
-      b.innerHTML=(i>=30?`<span class="slot-number">${(i-29)%10}</span>`:'')+(item?itemIcon(item)+`<span class="stack-count">${s.qty}</span>`:'');
+      b.innerHTML=(i>=30?`<span class="slot-number">${(i-29)%10}</span>`:'')+(item?itemThumbnail(item)+`<span class="stack-count">${s.qty}</span>`:'');
       b.setAttribute('aria-label',(item?item.name+' ×'+s.qty:'Vacío')+' · '+(i>=30?'A mano ':'Mochila ')+(i>=30?i-29:i+1));b.title=item?item.name+' ×'+s.qty:'Casilla vacía';if(i>=30)b.setAttribute('aria-pressed',i-30===this.selected);
     };this.main.forEach((b,i)=>draw(b,i));this.quick.forEach((b,i)=>draw(b,i+30));this.hotbar.forEach((b,i)=>draw(b,i+30));}
   toggleCatalog(on=!this.catalogOpen){this.catalogOpen=on;this.catalog.hidden=!on;this.panel.classList.toggle('has-catalog',on);this.book.setAttribute('aria-expanded',on);}
   renderCatalog(){this.catalog.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-pressed',b.textContent===this.category));const list=this.catalog.querySelector('.catalog-items');list.replaceChildren();
-    for(const item of Object.values(ITEMS).filter(i=>i.category===this.category&&!i.sample)){const b=document.createElement('button');b.type='button';b.className='catalog-item';b.innerHTML=itemIcon(item);const span=document.createElement('span');span.textContent=item.name;b.append(span);b.title=item.note||item.name;b.addEventListener('pointerdown',e=>this.begin(e,{id:item.id}));b.addEventListener('click',e=>{if(performance.now()<(this.suppressClick||0))return;const empty=this.slots.indexOf(null);if(empty<0)return this.notify('Tu mochila está llena.');this.create(item.id,this.quantity,empty);this.notify(item.name+' añadido a la mochila.');});list.append(b);}
+    for(const item of Object.values(ITEMS).filter(i=>i.category===this.category&&!i.sample)){const b=document.createElement('button');b.type='button';b.className='catalog-item';b.innerHTML=itemThumbnail(item);const span=document.createElement('span');span.textContent=item.name;b.append(span);b.title=item.note||item.name;b.addEventListener('pointerdown',e=>this.begin(e,{id:item.id}));b.addEventListener('click',e=>{if(performance.now()<(this.suppressClick||0))return;const empty=this.slots.indexOf(null);if(empty<0)return this.notify('Tu mochila está llena.');this.create(item.id,this.quantity,empty);this.notify(item.name+' añadido a la mochila.');});list.append(b);}
   }
   begin(e,source){if(e.button!==0||this.overlay.hidden||this.drag)return;if(source.index!==undefined&&!this.slots[source.index])return;if(e.shiftKey&&source.index!==undefined){e.preventDefault();this.quickMove(source.index);this.suppressClick=performance.now()+450;return;}e.preventDefault();e.stopPropagation();this.context.hidden=true;
     const stack=source.id?{id:source.id,qty:this.quantity}:{...this.slots[source.index]},touch=e.pointerType!=='mouse';this.drag={...source,stack,idPointer:e.pointerId,x:e.clientX,y:e.clientY,lastY:e.clientY,active:false,element:e.currentTarget,touch,scrolling:false};
@@ -69,7 +70,7 @@ export class Inventory extends InventoryStore {
     if(touch&&source.id)this.hold=setTimeout(()=>{const d=this.drag;if(d&&!d.scrolling){d.active=true;this.showDrag(d,d.x,d.y);d.element.classList.add('catalog-lifted');}},300);
     else if(touch&&source.index!==undefined)this.hold=setTimeout(()=>{if(this.drag&&!this.drag.active){this.menu(source.index,e.clientX,e.clientY);this.cancel();this.suppressClick=performance.now()+500;}},480);
   }
-  showDrag(d,x,y){this.ghost.hidden=false;if(this.ghost.dataset.item!==d.stack.id+':'+d.stack.qty){this.ghost.innerHTML=itemIcon(d.stack.id)+`<b>${d.stack.qty}</b>`;this.ghost.dataset.item=d.stack.id+':'+d.stack.qty;}this.ghost.style.transform=`translate(${x+14}px,${y-40}px)`;}
+  showDrag(d,x,y){this.ghost.hidden=false;if(this.ghost.dataset.item!==d.stack.id+':'+d.stack.qty){this.ghost.innerHTML=itemThumbnail(d.stack.id)+`<b>${d.stack.qty}</b>`;this.ghost.dataset.item=d.stack.id+':'+d.stack.qty;}this.ghost.style.transform=`translate(${x+14}px,${y-40}px)`;}
   move(e){const d=this.drag;if(!d||d.idPointer!==e.pointerId)return;const dx=e.clientX-d.x,dy=e.clientY-d.y;
     if(d.touch&&d.id&&!d.active){if(d.scrolling||(Math.abs(dy)>7&&Math.abs(dy)>Math.abs(dx)*.8)){clearTimeout(this.hold);d.scrolling=true;this.catalog.querySelector('.catalog-items').scrollTop-=e.clientY-d.lastY;d.lastY=e.clientY;e.preventDefault();return;}if(Math.abs(dx)<12)return;}
     if(!d.active&&Math.hypot(dx,dy)<7)return;clearTimeout(this.hold);d.active=true;e.preventDefault();this.showDrag(d,e.clientX,e.clientY);

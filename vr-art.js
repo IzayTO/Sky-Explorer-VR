@@ -37,7 +37,6 @@ const thumbnails=new Map();
 // Rasterize the SAME authored mesh once on the CPU. No extra WebGL renderer,
 // render target, lighting pass, animation or external model is needed by a tile.
 export function thumbnail(id){if(thumbnails.has(id))return thumbnails.get(id);const item=ITEMS[id],canvas=document.createElement('canvas');canvas.width=canvas.height=160;const c=canvas.getContext('2d');thumbnails.set(id,canvas);if(!item)return canvas;
- if(item.tool||item.sample){const svg=itemIcon(item);c.save();c.translate(25,25);c.scale(110/24,110/24);c.lineWidth=1.25;c.strokeStyle=UI.gold;c.lineJoin='round';for(const match of svg.matchAll(/\sd="([^"]+)"/g))c.stroke(new Path2D(match[1]));c.restore();return canvas;}
  const g=propGeometry(id),p=g.attributes.position,n=g.attributes.normal,paint=g.attributes.paint,art=g.attributes.artworkUV;const box=g.boundingBox,center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());const extent=Math.max(size.x,size.y,size.z,.1),camera=new THREE.OrthographicCamera(-extent,extent,extent,-extent,.01,extent*20);camera.position.copy(center).add(new THREE.Vector3(1.4,1.05,1.8).multiplyScalar(extent));camera.lookAt(center);camera.updateMatrixWorld(true);const toEye=camera.position.clone().sub(center).normalize(),vertices=[],faces=[],col=new THREE.Color(),v=new THREE.Vector3();let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
  for(let i=0;i<p.count;i++){v.fromBufferAttribute(p,i).project(camera);vertices.push([v.x,-v.y,v.z]);minX=Math.min(minX,v.x);maxX=Math.max(maxX,v.x);minY=Math.min(minY,-v.y);maxY=Math.max(maxY,-v.y);}
  const scale=130/Math.max(maxX-minX,maxY-minY),ox=80-(minX+maxX)*scale/2,oy=80-(minY+maxY)*scale/2;
@@ -50,3 +49,7 @@ export function thumbnail(id){if(thumbnails.has(id))return thumbnails.get(id);co
  if(g.userData.owned)g.dispose();return canvas;
 }
 export function tile(c,x,y,w,h,stack,{selected=false,equipped=false,number=null,hover=false}={}){round(c,x,y,w,h,12);c.fillStyle=selected?UI.active:UI.cell;c.fill();c.strokeStyle=selected||equipped?UI.gold:hover?UI.ink:UI.cyan;c.lineWidth=selected||equipped?2.5:1;c.stroke();if(stack){const s=Math.min(w-16,h-17);c.drawImage(thumbnail(stack.id),x+(w-s)/2,y+(h-s)/2-2,s,s);c.fillStyle=UI.ink;c.font='20px system-ui';c.textAlign='right';c.fillText(String(stack.qty??1),x+w-8,y+h-8);}if(number!==null){c.textAlign='left';c.fillStyle=UI.muted;c.font='17px system-ui';c.fillText(String(number),x+8,y+21);}c.textAlign='left';}
+
+// One shared, cached PNG for desktop tiles, storage and drag previews.
+const thumbnailURLs=new Map();
+export function itemThumbnail(id){id=typeof id==='string'?id:id.id;if(!thumbnailURLs.has(id))thumbnailURLs.set(id,thumbnail(id).toDataURL('image/png'));return `<img class="item-model-thumbnail" src="${thumbnailURLs.get(id)}" alt="" draggable="false" decoding="async">`;}

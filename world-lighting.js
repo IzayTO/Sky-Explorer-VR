@@ -1,5 +1,7 @@
 import * as THREE from './three.module.js?v=4.0.0';
 import {ConstructionShadows,shadowUniforms} from './shadow-atlas.js?v=4.1.2';
+import {lampColour,lampIntensity} from './lamp-settings.js';
+export {LAMP_TEMPERATURES} from './lamp-settings.js';
 import {orientedBox,rayBox} from './spatial.js?v=4.1.2';
 // One persistent, spatially indexed occluder set for the whole base. Camera
 // distance never removes a wall. A ray skips complete BVH branches on a miss.
@@ -116,7 +118,6 @@ export function worldUniforms(){
  if(!emptyTree){emptyTree=new THREE.DataTexture(new Float32Array(4),1,1,THREE.RGBAFormat,THREE.FloatType);emptyTree.needsUpdate=true;}
  return {...shadowUniforms(),baseLightGrid:{value:emptyTree},baseLightData:{value:emptyTree},baseLightDataSize:{value:new THREE.Vector2(1,1)},baseLights:{value:Array.from({length:4},()=>new THREE.Vector4())},baseColors:{value:Array.from({length:4},()=>new THREE.Vector4())},baseLightSlots:{value:[0,1,2,3]},baseLightCount:{value:0},baseNodeCount:{value:0},baseTree:{value:emptyTree},baseTreeSize:{value:new THREE.Vector2(1,1)},shadowDetail:{value:1}};
 }
-export const LAMP_TEMPERATURES=[{label:'Cálida · 2700 K',color:0xffc38c},{label:'Neutra · 4000 K',color:0xffe6cc},{label:'Fría · 6500 K',color:0xd4e6ff}];
 function boundsHit(origin,dir,b,limit){let near=0,far=limit;for(let i=0;i<3;i++){
  const axis=i===0?'x':i===1?'y':'z';if(Math.abs(dir[axis])<1e-8){if(origin[axis]<b.min[axis]||origin[axis]>b.max[axis])return false;continue;}
  const a=(b.min[axis]-origin[axis])/dir[axis],c=(b.max[axis]-origin[axis])/dir[axis];near=Math.max(near,Math.min(a,c));far=Math.min(far,Math.max(a,c));if(near>far)return false;
@@ -198,7 +199,7 @@ export class WorldLighting{
   if(camera){this.projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse);this.frustum.setFromProjectionMatrix(this.projection,camera.coordinateSystem);}
   this.allLamps.length=0;
   for(const e of world.lamps||world.entities){
-   if((e.item.category!=='Iluminación'&&!e.item.decorLight)||e.params.on===false)continue;this.allLamps.push(e);
+   if((e.item.category!=='Iluminación'&&!e.item.decorLight)||e.params.on===false||lampIntensity(e.params)===0)continue;this.allLamps.push(e);
    this.sphere.center.copy(e.anchor);
    const visible=!camera||this.frustum.intersectsSphere(this.sphere);
    const distance=(1+e.anchor.distanceToSquared(eye))*(visible?1:64)*(previous.includes(e)?.65:1);let i=0;while(i<this.distances.length&&distance>=this.distances[i])i++;
@@ -216,12 +217,12 @@ export class WorldLighting{
   for(let i=0;i<this.selected.length;i++)this.u.baseLightSlots.value[i]=this.cacheSlots.indexOf(this.selected[i]);
   if(dirty)this.exposureAt=-Infinity;
   this.u.baseLightCount.value=this.allLamps.length;
-  for(let i=0;i<this.selected.length;i++){const e=this.selected[i];this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);this.u.baseLights.value[i].set(e.anchor.x,e.anchor.y,e.anchor.z,12);this.u.baseColors.value[i].set(this.c.r,this.c.g,this.c.b,e.item.lightPower??2.8);}
+  for(let i=0;i<this.selected.length;i++){const e=this.selected[i];lampColour(e.params,this.c);this.u.baseLights.value[i].set(e.anchor.x,e.anchor.y,e.anchor.z,12);this.u.baseColors.value[i].set(this.c.r,this.c.g,this.c.b,(e.item.lightPower??2.8)*lampIntensity(e.params));}
   if(this.allLamps.length>4){
-   if(dirty||this.gridLampCount!==this.allLamps.length||!this.lightTexture){this.rebuildLightGrid();this.gridLampCount=this.allLamps.length;}
+   if(this.gridSpatialRevision!==world.spatialRevision||!this.lightTexture||!this.gridLamps||this.gridLamps.length!==this.allLamps.length||this.allLamps.some((e,i)=>e!==this.gridLamps[i])){this.rebuildLightGrid();this.gridLamps=this.allLamps.slice();this.gridSpatialRevision=world.spatialRevision;this.gridRecordsReady=false;}
    if(dirty||previous.length!==this.selected.length||this.selected.some((e,i)=>e!==previous[i])||!this.gridRecordsReady){
     const data=this.lightTexture.image.data;
-    for(let i=0;i<this.allLamps.length;i++){const e=this.allLamps[i],p=e.anchor;this.c.set(LAMP_TEMPERATURES[e.params.temperature||0].color);data.set([p.x,p.y,p.z,(this.selected.includes(e)?this.cacheSlots.indexOf(e):-1),this.c.r,this.c.g,this.c.b,e.item.lightPower??2.8],i*8);}
+    for(let i=0;i<this.allLamps.length;i++){const e=this.allLamps[i],p=e.anchor;lampColour(e.params,this.c);data.set([p.x,p.y,p.z,(this.selected.includes(e)?this.cacheSlots.indexOf(e):-1),this.c.r,this.c.g,this.c.b,(e.item.lightPower??2.8)*lampIntensity(e.params)],i*8);}
     this.lightTexture.needsUpdate=true;this.gridRecordsReady=true;
    }
   }else this.gridRecordsReady=false;
@@ -235,7 +236,7 @@ export class WorldLighting{
   if(now-this.exposureAt<1000/15)return this.exposureValue;
   if(this.exposureAt!==-Infinity&&camera.position.distanceToSquared(this.exposureEye)<1e-8&&this.dir.distanceToSquared(this.exposureDirection)<1e-8)return this.exposureValue;
   this.exposureAt=now;this.exposureEye.copy(camera.position);this.exposureDirection.copy(this.dir);
-  let result=0;for(const e of this.allLamps){this.delta.copy(e.anchor).sub(camera.position);const d=this.delta.length();if(d>=14)continue;this.delta.normalize();const contribution=Math.max(0,1-d/14)*Math.max(.1,this.dir.dot(this.delta))*.45*(e.item.lightPower===undefined?1:e.item.lightPower/2.8);if(contribution<=result)continue;if(!this.blocked(camera.position,this.delta,d-.10))result=contribution;}
+  let result=0;for(const e of this.allLamps){this.delta.copy(e.anchor).sub(camera.position);const d=this.delta.length();if(d>=14)continue;this.delta.normalize();const contribution=Math.max(0,1-d/14)*Math.max(.1,this.dir.dot(this.delta))*.45*(e.item.lightPower===undefined?1:e.item.lightPower/2.8)*lampIntensity(e.params);if(contribution<=result)continue;if(!this.blocked(camera.position,this.delta,d-.10))result=contribution;}
   return this.exposureValue=result;
  }
 

@@ -56,7 +56,7 @@ const rows=[
  ['rtg-generator','Generador termoeléctrico RTG',7,'energy',[.85,1.0,.85],'Suministro constante de 110 W simulados. Aletas y módulo térmico.',{action:'Generador RTG',energy:'source'}],
  ['floor-strelitzia','Strelitzia · maceta de suelo',6,'plant',[1.12,1.82,1.12],'Hojas lanceoladas, pecíolos y maceta grande. En la Luna, bajo cubierta.',{small:true,base:[.47,.47],plant:true}],
  ['floor-rhapis','Palmera Rhapis · maceta de suelo',6,'plant',[1.02,1.63,1.02],'Cinco tallos y hojas palmeadas divididas. Vegetación estática de interior.',{small:true,base:[.47,.47],plant:true}],
- ['moon-lamp','Lámpara lunar esférica',5,'decoration',[.30,.37,.30],'Relieve lunar estilizado, soporte de tres apoyos y luz tenue constante.',{small:true,base:[.24,.24],decorLight:true,lightPower:.10,lightHeight:.22}],
+ ['moon-lamp','Lámpara lunar esférica',5,'decoration',[.30,.37,.30],'Relieve lunar estilizado, soporte de tres apoyos y luz tenue regulable.',{small:true,base:[.24,.24],decorLight:true,lightPower:.10,lightHeight:.22,action:'Ajustar luz'}],
  ['framed-lunar-map','Mapa lunar enmarcado',5,'decoration',[1,.90,.07],'Cartografía lunar ilustrada con mares y cráteres; montaje en pared.',{surface:'wall'}],
  ['dna-model','Modelo de ADN',5,'decoration',[.31,.59,.31],'Doble hélice con pares de bases y esqueleto bicolor, sobre peana.',{small:true,base:[.31,.31]}],
  ['mission-plaque','Placa conmemorativa · Apollo',5,'decoration',[.42,.32,.21],'Homenaje metálico a la exploración lunar, sobre soporte de escritorio.',{small:true,base:[.27,.23],baseOffset:[0,-.045]}],
@@ -64,7 +64,9 @@ const rows=[
  ['mission-patch','Exhibidor de parche de misión',5,'decoration',[.37,.40,.21],'Emblema original inspirado en Apollo, presentado como pieza de colección.',{small:true,base:[.24,.23],baseOffset:[0,-.045]}],
  ['helmet-display','Casco de astronauta en soporte',5,'decoration',[.36,.45,.36],'Casco de presión con visor dorado curvo, anillo y pivotes laterales.',{small:true,base:[.35,.35]}],
  ['mission-blueprint','Plano técnico enmarcado · rover',5,'decoration',[1.15,.82,.07],'Dibujo técnico original del rover: vistas lateral, frontal y superior.',{surface:'wall'}],
- ['mission-sample-case','Vitrina de muestra de misión',5,'decoration',[.50,.34,.43],'Roca lunar de exhibición, pedestal, cubierta y ficha de réplica didáctica.',{small:true,base:[.50,.38]}]
+ ['mission-sample-case','Vitrina de muestra de misión',5,'decoration',[.50,.34,.43],'Roca lunar de exhibición, pedestal, cubierta y ficha de réplica didáctica.',{small:true,base:[.50,.38]}],
+ ['zone-delimiter','Delimitador de área',3,'zone',[.78,1.20,.78],'Marca cuatro esquinas de tu base y guarda su nombre. PC: clic / E. VR: gatillo izquierdo / X.',{action:'Delimitar área',small:true,base:[.72,.72]}],
+ ['lighting-panel','Panel de iluminación',3,'light-panel',[.55,.42,.068],'Control de pared: plano de áreas, lámparas individuales, grupos y encendido general.',{surface:'wall',action:'Controlar iluminación'}]
 
 ];
 export const EXPANSION_ITEMS=rows.map(([id,name,category,kind,size,note,extra])=>({id,name,category,kind,size,note,expansion:true,tool:false,sample:false,structural:false,surface:'floor',...extra}));
